@@ -28,13 +28,18 @@ const NotificationPopUp = () => {
     const fetchData = async () => {
       try {
         //
-        const notifications: Result[] = await fetchNotifications({
+        const notifications: Result[] | null = await fetchNotifications({
           title: "",
           year: "",
           degree: "",
           regulation: "",
           page: 1,
         });
+
+        if (!notifications || !Array.isArray(notifications)) {
+          setResults([]);
+          return;
+        }
 
         const today = new Date().toISOString().split("T")[0].toString();
 
@@ -44,6 +49,7 @@ const NotificationPopUp = () => {
         setResults(tempres);
       } catch (error) {
         console.error("Error fetching notifications:", error);
+        setResults([]);
       }
     };
     fetchData();

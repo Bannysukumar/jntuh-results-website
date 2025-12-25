@@ -7,7 +7,7 @@ export const fetchAcademicResult = async (
   htno: string,
 ): Promise<null | AcademicResulProps> => {
   try {
-    let url: string = `https://jntuhresults.dhethi.com/api/getAcademicResult?rollNumber=${htno}`;
+    let url: string = `/api/proxy?endpoint=getAcademicResult&rollNumber=${htno}`;
 
     toast.loading("Fetching result...");
 
@@ -90,7 +90,7 @@ export const fetchAcademicResult = async (
 };
 export const fetchAllResult = async (htno: string) => {
   try {
-    let url: string = `https://jntuhresults.dhethi.com/api/getAllResult?rollNumber=${htno}`;
+    let url: string = `/api/proxy?endpoint=getAllResult&rollNumber=${htno}`;
 
     toast.loading("Fetching result...");
 
@@ -177,7 +177,7 @@ export const fetchAllResult = async (htno: string) => {
 };
 export const fetchBacklogReport = async (htno: string) => {
   try {
-    let url: string = `https://jntuhresults.dhethi.com/api/getBacklogs?rollNumber=${htno}`;
+    let url: string = `/api/proxy?endpoint=getBacklogs&rollNumber=${htno}`;
 
     const response = await axios.get(url, { timeout: 20 * 1000 });
     if ("details" in response.data) {
@@ -203,7 +203,7 @@ export const fetchBacklogReport = async (htno: string) => {
 
 export const fetchCreditsCheckerReport = async (htno: string) => {
   try {
-    let url: string = `https://jntuhresults.dhethi.com/api/getCreditsChecker?rollNumber=${htno}`;
+    let url: string = `/api/proxy?endpoint=getCreditsChecker&rollNumber=${htno}`;
 
     toast.loading("Result are been fetched");
     const response = await axios.get(url, { timeout: 20 * 1000 });
@@ -236,7 +236,7 @@ export const fetchCreditContrastReport = async (
 ) => {
   let response;
   try {
-    let url: string = `https://jntuhresults.dhethi.com/api/getResultContrast?rollNumber1=${htno1}&rollNumber2=${htno2}`;
+    let url: string = `/api/proxy?endpoint=getResultContrast&rollNumber1=${htno1}&rollNumber2=${htno2}`;
 
     toast.loading("Result are been fetched");
     response = await axios.get(url, { timeout: 20 * 1000 });
@@ -268,7 +268,7 @@ export const fetchCreditContrastReport = async (
 
 export const fetchNotifications = async (params: Params) => {
   try {
-    let url: string = `https://jntuhresults.dhethi.com/api/notifications?page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
+    let url: string = `/api/proxy?endpoint=notifications&page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
     const response = await axios.get(url);
 
     if (response.status === 200) {
@@ -293,7 +293,7 @@ export const fetchClassResult = async (
   type: string = "academicresult",
 ) => {
   try {
-    let url: string = `https://jntuhresults.dhethi.com/api/getClassResults?rollNumber=${htno}`;
+    let url: string = `/api/proxy?endpoint=getClassResults&rollNumber=${htno}`;
 
     toast.loading("Result are been fetched");
 

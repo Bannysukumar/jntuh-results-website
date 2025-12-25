@@ -19,7 +19,14 @@ const Notification = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const notifications: Result[] = await fetchNotifications(params);
+      const notifications: Result[] | null = await fetchNotifications(params);
+      if (!notifications || !Array.isArray(notifications)) {
+        if (params.page == 1) {
+          setResults([]);
+        }
+        setLoading(false);
+        return;
+      }
       if (params.page == 1) {
         setResults(notifications);
       } else {
@@ -27,6 +34,9 @@ const Notification = () => {
       }
     } catch (error) {
       console.error("Error fetching notifications:", error);
+      if (params.page == 1) {
+        setResults([]);
+      }
     }
     setLoading(false);
   }, [params]);

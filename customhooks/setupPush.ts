@@ -22,7 +22,11 @@ export async function setupPush(rollNumber?: string) {
     console.log("Waiting for ready...");
     const reg = await navigator.serviceWorker.ready;
 
-    const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
+    const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    if (!key) {
+      console.warn("VAPID public key is not configured. Push notifications will not work.");
+      return;
+    }
     console.log("Using VAPID Key:", key);
 
     const convertedKey = urlBase64ToUint8Array(key);
