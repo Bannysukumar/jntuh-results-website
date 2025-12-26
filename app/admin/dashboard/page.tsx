@@ -143,7 +143,7 @@ export default function AdminDashboard() {
               <Button 
                 variant="outline" 
                 className="w-full justify-start"
-                onClick={() => toast.info("Logs feature coming soon!")}
+                onClick={() => toast("Logs feature coming soon!")}
               >
                 <FileText className="mr-2 h-4 w-4" />
                 View Logs

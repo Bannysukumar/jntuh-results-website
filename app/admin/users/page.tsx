@@ -256,7 +256,7 @@ export default function AdminUsers() {
                 onClick={() => {
                   setIsFilterOpen(!isFilterOpen);
                   if (!isFilterOpen) {
-                    toast.info("Filter options coming soon!");
+                    toast("Filter options coming soon!");
                   }
                 }}
               >
@@ -344,7 +344,7 @@ export default function AdminUsers() {
                           <Button 
                             variant="ghost" 
                             size="sm"
-                            onClick={() => toast.info(`Actions for ${user.email} - Coming soon!`)}
+                            onClick={() => toast(`Actions for ${user.email} - Coming soon!`)}
                           >
                             <MoreVertical className="h-4 w-4" />
                           </Button>
