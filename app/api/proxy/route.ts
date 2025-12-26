@@ -31,8 +31,26 @@ export async function GET(request: NextRequest) {
     });
 
     if (!response.ok) {
+      // Try to get error details from the response
+      let errorData;
+      try {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          errorData = await response.json();
+        } else {
+          const text = await response.text();
+          try {
+            errorData = JSON.parse(text);
+          } catch {
+            errorData = { error: text || `External API returned ${response.status}` };
+          }
+        }
+      } catch {
+        errorData = { error: `External API returned ${response.status}` };
+      }
+      
       return NextResponse.json(
-        { error: `External API returned ${response.status}` },
+        errorData,
         { status: response.status }
       );
     }

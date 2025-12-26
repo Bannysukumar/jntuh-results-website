@@ -115,6 +115,7 @@ export const metadata: Metadata = {
   classification: "University Results Portal",
   other: {
     "application-name": "Mana JNTUH Results",
+    "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "black-translucent",
     "format-detection": "telephone=no",
