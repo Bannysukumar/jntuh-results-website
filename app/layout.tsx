@@ -109,7 +109,7 @@ export const metadata: Metadata = {
     canonical: siteUrl,
   },
   verification: {
-    google: "2arj9D99oUuGh03Qhewo_iEY45zbwhrJqLytiZSmoEg",
+    google: "19aqihOrD-qf3lECIogsri3a8H8WCd2piEQ7xdq2Akg",
   },
   category: "Education",
   classification: "University Results Portal",

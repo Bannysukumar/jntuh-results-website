@@ -40,7 +40,7 @@ const MetaData = () => {
       {/* /> */}
       <meta
         name="google-site-verification"
-        content="2arj9D99oUuGh03Qhewo_iEY45zbwhrJqLytiZSmoEg"
+        content="19aqihOrD-qf3lECIogsri3a8H8WCd2piEQ7xdq2Akg"
       />
       <link
         rel="apple-touch-icon"
