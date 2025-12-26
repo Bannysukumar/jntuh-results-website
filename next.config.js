@@ -11,31 +11,16 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
-  // Headers for SEO and security - using specific paths to avoid build issues
-  async headers() {
-    return [
-      {
-        source: '/',
-        headers: [
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on'
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin'
-          },
-        ],
-      },
-    ];
+  // Experimental options to prevent build trace stack overflow
+  experimental: {
+    outputFileTracingExcludes: {
+      '*': [
+        'node_modules/@swc/core*/**/*',
+        'node_modules/next/dist/compiled/@swc/**/*',
+        'node_modules/next/dist/compiled/webpack/**/*',
+        'scripts/**/*',
+      ],
+    },
   },
 };
 
