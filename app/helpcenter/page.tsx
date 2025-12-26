@@ -41,7 +41,7 @@ const HelpCenter = () => {
               </p>
             </div>
           </Link>
-          <Link href="https://docs.google.com/forms/d/e/1FAIpQLScFdsBs-QvzuZLxc1ZmvsUo4R2Ez1NPe0UmG7E1tgzXzKrimg/viewform">
+          <Link href="/feedback">
             <div className="border  hover:drop-shadow-sm group text-black  dark:text-white border-slate-800 md:border-gray-100 shadow-2xl max-w-xs p-6 mt-6 text-left md:w-96 rounded-xl hover:border-gray-500 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-105 hover:bg-blue-300 duration-300">
               <h3 className="group-hover:text-black text-lg sm:text-2xl font-bold">
                 <div className="flex flex-row items-center justify-start">

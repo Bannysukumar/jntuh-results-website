@@ -2,16 +2,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/themeprovider/theme-provider";
-import Navbar from "@/components/navbar/navbar";
-import SideMenubar from "@/components/sidemenubar/sidemenubar";
-import { SidebarProvider } from "@/customhooks/sidebarhook";
 import { Toaster } from "react-hot-toast";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
-import { NavBarProvider } from "@/customhooks/navbarhook";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import NotificationPopUp from "@/components/notifications/popup";
 import StructuredData from "@/components/metadata/structured-data";
 import CanonicalUrl from "@/components/metadata/canonical-url";
+import AdminWrapper from "@/components/admin/AdminWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -160,22 +156,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider>
-            <NavBarProvider>
-              <Navbar />
-              <main className="pt-16">
-                <SideMenubar />
-                <div className="lg:ml-64">
-                  <NotificationPopUp />
-                  {/* <Pwa /> */}
-                  {children}
-                </div>
-                <div className=" md:block">
-                  <Toaster position="bottom-right" reverseOrder={false} />
-                </div>
-              </main>
-            </NavBarProvider>
-          </SidebarProvider>
+          <AdminWrapper>
+            {children}
+          </AdminWrapper>
+          <div className=" md:block">
+            <Toaster position="bottom-right" reverseOrder={false} />
+          </div>
         </ThemeProvider>
       </body>
     </html>
