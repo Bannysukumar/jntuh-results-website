@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "JNTUH RESULTS | FAQ",
+  title: "Mana JNTUH Results | FAQ",
   description: "Frequently Asked questions",
 };
 

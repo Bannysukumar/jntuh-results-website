@@ -13,19 +13,19 @@ export async function generateMetadata({
   const { title = "", formatted_date = "", date = "" } = searchParams;
 
   return {
-    title: title ? `${title} | JNTUH RESULTS` : "JNTUH RESULTS | Notifications",
+    title: title ? `${title} | Mana JNTUH Results` : "Mana JNTUH Results | Notifications",
     description: title
       ? `Check ${title} released on ${formatted_date || date}.`
       : "Check out JNTUH notifications in one place.",
     openGraph: {
-      title: title || "JNTUH RESULTS",
+      title: title || "Mana JNTUH Results",
       description: `Exam Notification - ${title} (${formatted_date || date})`,
       type: "website",
-      siteName: "JNTUH RESULTS",
+      siteName: "Mana JNTUH Results",
     },
     twitter: {
       card: "summary_large_image",
-      title: title || "JNTUH RESULTS",
+      title: title || "Mana JNTUH Results",
       description: `Exam Notification - ${title} (${formatted_date || date})`,
     },
   };

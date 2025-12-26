@@ -7,9 +7,9 @@ const MetaData = () => {
   const pathname = usePathname();
   return (
     <>
-      <meta property="og:url" content="https://jntuhresults.vercel.app/" />
+      <meta property="og:url" content="https://manajntuhresults.vercel.app/" />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="JNTUH Results" />
+      <meta property="og:title" content="Mana JNTUH Results" />
       <meta
         property="og:description"
         content="You can find the Results of your entire semesters here of Jawaharlal Nehru Technological University, Hyderabad (JNTUH)."
@@ -28,7 +28,7 @@ const MetaData = () => {
       <meta name="twitter:card" content="summary" />
       <meta
         property="twitter:title"
-        content="JNTUH Results - Check Your UG and PG Exam Results Online"
+        content="Mana JNTUH Results - Check Your UG and PG Exam Results Online"
       />
       <meta
         property="twitter:description"
@@ -79,7 +79,7 @@ const MetaData = () => {
       <link rel="manifest" href="/manifest.json" />
       <link
         rel="canonical"
-        href={`https://jntuhresults.vercel.app${pathname}`}
+        href={`https://manajntuhresults.vercel.app${pathname}`}
       />
 
       <link rel="manifest" href="/site.webmanifest" />

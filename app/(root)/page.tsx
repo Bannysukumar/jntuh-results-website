@@ -7,36 +7,39 @@ import { FaGithub, FaInstagram, FaTwitter } from "react-icons/fa";
 export default function Home() {
   return (
     <>
-      <div className="z-[20] grid grid-row-2 lg:grid-cols-2 lg:hidden  items-center pt-10 font-normal text-2xl lg:text-6xl mb-5">
+      <header className="z-[20] grid grid-row-2 lg:grid-cols-2 lg:hidden  items-center pt-10 font-normal text-2xl lg:text-6xl mb-5">
         <div className="flex justify-center lg:justify-end">
           Welcome to&nbsp;
         </div>
         <Link
           href="/"
           className="text-blue-500 hover:text-blue-600 flex justify-center lg:justify-start hover:underline"
+          aria-label="Mana JNTUH Results Home"
         >
           <Title />
         </Link>
-      </div>
-      <div className="z-[20] hidden lg:flex justify-center items-center pt-10 font-normal text-xl xl:text-4xl 2xl:text-6xl  mb-5">
+      </header>
+      <header className="z-[20] hidden lg:flex justify-center items-center pt-10 font-normal text-xl xl:text-4xl 2xl:text-6xl  mb-5">
         Welcome to&nbsp;
         <Link
           href="/"
           className="text-blue-500 hover:text-blue-600  hover:underline"
+          aria-label="Mana JNTUH Results Home"
         >
           <Title />
         </Link>
-      </div>
+      </header>
       <div className="flex justify-center">
         <div className="transition-all duration-500 ease-in-out w-[100%] lg:max-w-[60%] 2xl:max-w-[40%] text-sm lg:text-lg text-center bg-black text-white py-3 lg:py-2 m-4 rounded dark:text-black dark:bg-gray-200">
-          Jawaharlal Nehru Technological University, Hyderabad
+          <h2 className="sr-only">University Information</h2>
+          <p>Jawaharlal Nehru Technological University, Hyderabad</p>
         </div>
       </div>
       <div className="flex justify-center lg:hidden">
         {/* <AdComponent /> */}
       </div>
-      <div className="text-center flex justify-center min-h-[calc(100vh-460px)]">
-        <div className="home-links flex flex-wrap items-center justify-around h-fit max-w-5xl md:mt-6  sm:w-full">
+      <main className="text-center flex justify-center min-h-[calc(100vh-460px)]">
+        <section className="home-links flex flex-wrap items-center justify-around h-fit max-w-5xl md:mt-6  sm:w-full" aria-label="Main Navigation Links">
           {homeLinks.map((homelink: any, index: number) => {
             return (
               <Link href={homelink.link} key={index}>
@@ -210,9 +213,9 @@ export default function Home() {
               </p>
             </div>
           </Link>
-        </div>
-      </div>
-      <div className="bottom-0  w-full lg:w-[calc(100vw-16rem)]   font-interer pt-[20px]">
+        </section>
+      </main>
+      <footer className="bottom-0  w-full lg:w-[calc(100vw-16rem)]   font-interer pt-[20px]">
         <hr />
         <center>
           <div className="flex justify-center mt-4 text-sm text-gray-600">
@@ -242,7 +245,7 @@ export default function Home() {
             <p>&copy; 2026 manajntuhresults.vercel.app</p>
           </div>
         </center>
-      </div>
+      </footer>
     </>
   );
 }
