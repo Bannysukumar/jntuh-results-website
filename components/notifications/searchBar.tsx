@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { IoMdSearch } from "react-icons/io";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface searchBarProps {
   handleSearch: (event: any) => void;
@@ -18,7 +19,6 @@ const SearchBar = ({ handleSearch }: searchBarProps) => {
       "II Year I Semester",
     ];
     const typeWriter = async () => {
-      // Wait for 2 seconds before starting the typewriter effect
       await sleep(200);
       while (true) {
         for (let ind = 0; ind < searchQueries.length; ind++) {
@@ -34,7 +34,6 @@ const SearchBar = ({ handleSearch }: searchBarProps) => {
                 searchQueries[ind].length - i - 1,
               ),
             );
-
             await sleep(100);
           }
         }
@@ -43,13 +42,14 @@ const SearchBar = ({ handleSearch }: searchBarProps) => {
 
     typeWriter();
   }, []);
+
   return (
-    <div className="inline-block w-[100%]">
-      <IoMdSearch className="md:m-[8px] absolute hidden md:block" />
-      <input
+    <div className="relative w-full">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+      <Input
         id="searchKey"
-        className="w-[100%]  h-[35px] text-[16px] outline-none pr-[108px] pl-[10px] md:pl-[31px] border-[1px] border-solid border-t-zinc-200"
-        placeholder={placeHolder}
+        className="w-full h-12 pl-10 pr-24 text-base"
+        placeholder={placeHolder || "Search notifications..."}
         onChange={handleSearch}
         type="text"
       />

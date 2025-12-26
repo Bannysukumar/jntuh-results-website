@@ -1,7 +1,8 @@
 "use client";
-import { Building2Icon, MapIcon, MapPinIcon, Share2Icon } from "lucide-react";
+import { Building2Icon, MapPinIcon, Share2Icon, Briefcase } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
+import { Card } from "../ui/card";
 import Link from "next/link";
 import {
   Drawer,
@@ -19,7 +20,7 @@ interface JobDetail {
   experience: number;
   experience_word: string;
   remote: string;
-  posted_date: string; // ISO 8601 date string
+  posted_date: string;
   link: string;
   expired: boolean;
   locations: string[];
@@ -44,19 +45,21 @@ const Jobs: React.FC<JobsProps> = ({
   const [selectedJob, setSelectedJob] = useState<JobDetail | null>(null);
 
   const scrollableRef = useRef<HTMLDivElement | null>(null);
+  
   useEffect(() => {
     if (jobDetails.length > 0) {
       setSelectedJob(jobDetails[0]);
     }
   }, [jobDetails]);
+
   useEffect(() => {
     const scrollableElement = scrollableRef.current;
 
     const handleScroll = () => {
       if (
         scrollableElement &&
-        scrollableElement.scrollHeight - scrollableElement.scrollTop ===
-          scrollableElement.clientHeight
+        scrollableElement.scrollHeight - scrollableElement.scrollTop <=
+          scrollableElement.clientHeight + 100
       ) {
         onScrollEnd();
       }
@@ -66,359 +69,335 @@ const Jobs: React.FC<JobsProps> = ({
       scrollableElement.addEventListener("scroll", handleScroll);
     }
 
-    // Cleanup listener on unmount
     return () => {
       if (scrollableElement) {
         scrollableElement.removeEventListener("scroll", handleScroll);
       }
     };
-  }, []);
+  }, [jobDetails]);
 
   const onScrollEnd = () => {
-    incrementPage();
-    // Add your logic here
+    if (canIncrement) {
+      incrementPage();
+    }
   };
 
   if (jobDetails.length === 0) {
-    return <div className="text-x mt-16">No Internships or Jobs to show</div>;
+    return (
+      <Card className="p-12 text-center">
+        <Briefcase className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+        <p className="text-lg font-semibold text-gray-600 dark:text-gray-400">
+          No Internships or Jobs to show
+        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+          Try adjusting your filters to see more results
+        </p>
+      </Card>
+    );
   }
 
   return (
-    <div className="w-full flex gap-2 lg:mr-2">
+    <div className="w-full flex flex-col lg:flex-row gap-4">
+      {/* Jobs List */}
       <div
-        className="overflow-y-auto dark:bg-gray-800 rounded bg-gray-50   p-2 w-full lg:max-w-[420px] border-gray-300 h-[83vh] flex "
+        className="overflow-y-auto rounded-lg bg-white dark:bg-gray-800 p-4 w-full lg:max-w-[450px] border border-gray-200 dark:border-gray-700 max-h-[calc(100vh-280px)] lg:max-h-[calc(100vh-200px)] shadow-sm"
         ref={scrollableRef}
       >
-        <div className="w-full justify-start">
+        <div className="space-y-3">
           {jobDetails.map((jobDetail) => (
-            <div
+            <Card
               key={jobDetail.job_id}
               onClick={() => {
                 setSelectedJob(jobDetail);
               }}
-              className={`rounded  md:cursor-pointer mb-4 bg-white dark:bg-gray-900 border border-[#dadce0] p-4 gap-6 flex flex-col   ${
+              className={`cursor-pointer transition-all duration-200 hover:shadow-md p-4 ${
                 selectedJob?.job_id === jobDetail.job_id
-                  ? "lg:border-blue-500"
-                  : ""
+                  ? "border-blue-500 border-2 bg-blue-50 dark:bg-blue-900/20"
+                  : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
               }`}
             >
-              <div className="flex text-sm justify-between font-medium">
-                <div>{jobDetail.title}</div>
-                <div className="cursor-pointer">
-                  <Share2Icon size={16} />
-                </div>
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 flex-1 pr-2">
+                  {jobDetail.title}
+                </h3>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (navigator.share) {
+                      navigator.share({
+                        title: jobDetail.title,
+                        text: `Check out this job: ${jobDetail.title} at ${jobDetail.company}`,
+                        url: jobDetail.link,
+                      });
+                    }
+                  }}
+                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                >
+                  <Share2Icon size={16} className="text-gray-500 dark:text-gray-400" />
+                </button>
               </div>
-              <div className="flex items-center gap-10 mr-4   ">
-                {" "}
-                <div className="flex gap-2 text-xs  font-normal justify-center">
-                  {" "}
-                  <Building2Icon size={16} /> <span>{jobDetail.company}</span>{" "}
+              
+              <div className="flex flex-wrap items-center gap-4 mb-3 text-xs text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-1.5">
+                  <Building2Icon size={14} className="text-blue-500" />
+                  <span className="font-medium">{jobDetail.company}</span>
                 </div>
                 {jobDetail.locations.length > 0 && (
-                  <div className="flex gap-1 text-xs  font-normal justify-center">
-                    <MapPinIcon size={16} />
+                  <div className="flex items-center gap-1.5">
+                    <MapPinIcon size={14} className="text-green-500" />
                     <span>{jobDetail.locations[0]}</span>
                   </div>
                 )}
               </div>
-              <div className=" text-xs flex">
-                <Button className="text-xs w-[80px] h-[35px] ">
-                  <Link href={jobDetail.link} target="_blank">
-                    Apply
-                  </Link>
+
+              <div className="flex items-center justify-between">
+                <Button 
+                  size="sm" 
+                  className="text-xs h-8"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(jobDetail.link, '_blank');
+                  }}
+                >
+                  Apply Now
                 </Button>
+                {jobDetail.expired && (
+                  <span className="text-xs text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded">
+                    Expired
+                  </span>
+                )}
                 <Drawer>
-                  <DrawerTrigger>
-                    <div className="text-xs inline-flex items-center justify-center whitespace-nowrap rounded  font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none  disabled:opacity-50 lg:hidden ml-4 px-4  h-[35px] py-[10px] border-solid border border-black  hover:bg-gray-300 dark:border-white dark:hover:bg-gray-700  ">
-                      Learn more
-                    </div>
+                  <DrawerTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-8 lg:hidden ml-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Details
+                    </Button>
                   </DrawerTrigger>
-                  <DrawerContent className="h-auto max-h-[85vh] lg:hidden ">
-                    <DrawerHeader className="flex justify-between border-b">
-                      <div
-                        className="flex flex-col gap-2
-                        "
-                      >
-                        <div className="flex">
-                          <div className="ml-2  mr-4 mb-2 border p-2 rounded flex justify-center items-center w-[80px] h-[80px]">
+                  <DrawerContent className="h-auto max-h-[85vh] lg:hidden">
+                    <DrawerHeader className="flex justify-between border-b pb-4">
+                      <div className="flex flex-col gap-3 w-full">
+                        <div className="flex gap-4">
+                          <div className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg flex items-center justify-center w-20 h-20 bg-white dark:bg-gray-900">
                             <Image
                               src={`/${jobDetail.company.toLowerCase()}icon.png`}
-                              width={50}
-                              height={50}
+                              width={60}
+                              height={60}
                               alt={jobDetail.company}
+                              className="object-contain"
                             />
                           </div>
-                          <DrawerTitle className="text-left leading-6 flex items-center mb-8">
-                            {jobDetail.title}
-                          </DrawerTitle>
-                        </div>
-                        <div className="ml-2 flex items-center gap-6  text-muted-foreground">
-                          <div className="flex gap-2 text-xs  font-normal justify-center">
-                            <Building2Icon size={16} />
-                            <span>{jobDetail.company}</span>
-                          </div>
-                          {jobDetail.locations.length > 0 && (
-                            <div className="flex gap-1 text-xs  font-normal justify-center">
-                              <MapPinIcon size={16} />
-                              <span>{jobDetail.locations[0]}</span>
+                          <div className="flex-1">
+                            <DrawerTitle className="text-left text-lg leading-tight mb-2">
+                              {jobDetail.title}
+                            </DrawerTitle>
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                              <div className="flex items-center gap-1.5">
+                                <Building2Icon size={14} />
+                                <span>{jobDetail.company}</span>
+                              </div>
+                              {jobDetail.locations.length > 0 && (
+                                <div className="flex items-center gap-1.5">
+                                  <MapPinIcon size={14} />
+                                  <span>{jobDetail.locations[0]}</span>
+                                </div>
+                              )}
                             </div>
-                          )}
+                          </div>
                         </div>
                       </div>
                     </DrawerHeader>
-                    <div className="overflow-auto h-auto">
-                      <div className="m-2 rounded bg-gray-50 dark:bg-gray-800 p-2">
-                        <p className="text-base tracking-normal underline underline-offset-2 font-semibold">
-                          Job Description
-                        </p>
-                        <div className="mt-4">
-                          <p className="font-semibold tracking-normal text-sm">
-                            Responsibilities:
-                          </p>
-                          <ul className="list-disc pl-4">
-                            {jobDetail.responsibilities.map(
-                              (responsibility: string, index: number) => {
-                                return (
-                                  <li className="text-xs pt-2" key={index}>
-                                    {responsibility}
-                                  </li>
-                                );
-                              },
-                            )}
+                    <div className="overflow-auto p-4 space-y-4">
+                      {jobDetail.responsibilities.length > 0 && (
+                        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                          <p className="text-base font-semibold mb-3">Responsibilities:</p>
+                          <ul className="list-disc pl-5 space-y-1">
+                            {jobDetail.responsibilities.map((responsibility: string, index: number) => (
+                              <li key={index} className="text-sm">{responsibility}</li>
+                            ))}
                           </ul>
                         </div>
-                        {jobDetail.qualifications.length !== 0 && (
-                          <div className="mt-4">
-                            <p className="font-semibold tracking-normal text-sm">
-                              Qualifications:
-                            </p>
-                            <ul className="list-disc pl-4">
-                              {jobDetail.qualifications.map(
-                                (qualification: string, index: number) => {
-                                  return (
-                                    <li className="text-xs pt-2" key={index}>
-                                      {qualification}
-                                    </li>
-                                  );
-                                },
-                              )}
-                            </ul>
-                          </div>
-                        )}
-                        {jobDetail.minqualifications.length !== 0 && (
-                          <div className="mt-4">
-                            <p className="font-semibold tracking-normal text-sm">
-                              Minimum Qualifications:
-                            </p>
-                            <ul className="list-disc pl-4">
-                              {jobDetail.minqualifications.map(
-                                (qualification: string, index: number) => {
-                                  return (
-                                    <li className="text-xs pt-2" key={index}>
-                                      {qualification}
-                                    </li>
-                                  );
-                                },
-                              )}
-                            </ul>
-                          </div>
-                        )}
-
-                        {jobDetail.preferredqualifications.length !== 0 && (
-                          <div className="mt-4">
-                            <p className="font-semibold tracking-normal text-sm">
-                              Preferred Qualifications:
-                            </p>
-                            <ul className="list-disc pl-4">
-                              {jobDetail.preferredqualifications.map(
-                                (qualification: string) => {
-                                  return (
-                                    <li
-                                      className="text-xs pt-2"
-                                      key={qualification}
-                                    >
-                                      {qualification}
-                                    </li>
-                                  );
-                                },
-                              )}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                      <div className="m-2 rounded bg-gray-50 dark:bg-gray-800 p-2">
-                        <p className="text-base tracking-normal underline underline-offset-2 font-semibold">
-                          About
-                        </p>
-                        <div className="pl-2 text-xs text-justify">
-                          {jobDetail.abouts.map(
-                            (about: string, index: number) => {
-                              return (
-                                <p
-                                  className="pt-2"
-                                  key={index}
-                                  dangerouslySetInnerHTML={{ __html: about }}
-                                ></p>
-                              );
-                            },
+                      )}
+                      {(jobDetail.qualifications.length > 0 || jobDetail.minqualifications.length > 0 || jobDetail.preferredqualifications.length > 0) && (
+                        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                          {jobDetail.qualifications.length > 0 && (
+                            <div className="mb-4">
+                              <p className="text-base font-semibold mb-2">Qualifications:</p>
+                              <ul className="list-disc pl-5 space-y-1">
+                                {jobDetail.qualifications.map((qualification: string, index: number) => (
+                                  <li key={index} className="text-sm">{qualification}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {jobDetail.minqualifications.length > 0 && (
+                            <div className="mb-4">
+                              <p className="text-base font-semibold mb-2">Minimum Qualifications:</p>
+                              <ul className="list-disc pl-5 space-y-1">
+                                {jobDetail.minqualifications.map((qualification: string, index: number) => (
+                                  <li key={index} className="text-sm">{qualification}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {jobDetail.preferredqualifications.length > 0 && (
+                            <div>
+                              <p className="text-base font-semibold mb-2">Preferred Qualifications:</p>
+                              <ul className="list-disc pl-5 space-y-1">
+                                {jobDetail.preferredqualifications.map((qualification: string, index: number) => (
+                                  <li key={index} className="text-sm">{qualification}</li>
+                                ))}
+                              </ul>
+                            </div>
                           )}
                         </div>
-                      </div>
+                      )}
+                      {jobDetail.abouts.length > 0 && (
+                        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                          <p className="text-base font-semibold mb-3">About:</p>
+                          <div className="space-y-2 text-sm">
+                            {jobDetail.abouts.map((about: string, index: number) => (
+                              <p key={index} dangerouslySetInnerHTML={{ __html: about }} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="bottom-0 h-36 border-t-[1px] dark:border-t-yellow-50 m-0 py-2 text-center">
-                      <Link href={jobDetail.link} target="_blank">
-                        <Button className="w-[80%] " onClick={() => {}}>
-                          Apply
-                        </Button>
+                    <div className="border-t p-4">
+                      <Link href={jobDetail.link} target="_blank" className="block">
+                        <Button className="w-full">Apply Now</Button>
                       </Link>
                     </div>
                   </DrawerContent>
                 </Drawer>
-                <div className="justify-end w-full flex items-end text-[8px]">
-                  {jobDetail.expired && (
-                    <div className="text-red-800 rounded  py-1 px-2 bg-red-300">
-                      Expired
-                    </div>
-                  )}
-                </div>
               </div>
-            </div>
+            </Card>
           ))}
-          <div
-            className={`w-full flex justify-center ${canIncrement ? "" : "hidden"}`}
-          >
-            <Button
-              variant="ghost"
-              className="bg-gray-500 mb-2 text-white px-2 rounded py-2 text-xs h-fit"
-              onClick={() => incrementPage()}
-            >
-              Load more
-            </Button>
-          </div>
+          {canIncrement && (
+            <div className="w-full flex justify-center pt-4">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => incrementPage()}
+              >
+                Load More Jobs
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="w-full hidden lg:block">
-        <div className="hidden lg:block w-full  overflow-y-auto h-[83vh]  rounded-b ">
-          <div className="pb-2 rounded-b border-t-4 border-t-blue-500 border border-gray-300 dark:bg-gray-900  w-full bg-gray-100 ">
-            <div className="m-8 mr-4 flex">
-              <div className="border-gray-500 dark:bg-gray-900 border  h-fit min-h-[120px] min-w-[120px] items-center flex bg-white p-4 w-fit rounded">
-                <Image
-                  src={`/${selectedJob?.company.toLowerCase()}icon.png`}
-                  width={80}
-                  height={80}
-                  alt={`${selectedJob?.company.toLowerCase()}icon`}
-                />
-              </div>
-              <div className="text-lg font-medium ml-8 flex items-center">
-                <div>
-                  <div>{selectedJob?.title}</div>
-                  <div className="flex items-center my-1 justify-start w-full font-light text-base">
-                    <Building2Icon size={16} />
-                    <div className="text-sm font-normal ml-1">
-                      {selectedJob?.company}
+      {/* Desktop Detail View */}
+      {selectedJob && (
+        <div className="hidden lg:block flex-1">
+          <Card className="h-[calc(100vh-200px)] overflow-y-auto p-6 border-2 border-blue-500">
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex gap-4 pb-4 border-b">
+                <div className="border border-gray-300 dark:border-gray-700 p-4 rounded-lg flex items-center justify-center w-24 h-24 bg-white dark:bg-gray-900 flex-shrink-0">
+                  <Image
+                    src={`/${selectedJob.company.toLowerCase()}icon.png`}
+                    width={80}
+                    height={80}
+                    alt={selectedJob.company}
+                    className="object-contain"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    {selectedJob.title}
+                  </h2>
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <div className="flex items-center gap-2">
+                      <Building2Icon size={16} className="text-blue-500" />
+                      <span className="font-medium">{selectedJob.company}</span>
                     </div>
+                    {selectedJob.locations.length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <MapPinIcon size={16} className="text-green-500" />
+                        <span>{selectedJob.locations.join(", ")}</span>
+                      </div>
+                    )}
                   </div>
-                  <div
-                    className={`flex  my-2 h-fit justify-start  w-full font-light text-base `}
-                  >
-                    <div className="h-full pt-1">
-                      <MapPinIcon className="flex justify-start" size={16} />
-                    </div>
-                    <div className="pl-1 text-sm lg:pl-2 w-full  grid lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-4">
-                      {selectedJob?.locations.map((location: string) => {
-                        return <span key={location}>{location};&nbsp; </span>;
-                      })}
-                    </div>
-                  </div>
+                  <Link href={selectedJob.link} target="_blank">
+                    <Button className="mt-3">Apply Now</Button>
+                  </Link>
                 </div>
               </div>
-            </div>
-            <div className="border-t-2 border-gray-500 pr-4 pt-2 flex justify-end w-full">
-              <Link
-                href={selectedJob ? selectedJob?.link : "#"}
-                target="_blank"
-              >
-                <Button className="w-[180px]">Apply</Button>
-              </Link>
-            </div>
-          </div>
-          <div className=" my-1">
-            <div
-              className={`border border-gray-300 p-8 rounded-b my-1 dark:bg-gray-900 rounded  w-full bg-gray-100 ${selectedJob?.qualifications.length === 0 && selectedJob?.minqualifications.length === 0 && selectedJob?.preferredqualifications.length === 0 && "hidden"}`}
-            >
-              {selectedJob?.qualifications.length !== 0 && (
-                <div>
-                  <div>
-                    <div className="font-semibold  text-lg">
-                      Qualifications:
+
+              {/* Qualifications */}
+              {(selectedJob.qualifications.length > 0 || selectedJob.minqualifications.length > 0 || selectedJob.preferredqualifications.length > 0) && (
+                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg">
+                  {selectedJob.qualifications.length > 0 && (
+                    <div className="mb-4">
+                      <h3 className="text-lg font-semibold mb-3">Qualifications:</h3>
+                      <ul className="list-disc pl-6 space-y-2">
+                        {selectedJob.qualifications.map((qualification: string, index: number) => (
+                          <li key={index} className="text-sm">{qualification}</li>
+                        ))}
+                      </ul>
                     </div>
-                    <ul className="list-disc pl-8 pt-2">
-                      {selectedJob?.qualifications.map(
-                        (qualification: string) => {
-                          return <li key={qualification}>{qualification}</li>;
-                        },
-                      )}
-                    </ul>
+                  )}
+                  {selectedJob.minqualifications.length > 0 && (
+                    <div className="mb-4">
+                      <h3 className="text-lg font-semibold mb-3">Minimum Qualifications:</h3>
+                      <ul className="list-disc pl-6 space-y-2">
+                        {selectedJob.minqualifications.map((qualification: string, index: number) => (
+                          <li key={index} className="text-sm">{qualification}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {selectedJob.preferredqualifications.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Preferred Qualifications:</h3>
+                      <ul className="list-disc pl-6 space-y-2">
+                        {selectedJob.preferredqualifications.map((qualification: string, index: number) => (
+                          <li key={index} className="text-sm">{qualification}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* About */}
+              {selectedJob.abouts.length > 0 && (
+                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg">
+                  <h3 className="text-lg font-semibold mb-3">About the Job:</h3>
+                  <div className="space-y-3 text-sm">
+                    {selectedJob.abouts.map((about: string, index: number) => (
+                      <p key={index} dangerouslySetInnerHTML={{ __html: about }} />
+                    ))}
                   </div>
                 </div>
               )}
-              {selectedJob?.minqualifications.length !== 0 && (
-                <div>
-                  <div className="font-semibold  text-lg">
-                    Minimum qualifications:
-                  </div>
-                  <ul className="list-disc pl-8 pt-2">
-                    {selectedJob?.minqualifications.map(
-                      (qualification: string) => {
-                        return <li key={qualification}>{qualification}</li>;
-                      },
-                    )}
+
+              {/* Responsibilities */}
+              {selectedJob.responsibilities.length > 0 && (
+                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg">
+                  <h3 className="text-lg font-semibold mb-3">Responsibilities:</h3>
+                  <ul className="list-disc pl-6 space-y-2">
+                    {selectedJob.responsibilities.map((responsibility: string, index: number) => (
+                      <li key={index} className="text-sm">{responsibility}</li>
+                    ))}
                   </ul>
                 </div>
               )}
-              {selectedJob?.preferredqualifications.length !== 0 && (
-                <div>
-                  <div className="font-semibold  text-lg pt-4">
-                    Preferred qualifications:
-                  </div>
-                  <ul className="list-disc pl-8 pt-2">
-                    {selectedJob?.preferredqualifications.map(
-                      (qualification: string) => {
-                        return <li key={qualification}>{qualification}</li>;
-                      },
-                    )}
-                  </ul>
-                </div>
-              )}
+
+              {/* Apply Button */}
+              <div className="pt-4 border-t">
+                <Link href={selectedJob.link} target="_blank" className="block">
+                  <Button className="w-full" size="lg">Apply Now</Button>
+                </Link>
+              </div>
             </div>
-            <div className=" p-8 rounded-b border border-gray-300 my-1 dark:bg-gray-900 rounded  w-full bg-gray-100 ">
-              <div className="font-semibold  text-lg"> About the job:</div>
-              <ul className=" pl-4 pt-1">
-                {selectedJob?.abouts.map((qualification: string) => {
-                  return (
-                    <li
-                      key={qualification}
-                      className="pt-2"
-                      dangerouslySetInnerHTML={{ __html: qualification }}
-                    ></li>
-                  );
-                })}
-              </ul>
-            </div>
-            <div
-              className={` p-8 pt-4 border border-gray-300 rounded-b my-1 dark:bg-gray-900 rounded  w-full bg-gray-100 ${selectedJob?.responsibilities.length === 0 && "hidden"}`}
-            >
-              <div className="font-semibold  text-lg">Responsibilities</div>
-              <ul className=" pl-8 pt-1 list-disc">
-                {selectedJob?.responsibilities.map((responsibility: string) => {
-                  return <li key={responsibility}>{responsibility}</li>;
-                })}
-              </ul>
-            </div>
-          </div>
+          </Card>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -161,7 +161,7 @@ const Faq = () => {
       <div className="bottom-0 md:hidden w-full font-interer pt-[10px]">
         <hr />
         <center>
-          <div className="flex justify-center mt-4 text-sm text-gray-600">
+          {/* <div className="flex justify-center mt-4 text-sm text-gray-600">
             <a
               href="https://github.com/thilakreddyy"
               className="mx-2 hover:text-gray-900"
@@ -180,7 +180,7 @@ const Faq = () => {
             >
               <FaInstagram />
             </a>
-          </div>
+          </div> */}
           <div className="flex justify-center m-2 text-xs	 text-gray-600">
             <p>&copy; 2026 manajntuhresults.vercel.app</p>
           </div>

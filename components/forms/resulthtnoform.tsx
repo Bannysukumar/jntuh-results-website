@@ -1,5 +1,11 @@
 "use client";
 
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Ticket, Loader2 } from "lucide-react";
+
 interface FormProps {
   title: string;
   hallticketno: string;
@@ -20,72 +26,97 @@ const Form = ({
   isDisabled,
 }: FormProps) => {
   return (
-    <div className="flex justify-center  mt-[6%]  mx-[16%] px-10 rounded-md border-black dark:border-white border-2  shadow-2xl   ">
-      <div className="pt-[30px] pb-[50px]">
-        <h2 className="mb-12 md:text-2xl font-semibold text-center">{title}</h2>
-        <div className="flex  justify-center flex-col md:flex-row">
-          <input
-            className="
-          text-rounded text-center text-[60%] sm:text-[90%]
-          w-[150px] h-[30px] sm:w-[200px] sm:h-[35px]
-          m-[4px]
-          border-[1px] border-double border-black dark:border-white rounded placeholder:pl-2
-          shadow-xl
-          "
-            name="htno1"
-            type="text"
-            value={hallticketno}
-            onChange={(event) => {
-              event.target.value = event.target.value.toUpperCase();
-              sethallticketno(event.target.value);
-            }}
-            maxLength={10}
-            placeholder={
-              hallticketno2 !== undefined
-                ? "Enter first hallticket no"
-                : "Enter your hallticket no"
-            }
-          />
-          {hallticketno2 !== undefined && (
-            <input
-              className="
-          text-rounded text-center text-[60%] sm:text-[90%]
-          w-[150px] h-[30px] sm:w-[200px] sm:h-[35px]
-          m-[4px]
-          border-[1px] border-double border-black dark:border-white rounded 
-          shadow-xl
-          "
-              name="htno2"
-              type="text"
-              value={hallticketno2 ?? ""}
-              onChange={(event) => {
-                console.log(event);
-                event.target.value = event.target.value.toUpperCase();
-                sethallticketno2?.(event.target.value);
-              }}
-              maxLength={10}
-              placeholder="Enter second hall ticket no"
-            />
-          )}
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950 py-8 px-4">
+      <div className="max-w-2xl mx-auto">
+        <Card className="p-8 shadow-xl border-2">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                <Ticket className="h-8 w-8" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white">
+                {title}
+              </h2>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">
+              Enter your hall ticket number to view your results
+            </p>
+          </div>
 
-        <div className="flex justify-center mt-[80px]">
-          <button
-            type="submit"
-            className="
-            text-sm md:text-lg
-            px-3 py-1
-            rounded
-            bg-black dark:bg-gray-300
-            dark:text-black text-white
-            w-[100px]
-            "
-            disabled={isDisabled}
-            onClick={onSubmit}
-          >
-            Result
-          </button>
-        </div>
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="htno1" className="text-base font-semibold flex items-center gap-2">
+                <Ticket className="h-4 w-4 text-blue-500" />
+                {hallticketno2 !== undefined ? "First Hall Ticket Number" : "Hall Ticket Number"}
+              </Label>
+              <Input
+                id="htno1"
+                name="htno1"
+                type="text"
+                value={hallticketno}
+                onChange={(event) => {
+                  const value = event.target.value.toUpperCase();
+                  sethallticketno(value);
+                }}
+                maxLength={10}
+                placeholder={hallticketno2 !== undefined ? "Enter first hall ticket no" : "Enter your hall ticket no"}
+                className="h-12 text-center text-lg font-mono tracking-wider"
+                disabled={isDisabled}
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                {hallticketno.length} / 10 characters
+              </p>
+            </div>
+
+            {hallticketno2 !== undefined && (
+              <div className="space-y-2">
+                <Label htmlFor="htno2" className="text-base font-semibold flex items-center gap-2">
+                  <Ticket className="h-4 w-4 text-purple-500" />
+                  Second Hall Ticket Number
+                </Label>
+                <Input
+                  id="htno2"
+                  name="htno2"
+                  type="text"
+                  value={hallticketno2 ?? ""}
+                  onChange={(event) => {
+                    const value = event.target.value.toUpperCase();
+                    sethallticketno2?.(value);
+                  }}
+                  maxLength={10}
+                  placeholder="Enter second hall ticket no"
+                  className="h-12 text-center text-lg font-mono tracking-wider"
+                  disabled={isDisabled}
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                  {hallticketno2?.length || 0} / 10 characters
+                </p>
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full h-12 text-lg font-semibold"
+              disabled={isDisabled || hallticketno.length < 10 || (hallticketno2 !== undefined && (hallticketno2?.length || 0) < 10)}
+              onClick={onSubmit}
+            >
+              {isDisabled ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Get Results"
+              )}
+            </Button>
+
+            {isDisabled && (
+              <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+                Please wait before submitting again
+              </p>
+            )}
+          </div>
+        </Card>
       </div>
     </div>
   );

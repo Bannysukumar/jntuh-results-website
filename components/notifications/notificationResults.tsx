@@ -1,12 +1,15 @@
 import Link from "next/link";
 import React, { useEffect } from "react";
-import { AiOutlineShareAlt } from "react-icons/ai";
-import { RiWhatsappLine } from "react-icons/ri";
+import { Share2, MessageCircle, Calendar as CalendarIcon } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const NotificationResults = ({
   results,
   incrementPage,
-}: notificationResultsProps) => {
+  loading,
+}: notificationResultsProps & { loading?: boolean }) => {
   useEffect(() => {
     const handleScroll = () => {
       const { scrollHeight, scrollTop, clientHeight } =
@@ -22,107 +25,116 @@ const NotificationResults = ({
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [incrementPage]);
 
   const onLinkClick = (query: string) => {
     const modifiedquery = "notifications/examcode?" + query;
     window.open(modifiedquery, "_blank");
   };
 
+  const handleShare = (result: Result) => {
+    if (navigator.share) {
+      navigator.share({
+        title: result.title,
+        text: `Check out this JNTUH notification: ${result.title}`,
+        url: result.link,
+      });
+    }
+  };
+
+  if (loading && results.length === 0) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <Card key={index} className="p-6">
+            <Skeleton className="h-6 w-full mb-4" />
+            <Skeleton className="h-4 w-32" />
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  if (results.length === 0) {
+    return (
+      <Card className="p-12 text-center">
+        <CalendarIcon className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+        <p className="text-lg font-semibold text-gray-600 dark:text-gray-400">
+          No Notifications Found
+        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+          Try adjusting your search filters to see more results
+        </p>
+      </Card>
+    );
+  }
+
   return (
-    <>
-      <div className="hidden md:block">
-        <div className="home-links flex flex-wrap items-center max-w-4xl mt-6 sm:w-full text-center  justify-around mx-auto">
-          {results.length === 0 && "No Notifications for this search query"}
-          {results &&
-            results.map((result: Result, index: number) => {
-              const query =
-                "link=" +
-                encodeURIComponent(result.link) +
-                "&" +
-                "title=" +
-                result.title +
-                "&date=" +
-                result.date +
-                "&formatted_date=" +
-                result.releaseDate;
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {results.map((result: Result, index: number) => {
+        const query =
+          "link=" +
+          encodeURIComponent(result.link) +
+          "&" +
+          "title=" +
+          result.title +
+          "&date=" +
+          result.date +
+          "&formatted_date=" +
+          result.releaseDate;
 
-              return (
-                <div
-                  key={index}
-                  onClick={() => {
-                    onLinkClick(query);
-                  }}
-                  className="cursor-pointer"
-                >
-                  <div className="border border-gray-100 dark:border-slate-800 hover:drop-shadow-sm group text-black shadow-2xl max-w-xs p-6 mt-6 text-left md:w-96 rounded-xl hover:border-gray-500 transition ease-in-out delay-75 hover:-translate-y-1 hover:scale-105 hover:bg-blue-300 duration-300">
-                    <h3 className="group-hover:text-black text-lg sm:text-xl font-bold">
-                      <div className="flex flex-row items-center justify-start dark:text-white">
-                        <span className="p-1">{result.title}</span>
-                      </div>
-                    </h3>
-                    <p className="group-hover:text-black dark:text-slate-100 text-slate-500 mt-4 text-base sm:text-xl">
-                      {" "}
-                      {result.date}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-      </div>
-      <div className=" md:hidden pt-5">
-        {results.map((result: Result, index) => {
-          const query =
-            "link=" +
-            encodeURIComponent(result.link) +
-            "&" +
-            "title=" +
-            result.title +
-            "&date=" +
-            result.date +
-            "&formatted_date=" +
-            result.releaseDate;
-
-          return (
-            <div
-              key={index}
-              className="bg-gray-200  dark:bg-gray-800 text-left p-[20px] mb-[3px] pb-[5px] md:hidden"
-            >
-              <h3 key={index} className="group-hover:text-black  font-bold ">
-                <div
-                  className="cursor-pointer"
-                  onClick={() => {
-                    onLinkClick(query);
-                  }}
-                >
-                  <div className=" justify-start font-interer  text-base">
-                    JNTUH {result.title}
-                  </div>
-                </div>
-                <div className="text-xs text-gray-700 dark:text-gray-200 font-semibold flex  py-2 font-interer">
-                  <span>{result?.date} </span>
-
-                  <div className="ml-auto flex ">
-                    <Link
-                      className="px-[5px]"
-                      target="_blank"
-                      href={`https://api.whatsapp.com/send?text=*Check out the Results!* \n\n ${result.title} \n\n${result.link}\n`}
-                    >
-                      <RiWhatsappLine size={17} />
-                    </Link>
-
-                    <span className="px-5">
-                      <AiOutlineShareAlt size={18} />
-                    </span>
-                  </div>
-                </div>
+        return (
+          <Card
+            key={index}
+            onClick={() => {
+              onLinkClick(query);
+            }}
+            className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 p-6 border-2 hover:border-blue-500 bg-white dark:bg-gray-800"
+          >
+            <div className="flex justify-between items-start mb-3">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 flex-1 pr-2">
+                {result.title}
               </h3>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleShare(result);
+                }}
+                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors flex-shrink-0"
+              >
+                <Share2 size={16} className="text-gray-500 dark:text-gray-400" />
+              </button>
             </div>
-          );
-        })}
-      </div>
-    </>
+
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <CalendarIcon size={14} className="text-blue-500" />
+              <span>{result.date}</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                className="text-xs"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onLinkClick(query);
+                }}
+              >
+                View Details
+              </Button>
+              <Link
+                href={`https://api.whatsapp.com/send?text=*Check out the Results!* \n\n ${result.title} \n\n${result.link}\n`}
+                target="_blank"
+                onClick={(e) => e.stopPropagation()}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+              >
+                <MessageCircle size={16} className="text-green-500" />
+              </Link>
+            </div>
+          </Card>
+        );
+      })}
+    </div>
   );
 };
 

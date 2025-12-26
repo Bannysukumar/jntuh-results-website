@@ -132,7 +132,7 @@ const SideMenubar = () => {
       </div>
       <footer className="lg:hidden border-t">
         <div className="bottom-0  w-full">
-          <div className="flex justify-center m-2 mt-4  gap-4 text-xs text-grey-400">
+          {/* <div className="flex justify-center m-2 mt-4  gap-4 text-xs text-grey-400">
             {socialMediaItems.map((socialmediaItem) => (
               <Link
                 href={socialmediaItem.href}
@@ -143,7 +143,7 @@ const SideMenubar = () => {
                 {socialmediaItem.icon}
               </Link>
             ))}
-          </div>
+          </div> */}
           <div className="flex justify-center m-2 text-xs text-muted-foreground">
             © 2026 manajntuhresults.vercel.app
           </div>

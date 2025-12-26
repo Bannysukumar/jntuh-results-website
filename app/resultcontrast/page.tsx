@@ -17,12 +17,15 @@ const ResultContrast = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [hallticketno, sethallticketno] = useState("");
   const [hallticketno2, sethallticketno2] = useState("");
+  const [isCooldown, setIsCooldown] = useState<boolean>(false);
   const onSubmit = async () => {
+    if (isCooldown) return;
     if (hallticketno.length < 10 || hallticketno2.length < 10) {
       toast.error("The Hallticket should be of 10 digits");
       return;
     }
 
+    setIsCooldown(true);
     try {
       const result = await fetchCreditContrastReport(
         hallticketno,
@@ -43,6 +46,10 @@ const ResultContrast = () => {
       console.log("Error while fetching the academic result :", error);
     }
     setLoading(false);
+    setTimeout(() => {
+      setIsCooldown(false);
+      toast.dismiss();
+    }, 10000);
   };
 
   return loading ? (
@@ -56,7 +63,7 @@ const ResultContrast = () => {
         hallticketno2={hallticketno2}
         sethallticketno2={sethallticketno2}
         onSubmit={onSubmit}
-        isDisabled={false}
+        isDisabled={isCooldown}
       />
       <Footer />
     </>

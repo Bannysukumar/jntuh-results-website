@@ -56,7 +56,6 @@ const BacklogReport = () => {
         sethallticketno={sethallticketno}
         isDisabled={isCooldown}
       />
-
       <Footer />
     </>
   );

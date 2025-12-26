@@ -33,6 +33,7 @@ const CreditChecker = () => {
       console.log("Error while fetching the academic result :", error);
     }
     setLoading(false);
+    setIsCooldown(true);
     setTimeout(() => {
       setIsCooldown(false);
       toast.dismiss();
@@ -48,7 +49,7 @@ const CreditChecker = () => {
         hallticketno={hallticketno}
         sethallticketno={sethallticketno}
         onSubmit={onSubmit}
-        isDisabled={false}
+        isDisabled={isCooldown}
       />
       <Footer />
     </>

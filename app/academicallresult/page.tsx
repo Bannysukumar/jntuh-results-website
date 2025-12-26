@@ -60,7 +60,7 @@ const AcademicAllResult = () => {
         hallticketno={hallticketno}
         sethallticketno={sethallticketno}
         onSubmit={onSubmit}
-        isDisabled={isCooldown} // Pass this prop to disable button
+        isDisabled={isCooldown}
       />
       <Footer />
     </>

@@ -3,6 +3,8 @@ import { fetchNotifications } from "@/components/api/fetchResults";
 import NotificationForm from "@/components/notifications/notificationForm";
 import NotificationResults from "@/components/notifications/notificationResults";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
+import { Bell, FileText } from "lucide-react";
 import React, { useEffect, useState, useCallback } from "react";
 
 const Notification = () => {
@@ -30,7 +32,7 @@ const Notification = () => {
       if (params.page == 1) {
         setResults(notifications);
       } else {
-        setResults((prev) => [...prev, ...notifications]); // Prevents stale state issues
+        setResults((prev) => [...prev, ...notifications]);
       }
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -61,36 +63,66 @@ const Notification = () => {
     setParams((prev) => ({
       ...prev,
       [param]: event.target.value,
-      page: 1, // Reset page when filters change
+      page: 1,
     }));
-    console.log(params);
   };
 
   return (
-    <Tabs defaultValue="resultnotifications" className="m-2">
-      <TabsList className="w-full">
-        <TabsTrigger value="resultnotifications" className="w-full my-5">
-          Result Updates
-        </TabsTrigger>
-        <TabsTrigger value="examnotifications" className="w-full">
-          General Updates
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="resultnotifications">
-        <div className="m-2 text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]">
-          <NotificationForm handleChangeParams={handleChangeParams} />
-          <NotificationResults
-            results={results}
-            incrementPage={incrementPage}
-          />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+              <Bell className="h-8 w-8" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white">
+              JNTUH Notifications
+            </h1>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">
+            Stay updated with the latest result notifications and announcements from JNTUH
+          </p>
         </div>
-      </TabsContent>
-      <TabsContent value="examnotifications">
-        <div className="text-center flex justify-center items-center h-[500px] font-bold my-5 text-xs lg:text-2xl">
-          Coming Soon!!
-        </div>
-      </TabsContent>
-    </Tabs>
+
+        {/* Tabs */}
+        <Card className="p-6 shadow-xl border-2">
+          <Tabs defaultValue="resultnotifications" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="resultnotifications" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Result Updates
+              </TabsTrigger>
+              <TabsTrigger value="examnotifications" className="flex items-center gap-2">
+                <Bell className="h-4 w-4" />
+                General Updates
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="resultnotifications" className="mt-6">
+              <NotificationForm handleChangeParams={handleChangeParams} />
+              <NotificationResults
+                results={results}
+                incrementPage={incrementPage}
+                loading={loading}
+              />
+            </TabsContent>
+            
+            <TabsContent value="examnotifications" className="mt-6">
+              <Card className="p-12 text-center">
+                <Bell className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  Coming Soon!
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  General notifications feature will be available soon
+                </p>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </Card>
+      </div>
+    </div>
   );
 };
 
