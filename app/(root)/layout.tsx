@@ -53,6 +53,12 @@ export const metadata: Metadata = {
     siteName: "Mana JNTUH Results",
     images: [
       {
+        url: "https://manajntuhresults.vercel.app/icon-512x512.png",
+        width: 512,
+        height: 512,
+        alt: "Mana JNTUH Results Logo",
+      },
+      {
         url: "https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png",
         width: 1200,
         height: 630,
@@ -66,7 +72,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
     description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance on Mana JNTUH Results portal.",
-    images: ["https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png"],
+    images: ["https://manajntuhresults.vercel.app/icon-512x512.png", "https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png"],
   },
   alternates: {
     canonical: "https://manajntuhresults.vercel.app",

@@ -5,7 +5,7 @@ export default function StructuredData() {
     "name": "Mana JNTUH Results Portal",
     "alternateName": "Mana JNTUH Results",
     "url": "https://manajntuhresults.vercel.app",
-    "logo": "https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png",
+    "logo": "https://manajntuhresults.vercel.app/icon-512x512.png",
     "description": "Mana JNTUH Results - Official portal for checking JNTUH (Jawaharlal Nehru Technological University Hyderabad) exam results online. Get your UG & PG results, CGPA, backlogs, and academic performance on Mana JNTUH Results.",
     "sameAs": [
       "https://github.com/thilakreddyy",

@@ -19,7 +19,7 @@ const Navbar = () => {
   const { navbar } = useNavBarContext();
   return (
     <nav
-      className={`fixed inset-y-0 h-16 w-full z-50 p-4 px-4 lg:px-8  dark:bg-[#09090B] bg-white grid grid-cols-3 lg:grid-cols-2 border-b ${
+      className={`fixed top-0 left-0 right-0 h-16 w-full z-50 px-4 lg:px-8 py-2 dark:bg-[#09090B] bg-white grid grid-cols-3 lg:grid-cols-2 border-b items-center ${
         navbar ? "block" : "hidden"
       }`}
     >
@@ -34,46 +34,50 @@ const Navbar = () => {
         </button>
       </div>
       <Link
-        className="flex justify-center lg:justify-start items-center cursor-pointer"
+        className="flex justify-center lg:justify-start items-center cursor-pointer h-full max-h-16 overflow-hidden"
         href="/"
       >
-        <div className="md:hidden">
-          <span className="dark:hidden">
+        <div className="md:hidden h-full flex items-center">
+          <span className="dark:hidden h-full flex items-center">
             <Image
               src="/jntuhresults.png"
-              alt="jntuhresults_logo"
+              alt="Mana JNTUH Results Logo"
               width={65}
               height={40}
               priority={false}
+              className="h-auto w-auto max-h-12 object-contain"
             />
           </span>
-          <span className="hidden dark:block">
+          <span className="hidden dark:block h-full flex items-center">
             <Image
               src="/jntuhresults_black.png"
-              alt="jntuhresults_logo"
+              alt="Mana JNTUH Results Logo"
               width={65}
               height={40}
               priority={false}
+              className="h-auto w-auto max-h-12 object-contain"
             />
           </span>
         </div>
-        <div className="hidden md:block">
-          <span className="dark:hidden">
+        <div className="hidden md:block h-full flex items-center">
+          <span className="dark:hidden h-full flex items-center">
             <Image
               src="/jntuhresults_md.png"
-              alt="jntuhresults_logo"
+              alt="Mana JNTUH Results Logo"
               width={130}
-              height={80}
+              height={60}
               priority={false}
+              className="h-auto w-auto max-h-14 object-contain"
             />
           </span>
-          <span className="hidden dark:block">
+          <span className="hidden dark:block h-full flex items-center">
             <Image
               src="/jntuhresults_md_black.png"
-              alt="jntuhresults_logo"
+              alt="Mana JNTUH Results Logo"
               width={130}
-              height={80}
+              height={60}
               priority={false}
+              className="h-auto w-auto max-h-14 object-contain"
             />
           </span>
         </div>

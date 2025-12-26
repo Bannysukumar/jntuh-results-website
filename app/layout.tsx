@@ -89,6 +89,12 @@ export const metadata: Metadata = {
     description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance on Mana JNTUH Results portal.",
     images: [
       {
+        url: `${siteUrl}/icon-512x512.png`,
+        width: 512,
+        height: 512,
+        alt: "Mana JNTUH Results Logo",
+      },
+      {
         url: "https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png",
         width: 1200,
         height: 630,
@@ -100,7 +106,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
     description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance on Mana JNTUH Results portal.",
-    images: ["https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png"],
+    images: [`${siteUrl}/icon-512x512.png`, "https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png"],
     creator: "@thilakreddyonly",
   },
   alternates: {
@@ -129,7 +135,9 @@ export default function RootLayout({
       <head>
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/icon-512x512.png" type="image/png" sizes="512x512" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#000000" />
