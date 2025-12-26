@@ -32,13 +32,17 @@ export default function Home() {
       <div className="flex justify-center">
         <div className="transition-all duration-500 ease-in-out w-[100%] lg:max-w-[60%] 2xl:max-w-[40%] text-sm lg:text-lg text-center bg-black text-white py-3 lg:py-2 m-4 rounded dark:text-black dark:bg-gray-200">
           <h2 className="sr-only">University Information</h2>
-          <p>Jawaharlal Nehru Technological University, Hyderabad</p>
+          <p>Jawaharlal Nehru Technological University, Hyderabad - Mana JNTUH Results Portal</p>
         </div>
       </div>
       <div className="flex justify-center lg:hidden">
         {/* <AdComponent /> */}
       </div>
       <main className="text-center flex justify-center min-h-[calc(100vh-460px)]">
+        <div className="sr-only">
+          <h1>Mana JNTUH Results - Official JNTUH Results Portal</h1>
+          <p>Mana JNTUH Results is the premier online platform for checking JNTUH exam results. Access your Mana JNTUH Results for all semesters including B.Tech, M.Tech, MBA, MCA, and B.Pharmacy courses. Check Mana JNTUH Results online instantly with our user-friendly portal.</p>
+        </div>
         <section className="home-links flex flex-wrap items-center justify-around h-fit max-w-5xl md:mt-6  sm:w-full" aria-label="Main Navigation Links">
           {homeLinks.map((homelink: any, index: number) => {
             return (

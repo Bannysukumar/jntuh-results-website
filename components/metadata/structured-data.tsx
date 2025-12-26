@@ -6,7 +6,7 @@ export default function StructuredData() {
     "alternateName": "Mana JNTUH Results",
     "url": "https://manajntuhresults.vercel.app",
     "logo": "https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png",
-    "description": "Official portal for checking JNTUH (Jawaharlal Nehru Technological University Hyderabad) exam results online. Get your UG & PG results, CGPA, backlogs, and academic performance.",
+    "description": "Mana JNTUH Results - Official portal for checking JNTUH (Jawaharlal Nehru Technological University Hyderabad) exam results online. Get your UG & PG results, CGPA, backlogs, and academic performance on Mana JNTUH Results.",
     "sameAs": [
       "https://github.com/thilakreddyy",
       "https://twitter.com/thilakreddyonly",
@@ -24,7 +24,7 @@ export default function StructuredData() {
     "@type": "WebSite",
     "name": "Mana JNTUH Results",
     "url": "https://manajntuhresults.vercel.app",
-    "description": "Check JNTUH Results online instantly! Get your JNTUH exam results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy.",
+    "description": "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy on Mana JNTUH Results portal.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {

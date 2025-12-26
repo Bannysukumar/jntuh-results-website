@@ -12,7 +12,7 @@ const MetaData = () => {
       <meta property="og:title" content="Mana JNTUH Results" />
       <meta
         property="og:description"
-        content="You can find the Results of your entire semesters here of Jawaharlal Nehru Technological University, Hyderabad (JNTUH)."
+        content="Mana JNTUH Results - You can find the Results of your entire semesters here of Jawaharlal Nehru Technological University, Hyderabad (JNTUH). Check your JNTUH results on Mana JNTUH Results portal."
       />
       <meta
         property="og:image"
@@ -20,7 +20,7 @@ const MetaData = () => {
       />
       <meta
         property="keywords"
-        content="jntuh, jntuh Results, jntuh vercel, vercel jntuh, jntuh results vercel,  jntuhresults, jntuh notifications, JNTUH Results Engineering, JNTUH Engineering Results, jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results"
+        content="mana jntuh results, mana jntuhresults, manajntuh results, mana jntuh results online, mana jntuh results portal, check mana jntuh results, jntuh, jntuh Results, jntuh vercel, vercel jntuh, jntuh results vercel,  jntuhresults, jntuh notifications, JNTUH Results Engineering, JNTUH Engineering Results, jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results"
       />
       <meta name="publisher" content="Thilak Reddy" />
       <meta name="creator" content="Thilak Reddy" />
@@ -32,7 +32,7 @@ const MetaData = () => {
       />
       <meta
         property="twitter:description"
-        content="JNTUH Results, JNTUH results vercel, jntuh vercel, vercel jntuh, verceljntuh, jntuhresults, jntuh notifications,  jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results, jntuh all semester results r18"
+        content="Mana JNTUH Results - Check your JNTUH exam results online instantly! Mana jntuh results, mana jntuhresults, manajntuh results, JNTUH Results, JNTUH results vercel, jntuh vercel, vercel jntuh, verceljntuh, jntuhresults, jntuh notifications,  jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results, jntuh all semester results r18"
       />
       {/* <meta */}
       {/*   name="description" */}
