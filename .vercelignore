@@ -1,0 +1,7 @@
+# Ignore logo generation script from build
+scripts/generate-logo-sizes.js
+
+# Ignore development files
+*.log
+.DS_Store
+
