@@ -27,7 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
-.env
+# .env - commented out to allow committing public env vars (GA tracking ID)
 
 # vercel
 .vercel
