@@ -11,17 +11,8 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
-  // Experimental options to prevent build trace stack overflow
-  experimental: {
-    outputFileTracingExcludes: {
-      '*': [
-        'node_modules/@swc/core*/**/*',
-        'node_modules/next/dist/compiled/@swc/**/*',
-        'node_modules/next/dist/compiled/webpack/**/*',
-        'scripts/**/*',
-      ],
-    },
-  },
+  // Use standalone output to reduce build trace complexity
+  output: 'standalone',
 };
 
 module.exports = nextConfig;
