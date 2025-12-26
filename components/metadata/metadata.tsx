@@ -16,15 +16,15 @@ const MetaData = () => {
       />
       <meta
         property="og:image"
-        content="https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png"
+        content="https://manajntuhresults.vercel.app/FrontPage.png"
       />
       <meta
         property="keywords"
         content="mana jntuh results, mana jntuhresults, manajntuh results, mana jntuh results online, mana jntuh results portal, check mana jntuh results, jntuh, jntuh Results, jntuh vercel, vercel jntuh, jntuh results vercel,  jntuhresults, jntuh notifications, JNTUH Results Engineering, JNTUH Engineering Results, jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results"
       />
-      <meta name="publisher" content="Thilak Reddy" />
-      <meta name="creator" content="Thilak Reddy" />
-      <meta name="author" content="Thilak Reddy" />
+      <meta name="publisher" content="Adepu Sukumar" />
+      <meta name="creator" content="Adepu Sukumar" />
+      <meta name="author" content="Adepu Sukumar" />
       <meta name="twitter:card" content="summary" />
       <meta
         property="twitter:title"

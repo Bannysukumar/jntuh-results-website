@@ -80,7 +80,7 @@ const Faq = () => {
     {
       question: "How can I report a bug or suggest a feature?",
       answer:
-        "You can report bugs or suggest new features by visiting the Help Center and clicking on 'Suggestion/Feedback'. You can also contact us via email at thilakreddypothuganti@gmail.com or submit an issue on our GitHub repository.",
+        "You can report bugs or suggest new features by visiting the Help Center and clicking on 'Suggestion/Feedback'. You can also contact us via email at bannysukumar@gmail.com or submit an issue on our GitHub repository.",
     },
     {
       question: "Does this website work on mobile devices?",
@@ -163,19 +163,19 @@ const Faq = () => {
         <center>
           {/* <div className="flex justify-center mt-4 text-sm text-gray-600">
             <a
-              href="https://github.com/thilakreddyy"
+              href="https://github.com/Bannysukumar"
               className="mx-2 hover:text-gray-900"
             >
               <FaGithub />
             </a>
             <a
-              href="https://twitter.com/thilakreddyonly"
+              href="https://www.linkedin.com/in/adepusukumar"
               className="mx-2 hover:text-gray-900"
             >
-              <FaTwitter />
+              <FaLinkedin />
             </a>
             <a
-              href="https://www.instagram.com/__thilak_reddy__/"
+              href="https://www.instagram.com/hacking_with_banny"
               className="mx-2 hover:text-gray-900"
             >
               <FaInstagram />

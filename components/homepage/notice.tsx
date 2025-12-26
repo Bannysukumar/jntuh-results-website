@@ -59,7 +59,7 @@ const NoticePopup = () => {
                   </li>
                   <li>Clean, fast, and lightweight user experience</li>
                 </ul>
-                <div className="flex justify-center">
+                {/* <div className="flex justify-center">
                   <a
                     href="https://play.google.com/store/apps/details?id=com.dhethi.jntuhconnect"
                     target="_blank"
@@ -70,9 +70,9 @@ const NoticePopup = () => {
                     <FaGooglePlay className="text-lg" />
                     Download Now
                   </a>
-                </div>
+                </div> */}
                 {/* <p className="text-sm font-normal text-justify"> */}
-                {/*   &nbsp;&nbsp;&nbsp;I&apos;m Thilak, the one behind the JNTUH */}
+                {/*   &nbsp;&nbsp;&nbsp;I&apos;m Adepu Sukumar, the one behind the JNTUH */}
                 {/*   Results Vercel application. From a mere idea born out of */}
                 {/*   curiosity when preparing for my placement, it has now become */}
                 {/*   an indispensable tool for the entire JNTUH community. */}
@@ -89,7 +89,7 @@ const NoticePopup = () => {
                 {/*     For those interested in developing a similar solution to JNTUH */}
                 {/*     Results on Vercel, I&apos;m sharing the complete{" "} */}
                 {/*     <Link */}
-                {/*       href="https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-SERVICE/main/jntuhresults/Executables/jntuhresultscraper.py" */}
+                {/*       href="https://github.com/Bannysukumar/JNTUHRESULTS-SERVICE/blob/main/jntuhresults/Executables/jntuhresultscraper.py" */}
                 {/*       target="_blank" */}
                 {/*       className="text-blue-500" */}
                 {/*     > */}
@@ -99,7 +99,7 @@ const NoticePopup = () => {
                 {/*     local Excel sheets directly provided by JNTUH University, */}
                 {/*     contact me on{" "} */}
                 {/*     <Link */}
-                {/*       href="https://www.instagram.com/__thilak_reddy__/" */}
+                {/*       href="https://www.instagram.com/hacking_with_banny" */}
                 {/*       target="_blank" */}
                 {/*       className="text-blue-500" */}
                 {/*     > */}
@@ -108,7 +108,7 @@ const NoticePopup = () => {
                 {/*     or via{" "} */}
                 {/*     <Link */}
                 {/*       target="_blank" */}
-                {/*       href="mailto:thilakreddypothuganti@gmail.com" */}
+                {/*       href="mailto:bannysukumar@gmail.com" */}
                 {/*       className="text-blue-500" */}
                 {/*     > */}
                 {/*       mail */}
@@ -125,7 +125,7 @@ const NoticePopup = () => {
                 {/*     a million entries or anyone who is intersted in joining the */}
                 {/*     project, feel free to reach out to me on &nbsp; */}
                 {/*     <Link */}
-                {/*       href="https://www.instagram.com/__thilak_reddy__/" */}
+                {/*       href="https://www.instagram.com/hacking_with_banny" */}
                 {/*       target="_blank" */}
                 {/*       className="text-blue-500" */}
                 {/*     > */}

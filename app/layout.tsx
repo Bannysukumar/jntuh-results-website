@@ -62,9 +62,9 @@ export const metadata: Metadata = {
     "mana jntuh bpharmacy results",
     "mana jntuh all semester results"
   ],
-  authors: [{ name: "Thilak Reddy" }],
-  creator: "Thilak Reddy",
-  publisher: "Thilak Reddy",
+  authors: [{ name: "Adepu Sukumar" }],
+  creator: "Adepu Sukumar",
+  publisher: "Adepu Sukumar",
   robots: {
     index: true,
     follow: true,
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
         alt: "Mana JNTUH Results Logo",
       },
       {
-        url: "https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png",
+        url: "https://manajntuhresults.vercel.app/FrontPage.png",
         width: 1200,
         height: 630,
         alt: "Mana JNTUH Results - Check Your JNTUH Exam Results Online",
@@ -102,8 +102,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
     description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance on Mana JNTUH Results portal.",
-    images: [`${siteUrl}/icon-512x512.png`, "https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png"],
-    creator: "@thilakreddyonly",
+    images: [`${siteUrl}/icon-512x512.png`, "https://manajntuhresults.vercel.app/FrontPage.png"],
+    creator: "@Bannysukumar",
   },
   alternates: {
     canonical: siteUrl,

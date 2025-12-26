@@ -2,6 +2,7 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 // import AdComponent from "../ads/adcomponent";
 const Footer = () => {
   const path = usePathname();
@@ -27,10 +28,10 @@ const Footer = () => {
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://github.com/ThilakReddyy/"
+            href="https://github.com/Bannysukumar"
             className=" underline	underline-offset-1"
           >
-            Thilak Reddy
+            Adepu Sukumar
           </a>
           <br />
           <p
@@ -56,6 +57,38 @@ const Footer = () => {
             </a>
           </p>
         </span>
+
+        {/* Social Media Links */}
+        <div className="flex justify-center mt-4 mb-4 gap-4">
+          <a
+            href="https://github.com/Bannysukumar"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            aria-label="GitHub"
+          >
+            <FaGithub size={20} />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/adepusukumar"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            aria-label="LinkedIn"
+          >
+            <FaLinkedin size={20} />
+          </a>
+          <a
+            href="https://www.instagram.com/hacking_with_banny"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-600 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+            aria-label="Instagram"
+          >
+            <FaInstagram size={20} />
+          </a>
+        </div>
+
         {/* <span className="mt-4 block text-center mx-[18%] mb-4 text-[75%] sm:text-[100%]">
           Join us on{" "}
           <Link

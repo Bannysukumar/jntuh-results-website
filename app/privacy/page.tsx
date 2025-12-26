@@ -84,10 +84,10 @@ export default function PrivacyPolicy() {
         If you have any questions about this Privacy Policy, please contact us
         at: <br />
         <a
-          href="mailto:thilakreddypothuganti@gmail.com"
+          href="mailto:bannysukumar@gmail.com"
           className="text-blue-600 underline"
         >
-          thilakreddypothuganti@gmail.com
+          bannysukumar@gmail.com
         </a>
       </p>
     </div>
