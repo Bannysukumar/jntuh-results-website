@@ -12,7 +12,7 @@ const MetaData = () => {
       <meta property="og:title" content="Mana JNTUH Results" />
       <meta
         property="og:description"
-        content="Mana JNTUH Results - You can find the Results of your entire semesters here of Jawaharlal Nehru Technological University, Hyderabad (JNTUH). Check your JNTUH results on Mana JNTUH Results portal."
+        content="Mana JNTUH Results - Check your JNTUH exam results online instantly! Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility, Syllabus, Jobs & Careers, and Notifications. Official JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad."
       />
       <meta
         property="og:image"
@@ -35,7 +35,7 @@ const MetaData = () => {
       />
       <meta
         property="twitter:description"
-        content="Mana JNTUH Results - Check your JNTUH exam results online instantly! Mana jntuh results, mana jntuhresults, manajntuh results, JNTUH Results, JNTUH results vercel, jntuh vercel, vercel jntuh, verceljntuh, jntuhresults, jntuh notifications,  jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results, jntuh all semester results r18"
+        content="Mana JNTUH Results - Check your JNTUH exam results online instantly! Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications. Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy."
       />
       {/* <meta */}
       {/*   name="description" */}

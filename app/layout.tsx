@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: "Mana JNTUH Results - Check Your UG & PG Exam Results Online | Mana JNTUH Results Portal",
     template: "%s | Mana JNTUH Results"
   },
-  description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs, and academic performance. Official Mana JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad.",
+  description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs, and academic performance. Features: Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, Notifications. Official Mana JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad.",
   keywords: [
     "mana jntuh results",
     "mana jntuhresults",
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "Mana JNTUH Results",
     title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
-    description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance on Mana JNTUH Results portal.",
+    description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility, Syllabus, Jobs & Careers, and Notifications on Mana JNTUH Results portal.",
     images: [
       {
         url: `${siteUrl}/jntuhresults_md.png`,
@@ -101,7 +101,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
-    description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance on Mana JNTUH Results portal.",
+    description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications.",
     images: [`${siteUrl}/jntuhresults_md.png`, `${siteUrl}/icon-512x512.png`],
     creator: "@Bannysukumar",
   },
