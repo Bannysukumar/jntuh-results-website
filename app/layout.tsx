@@ -16,21 +16,20 @@ const siteUrl = "https://manajntuhresults.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Mana JNTUH Results - Check Your UG & PG Exam Results Online | Mana JNTUH Results Portal",
-    template: "%s | Mana JNTUH Results"
+    default: "JNTUH Results | Mana JNTUH Results - Check JNTUH Exam Results Online 2024",
+    template: "%s | JNTUH Results - Mana JNTUH Results"
   },
-  description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs, and academic performance. Features: Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, Notifications. Official Mana JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad.",
+  description: "JNTUH Results - Check your JNTUH exam results online instantly! Mana JNTUH Results is the #1 portal for JNTUH results. Get JNTUH results for B.Tech, M.Tech, MBA, MCA, B.Pharmacy courses. View grades, CGPA, backlogs instantly. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers. Official JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad.",
   keywords: [
+    "jntuh results",
     "mana jntuh results",
+    "jntuh results online",
+    "check jntuh results",
+    "jntuh exam results",
+    "jntuh results 2024",
+    "jntuh results portal",
     "mana jntuhresults",
     "manajntuh results",
-    "mana jntuh results online",
-    "mana jntuh results portal",
-    "check mana jntuh results",
-    "mana jntuh exam results",
-    "jntuh results",
-    "jntuh results online",
-    "jntuh exam results",
     "jntuh btech results",
     "jntuh mtech results",
     "jntuh mba results",
@@ -49,8 +48,6 @@ export const metadata: Metadata = {
     "jntuh class results",
     "jntuh notifications",
     "jawaharlal nehru technological university hyderabad results",
-    "jntuh results vercel",
-    "check jntuh results",
     "jntuh result portal",
     "mana jntuh results website",
     "mana jntuh results check",
@@ -60,7 +57,10 @@ export const metadata: Metadata = {
     "mana jntuh mba results",
     "mana jntuh mca results",
     "mana jntuh bpharmacy results",
-    "mana jntuh all semester results"
+    "mana jntuh all semester results",
+    "jntuh results check online",
+    "jntuh results by hall ticket",
+    "jntuh results hall ticket number"
   ],
   authors: [{ name: "Adepu Sukumar" }],
   creator: "Adepu Sukumar",
@@ -80,9 +80,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: "Mana JNTUH Results",
-    title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
-    description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility, Syllabus, Jobs & Careers, and Notifications on Mana JNTUH Results portal.",
+    siteName: "JNTUH Results - Mana JNTUH Results",
+    title: "JNTUH Results | Mana JNTUH Results - Check JNTUH Exam Results Online",
+    description: "JNTUH Results - Check your JNTUH exam results online instantly! Mana JNTUH Results is the fastest and most reliable portal for checking JNTUH results. Get JNTUH results for B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs instantly. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers.",
     images: [
       {
         url: `${siteUrl}/jntuhresults_md.png`,
@@ -100,8 +100,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
-    description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications.",
+    title: "JNTUH Results | Mana JNTUH Results - Check JNTUH Exam Results Online",
+    description: "JNTUH Results - Check your JNTUH exam results online instantly! Mana JNTUH Results is the #1 portal for JNTUH results. Get JNTUH results for B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs instantly. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers.",
     images: [`${siteUrl}/jntuhresults_md.png`, `${siteUrl}/icon-512x512.png`],
     creator: "@Bannysukumar",
   },
@@ -114,11 +114,15 @@ export const metadata: Metadata = {
   category: "Education",
   classification: "University Results Portal",
   other: {
-    "application-name": "Mana JNTUH Results",
+    "application-name": "JNTUH Results - Mana JNTUH Results",
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "black-translucent",
     "format-detection": "telephone=no",
+    "geo.region": "IN-TG",
+    "geo.placename": "Hyderabad",
+    "geo.position": "17.3850;78.4867",
+    "ICBM": "17.3850, 78.4867",
   },
 };
 

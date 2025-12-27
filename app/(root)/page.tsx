@@ -50,8 +50,11 @@ export default function Home() {
                 <Title />
               </Link>
             </div>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Your one-stop portal for JNTUH exam results, academic resources, and career opportunities
+            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-medium">
+              Check JNTUH Results Online - Fastest & Most Reliable JNTUH Results Portal
+            </p>
+            <p className="text-base md:text-lg text-gray-500 dark:text-gray-500 max-w-2xl mx-auto mt-2">
+              Get instant access to JNTUH results for B.Tech, M.Tech, MBA, MCA, B.Pharmacy. Check JNTUH results by hall ticket number.
             </p>
           </div>
 
@@ -59,7 +62,7 @@ export default function Home() {
           <div className="flex justify-center mb-8">
             <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-xl p-4 md:p-6 max-w-3xl">
               <p className="text-sm md:text-base font-medium text-center">
-                Jawaharlal Nehru Technological University, Hyderabad - Mana JNTUH Results Portal
+                Jawaharlal Nehru Technological University Hyderabad (JNTUH) - Official JNTUH Results Portal | Mana JNTUH Results
               </p>
             </Card>
           </div>
@@ -68,9 +71,20 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="sr-only">
-          <h1>Mana JNTUH Results - Official JNTUH Results Portal</h1>
-          <p>Mana JNTUH Results is the premier online platform for checking JNTUH exam results. Access your Mana JNTUH Results for all semesters including B.Tech, M.Tech, MBA, MCA, and B.Pharmacy courses. Check Mana JNTUH Results online instantly with our user-friendly portal.</p>
+        {/* SEO Optimized Content - Visible to users */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            JNTUH Results - Check Your JNTUH Exam Results Online
+          </h1>
+          <h2 className="text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-6">
+            Mana JNTUH Results - #1 Portal for JNTUH Results 2024
+          </h2>
+          <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-4xl mx-auto leading-relaxed mb-4">
+            <strong>JNTUH Results</strong> - Check your JNTUH exam results online instantly with <strong>Mana JNTUH Results</strong>, the most trusted and fastest portal for JNTUH results. Get your <strong>JNTUH results</strong> for all courses including B.Tech, M.Tech, MBA, MCA, and B.Pharmacy. View grades, CGPA, backlogs, and academic performance in seconds.
+          </p>
+          <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-4xl mx-auto leading-relaxed">
+            <strong>Mana JNTUH Results</strong> provides instant access to <strong>JNTUH results</strong> by hall ticket number. Check <strong>JNTUH results online</strong> for all semesters, view academic results, backlog reports, class results, and more. The official <strong>JNTUH results portal</strong> for Jawaharlal Nehru Technological University Hyderabad.
+          </p>
         </div>
 
         {/* Main Links Grid */}
@@ -206,6 +220,40 @@ export default function Home() {
               </div>
             </Card>
           </Link>
+        </section>
+
+        {/* SEO Content Section */}
+        <section className="mt-16 mb-12">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              About JNTUH Results - Mana JNTUH Results Portal
+            </h2>
+            <div className="space-y-4 text-gray-700 dark:text-gray-300 text-base md:text-lg leading-relaxed">
+              <p>
+                <strong>JNTUH Results</strong> can be checked instantly using the <strong>Mana JNTUH Results</strong> portal. This is the most trusted and fastest platform for checking <strong>JNTUH exam results online</strong>. Whether you need to check <strong>JNTUH results</strong> for B.Tech, M.Tech, MBA, MCA, or B.Pharmacy courses, <strong>Mana JNTUH Results</strong> provides instant access to all your academic information.
+              </p>
+              <p>
+                To check <strong>JNTUH results by hall ticket number</strong>, simply visit the Academic Results section and enter your hall ticket number. You can view your grades, CGPA, backlogs, and complete academic performance in seconds. The <strong>JNTUH results portal</strong> also allows you to check all semester results at once, view class results, generate backlog reports, and check credit requirements.
+              </p>
+              <p>
+                <strong>Mana JNTUH Results</strong> is the official portal for <strong>JNTUH results</strong> from Jawaharlal Nehru Technological University Hyderabad. It supports checking <strong>JNTUH results online</strong> for all regulations including R18, R16, and R15. The portal is updated regularly to ensure you get the latest <strong>JNTUH results</strong> as soon as they are released by the university.
+              </p>
+              <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mt-6 mb-4">
+                Features of Mana JNTUH Results Portal
+              </h3>
+              <ul className="list-disc list-inside space-y-2 ml-4">
+                <li>Check <strong>JNTUH results</strong> instantly by hall ticket number</li>
+                <li>View all semester <strong>JNTUH results</strong> in one place</li>
+                <li>Generate comprehensive backlog reports</li>
+                <li>Compare results with classmates</li>
+                <li>Check credit requirements for graduation</li>
+                <li>Access grace marks eligibility and proof documents</li>
+                <li>View detailed syllabus for all courses</li>
+                <li>Get latest JNTUH notifications and updates</li>
+                <li>Find job opportunities and career resources</li>
+              </ul>
+            </div>
+          </div>
         </section>
       </main>
 

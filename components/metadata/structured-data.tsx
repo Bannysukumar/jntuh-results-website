@@ -2,8 +2,8 @@ export default function StructuredData() {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
-    "name": "Mana JNTUH Results Portal",
-    "alternateName": "Mana JNTUH Results",
+    "name": "JNTUH Results Portal - Mana JNTUH Results",
+    "alternateName": ["Mana JNTUH Results", "JNTUH Results", "JNTUH Results Portal"],
     "url": "https://manajntuhresults.vercel.app",
     "logo": {
       "@type": "ImageObject",
@@ -11,7 +11,7 @@ export default function StructuredData() {
       "width": 512,
       "height": 512
     },
-    "description": "Mana JNTUH Results - Official portal for checking JNTUH (Jawaharlal Nehru Technological University Hyderabad) exam results online. Get your UG & PG results, CGPA, backlogs, and academic performance on Mana JNTUH Results.",
+    "description": "JNTUH Results - Mana JNTUH Results is the official portal for checking JNTUH (Jawaharlal Nehru Technological University Hyderabad) exam results online. Get your JNTUH results for B.Tech, M.Tech, MBA, MCA, B.Pharmacy. Check JNTUH results online instantly.",
     "sameAs": [
       "https://github.com/Bannysukumar",
       "https://www.linkedin.com/in/adepusukumar",
@@ -27,7 +27,8 @@ export default function StructuredData() {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Mana JNTUH Results",
+    "name": "JNTUH Results - Mana JNTUH Results",
+    "alternateName": ["JNTUH Results", "Mana JNTUH Results", "JNTUH Results Portal"],
     "url": "https://manajntuhresults.vercel.app",
     "logo": {
       "@type": "ImageObject",
@@ -35,7 +36,7 @@ export default function StructuredData() {
       "width": 512,
       "height": 512
     },
-    "description": "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy on Mana JNTUH Results portal.",
+    "description": "JNTUH Results - Check your JNTUH exam results online instantly! Mana JNTUH Results is the #1 portal for JNTUH results. Get JNTUH results for B.Tech, M.Tech, MBA, MCA, B.Pharmacy. Check JNTUH results by hall ticket number.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
@@ -202,6 +203,61 @@ export default function StructuredData() {
     ]
   };
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How to check JNTUH results online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To check JNTUH results online, visit Mana JNTUH Results portal at manajntuhresults.vercel.app. Enter your hall ticket number in the Academic Results section to instantly view your JNTUH results, grades, CGPA, and backlogs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Mana JNTUH Results?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Mana JNTUH Results is the official and fastest portal for checking JNTUH (Jawaharlal Nehru Technological University Hyderabad) exam results online. It provides instant access to JNTUH results for B.Tech, M.Tech, MBA, MCA, and B.Pharmacy courses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How to check JNTUH results by hall ticket number?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To check JNTUH results by hall ticket number, go to the Academic Results page on Mana JNTUH Results portal, enter your hall ticket number, and click search. Your JNTUH results will be displayed instantly with all semester grades, CGPA, and backlogs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I check all JNTUH semester results at once?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you can check all JNTUH semester results at once using the Academic All Results feature on Mana JNTUH Results portal. Simply enter your hall ticket number to view results from all semesters in one place."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Mana JNTUH Results official?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Mana JNTUH Results is the most trusted and fastest portal for checking JNTUH results online. It provides official JNTUH results data from Jawaharlal Nehru Technological University Hyderabad for all courses including B.Tech, M.Tech, MBA, MCA, and B.Pharmacy."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What courses can I check JNTUH results for?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can check JNTUH results for all courses including B.Tech (Engineering), M.Tech, MBA, MCA, and B.Pharmacy. Mana JNTUH Results portal supports checking results for all UG and PG courses offered by JNTUH."
+        }
+      }
+    ]
+  };
+
   return (
     <>
       <script
@@ -223,6 +279,10 @@ export default function StructuredData() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
     </>
   );

@@ -9,10 +9,10 @@ const MetaData = () => {
     <>
       <meta property="og:url" content="https://manajntuhresults.vercel.app/" />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="Mana JNTUH Results" />
+      <meta property="og:title" content="JNTUH Results | Mana JNTUH Results - Check JNTUH Exam Results Online" />
       <meta
         property="og:description"
-        content="Mana JNTUH Results - Check your JNTUH exam results online instantly! Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility, Syllabus, Jobs & Careers, and Notifications. Official JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad."
+        content="JNTUH Results - Check your JNTUH exam results online instantly! Mana JNTUH Results is the #1 portal for JNTUH results. Get JNTUH results for B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs instantly. Official JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad."
       />
       <meta
         property="og:image"
@@ -31,11 +31,11 @@ const MetaData = () => {
       <meta name="twitter:card" content="summary" />
       <meta
         property="twitter:title"
-        content="Mana JNTUH Results - Check Your UG and PG Exam Results Online"
+        content="JNTUH Results | Mana JNTUH Results - Check JNTUH Exam Results Online"
       />
       <meta
         property="twitter:description"
-        content="Mana JNTUH Results - Check your JNTUH exam results online instantly! Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications. Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy."
+        content="JNTUH Results - Check your JNTUH exam results online instantly! Mana JNTUH Results is the #1 portal for JNTUH results. Get JNTUH results for B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs instantly. Check JNTUH results by hall ticket number."
       />
       {/* <meta */}
       {/*   name="description" */}
