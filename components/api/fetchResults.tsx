@@ -327,3 +327,123 @@ export const fetchClassResult = async (
     toast.dismiss();
   }
 };
+
+export const fetchGraceMarksEligibility = async (htno: string) => {
+  try {
+    let url: string = `/api/grace-marks/eligibility?rollNumber=${htno}`;
+
+    toast.loading("Checking grace marks eligibility...");
+    const response = await axios.get(url, { timeout: 20 * 1000 });
+    
+    if (response.data && ("eligibility" in response.data || "details" in response.data)) {
+      saveToLocalStorage(
+        htno + "-GraceMarksEligibility",
+        JSON.stringify(response.data),
+      );
+      toast.dismiss();
+      toast.success("Eligibility checked successfully");
+      return true;
+    }
+    
+    if (response.data.status === "success") {
+      toast.dismiss();
+      toast(response.data.message);
+    } else if (response.data.status === "failure") {
+      toast.dismiss();
+      toast.error(response.data.message);
+    }
+
+    return false;
+  } catch (error: any) {
+    toast.dismiss();
+    if (error.response?.status === 400) {
+      toast.error(error.response.data.detail || error.response.data.error);
+    } else {
+      toast.error("SERVER ISSUE!!");
+    }
+    return false;
+  }
+};
+
+export const fetchGraceMarksProof = async (htno: string) => {
+  try {
+    let url: string = `/api/grace-marks/proof?rollNumber=${htno}`;
+
+    toast.loading("Fetching grace marks proof...");
+    const response = await axios.get(url, { timeout: 20 * 1000 });
+    
+    if (response.data && ("proof" in response.data || "details" in response.data)) {
+      saveToLocalStorage(
+        htno + "-GraceMarksProof",
+        JSON.stringify(response.data),
+      );
+      toast.dismiss();
+      toast.success("Proof fetched successfully");
+      return true;
+    }
+    
+    if (response.data.status === "success") {
+      toast.dismiss();
+      toast(response.data.message);
+    } else if (response.data.status === "failure") {
+      toast.dismiss();
+      toast.error(response.data.message);
+    }
+
+    return false;
+  } catch (error: any) {
+    toast.dismiss();
+    if (error.response?.status === 400) {
+      toast.error(error.response.data.detail || error.response.data.error);
+    } else {
+      toast.error("SERVER ISSUE!!");
+    }
+    return false;
+  }
+};
+
+export const fetchLatestNotifications = async (): Promise<Result[] | null> => {
+  try {
+    let url: string = `/api/getlatestnotifications`;
+    const response = await axios.get(url, { 
+      timeout: 20 * 1000,
+      validateStatus: (status) => status < 500, // Accept 4xx as valid responses
+    });
+
+    if (response.status === 200) {
+      // Check for error status in response data
+      if (response.data?.status === "success" || response.data?.status === "failure") {
+        return null;
+      }
+      
+      // Handle both array and object responses
+      if (Array.isArray(response.data)) {
+        return response.data;
+      } else if (response.data?.notifications && Array.isArray(response.data.notifications)) {
+        return response.data.notifications;
+      } else if (response.data?.data && Array.isArray(response.data.data)) {
+        return response.data.data;
+      } else if (response.data?.results && Array.isArray(response.data.results)) {
+        return response.data.results;
+      }
+      
+      // If response.data exists but is not an array, log and return null
+      if (response.data) {
+        console.warn("Unexpected response format from latest notifications API:", response.data);
+      }
+      
+      return null;
+    } else {
+      console.error(
+        `Failed to fetch latest notifications. Status: ${response.status}`,
+      );
+      return null;
+    }
+  } catch (error: any) {
+    // Only log actual errors, not expected 4xx responses
+    if (error.response?.status >= 500 || !error.response) {
+      console.error("An error occurred while fetching latest notifications:", error);
+    }
+    return null;
+  }
+};

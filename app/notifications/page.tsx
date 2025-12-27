@@ -1,5 +1,5 @@
 "use client";
-import { fetchNotifications } from "@/components/api/fetchResults";
+import { fetchNotifications, fetchLatestNotifications } from "@/components/api/fetchResults";
 import NotificationForm from "@/components/notifications/notificationForm";
 import NotificationResults from "@/components/notifications/notificationResults";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,7 +9,9 @@ import React, { useEffect, useState, useCallback } from "react";
 
 const Notification = () => {
   const [results, setResults] = useState<Result[]>([]);
+  const [latestResults, setLatestResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
+  const [latestLoading, setLatestLoading] = useState(false);
   const [params, setParams] = useState<Params>({
     title: "",
     year: "",
@@ -43,9 +45,30 @@ const Notification = () => {
     setLoading(false);
   }, [params]);
 
+  const fetchLatestData = useCallback(async () => {
+    setLatestLoading(true);
+    try {
+      const notifications: Result[] | null = await fetchLatestNotifications();
+      if (!notifications || !Array.isArray(notifications)) {
+        setLatestResults([]);
+        setLatestLoading(false);
+        return;
+      }
+      setLatestResults(notifications);
+    } catch (error) {
+      console.error("Error fetching latest notifications:", error);
+      setLatestResults([]);
+    }
+    setLatestLoading(false);
+  }, []);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+    fetchLatestData();
+  }, [fetchLatestData]);
 
   const incrementPage = () => {
     if (!loading) {
@@ -109,15 +132,19 @@ const Notification = () => {
             </TabsContent>
             
             <TabsContent value="examnotifications" className="mt-6">
-              <Card className="p-12 text-center">
-                <Bell className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  Coming Soon!
+              <div className="mb-4">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Latest General Updates
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  General notifications feature will be available soon
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Stay updated with the most recent announcements and notifications from JNTUH
                 </p>
-              </Card>
+              </div>
+              <NotificationResults
+                results={latestResults}
+                incrementPage={() => {}}
+                loading={latestLoading}
+              />
             </TabsContent>
           </Tabs>
         </Card>

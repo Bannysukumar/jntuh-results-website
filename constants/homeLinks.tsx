@@ -40,4 +40,16 @@ export const homeLinks = [
       "View the results of your classmates and compare your performance with theirs",
     link: "classresult",
   },
+  {
+    title: "Grace Marks Eligibility",
+    description:
+      "Check if you are eligible for grace marks based on your academic performance",
+    link: "/grace-marks/eligibility",
+  },
+  {
+    title: "Grace Marks Proof",
+    description:
+      "Get proof document for grace marks eligibility verification",
+    link: "/grace-marks/proof",
+  },
 ];

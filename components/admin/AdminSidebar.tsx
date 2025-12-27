@@ -9,6 +9,8 @@ import {
   Settings, 
   BarChart3,
   Users,
+  Heart,
+  RefreshCw,
   X,
   Menu
 } from "lucide-react";
@@ -35,6 +37,16 @@ const menuItems = [
     title: "Users",
     href: "/admin/users",
     icon: Users,
+  },
+  {
+    title: "Health",
+    href: "/admin/health",
+    icon: Heart,
+  },
+  {
+    title: "Hard Refresh",
+    href: "/admin/hardRefresh",
+    icon: RefreshCw,
   },
   {
     title: "Settings",

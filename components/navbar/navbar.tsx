@@ -40,7 +40,7 @@ const Navbar = () => {
         <div className="md:hidden h-full flex items-center">
           <span className="dark:hidden h-full flex items-center">
             <Image
-              src="/jntuhresults.png"
+              src="/jntuhresults_md.png"
               alt="Mana JNTUH Results Logo"
               width={65}
               height={40}
