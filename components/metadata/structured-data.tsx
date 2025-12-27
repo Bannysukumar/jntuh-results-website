@@ -5,7 +5,12 @@ export default function StructuredData() {
     "name": "Mana JNTUH Results Portal",
     "alternateName": "Mana JNTUH Results",
     "url": "https://manajntuhresults.vercel.app",
-    "logo": "https://manajntuhresults.vercel.app/icon-512x512.png",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://manajntuhresults.vercel.app/jntuhresults_md.png",
+      "width": 512,
+      "height": 512
+    },
     "description": "Mana JNTUH Results - Official portal for checking JNTUH (Jawaharlal Nehru Technological University Hyderabad) exam results online. Get your UG & PG results, CGPA, backlogs, and academic performance on Mana JNTUH Results.",
     "sameAs": [
       "https://github.com/Bannysukumar",
@@ -24,6 +29,12 @@ export default function StructuredData() {
     "@type": "WebSite",
     "name": "Mana JNTUH Results",
     "url": "https://manajntuhresults.vercel.app",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://manajntuhresults.vercel.app/jntuhresults_md.png",
+      "width": 512,
+      "height": 512
+    },
     "description": "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy on Mana JNTUH Results portal.",
     "potentialAction": {
       "@type": "SearchAction",

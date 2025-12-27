@@ -16,8 +16,11 @@ const MetaData = () => {
       />
       <meta
         property="og:image"
-        content="https://manajntuhresults.vercel.app/FrontPage.png"
+        content="https://manajntuhresults.vercel.app/jntuhresults_md.png"
       />
+      <meta property="og:image:width" content="512" />
+      <meta property="og:image:height" content="512" />
+      <meta property="og:image:alt" content="Mana JNTUH Results Logo" />
       <meta
         property="keywords"
         content="mana jntuh results, mana jntuhresults, manajntuh results, mana jntuh results online, mana jntuh results portal, check mana jntuh results, jntuh, jntuh Results, jntuh vercel, vercel jntuh, jntuh results vercel,  jntuhresults, jntuh notifications, JNTUH Results Engineering, JNTUH Engineering Results, jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results"
