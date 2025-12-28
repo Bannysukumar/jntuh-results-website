@@ -1,6 +1,6 @@
 "use client";
 import { Building2Icon, MapPinIcon, Share2Icon, Briefcase } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import Link from "next/link";
@@ -46,6 +46,12 @@ const Jobs: React.FC<JobsProps> = ({
 
   const scrollableRef = useRef<HTMLDivElement | null>(null);
   
+  const onScrollEnd = useCallback(() => {
+    if (canIncrement) {
+      incrementPage();
+    }
+  }, [canIncrement, incrementPage]);
+
   useEffect(() => {
     if (jobDetails.length > 0) {
       setSelectedJob(jobDetails[0]);
@@ -74,13 +80,7 @@ const Jobs: React.FC<JobsProps> = ({
         scrollableElement.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [jobDetails]);
-
-  const onScrollEnd = () => {
-    if (canIncrement) {
-      incrementPage();
-    }
-  };
+  }, [jobDetails, onScrollEnd]);
 
   if (jobDetails.length === 0) {
     return (

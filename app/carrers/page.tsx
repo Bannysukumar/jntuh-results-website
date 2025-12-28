@@ -100,7 +100,7 @@ const Carrers = () => {
     }
 
     setPage(1);
-  }, [form]);
+  }, [form, page, pageSize]);
 
   useEffect(() => {
     const getJobDetails = async () => {
@@ -151,7 +151,7 @@ const Carrers = () => {
     };
 
     getJobDetails();
-  }, [page, pageSize]);
+  }, [page, pageSize, form.company, form.experience, form.job, form.location, form.status, form.title, form.type]);
 
   const incrementPage = () => {
     if (page < totalPages) {

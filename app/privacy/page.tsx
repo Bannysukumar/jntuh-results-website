@@ -8,9 +8,9 @@ export default function PrivacyPolicy() {
         <strong>Effective Date:</strong> December 28, 2025
       </p>
       <p className="mb-4">
-        Mana JNTUH Results ("we", "our", or "us") values your privacy. This Privacy
+        Mana JNTUH Results (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) values your privacy. This Privacy
         Policy explains how we collect, use, and protect information when you
-        use our application (the "App") or website. By using the App or website, you agree to the
+        use our application (the &quot;App&quot;) or website. By using the App or website, you agree to the
         practices described below.
       </p>
 
@@ -29,7 +29,7 @@ export default function PrivacyPolicy() {
         </li>
         <li>
           <strong>Result Data:</strong> When you check results using your hall ticket number, 
-          we fetch and display your academic results from JNTUH's official systems. 
+          we fetch and display your academic results from JNTUH&apos;s official systems. 
           This data is not stored on our servers.
         </li>
         <li>
@@ -42,7 +42,7 @@ export default function PrivacyPolicy() {
         2. How We Use Your Information
       </h2>
       <ul className="list-disc list-inside mb-4">
-        <li>Providing and improving the app's features and services</li>
+        <li>Providing and improving the app&apos;s features and services</li>
         <li>Fetching and displaying your JNTUH exam results</li>
         <li>Sending important updates or notifications (if you opt-in)</li>
         <li>Understanding how users interact with the app through analytics</li>
