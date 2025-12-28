@@ -212,10 +212,18 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t bg-white dark:bg-gray-900 py-6 mt-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center">
+          <div className="text-center space-y-2">
             <p className="text-xs text-gray-600 dark:text-gray-400">
               &copy; 2026 manajntuhresults.vercel.app - Mana JNTUH Results Portal
             </p>
+            <div>
+              <Link
+                href="/privacy"
+                className="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white underline underline-offset-2 transition-colors"
+              >
+                Privacy Policy
+              </Link>
+            </div>
           </div>
         </div>
       </footer>

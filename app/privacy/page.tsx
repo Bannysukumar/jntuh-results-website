@@ -2,15 +2,15 @@ export default function PrivacyPolicy() {
   return (
     <div className="container mx-auto p-6 max-w-3xl">
       <h1 className="text-3xl font-bold mb-4">
-        Privacy Policy for JNTUHConnect
+        Privacy Policy for Mana JNTUH Results
       </h1>
       <p className="mb-4">
-        <strong>Effective Date:</strong> 30 September 2025
+        <strong>Effective Date:</strong> December 28, 2025
       </p>
       <p className="mb-4">
-        JNTUHConnect (“we”, “our”, or “us”) values your privacy. This Privacy
+        Mana JNTUH Results ("we", "our", or "us") values your privacy. This Privacy
         Policy explains how we collect, use, and protect information when you
-        use our application (the “App”). By using the App, you agree to the
+        use our application (the "App") or website. By using the App or website, you agree to the
         practices described below.
       </p>
 
@@ -20,12 +20,21 @@ export default function PrivacyPolicy() {
       <ul className="list-disc list-inside mb-4">
         <li>
           <strong>Personal Information:</strong> Name, email address, or student
-          ID only if you voluntarily provide it.
+          ID (hall ticket number) only if you voluntarily provide it when checking results or using admin features.
         </li>
         <li>
           <strong>Usage Information:</strong> Non-identifiable information such
-          as app usage, device type, and operating system to improve app
-          performance.
+          as app usage, device type, operating system, browser type, and IP address to improve app
+          performance and user experience.
+        </li>
+        <li>
+          <strong>Result Data:</strong> When you check results using your hall ticket number, 
+          we fetch and display your academic results from JNTUH's official systems. 
+          This data is not stored on our servers.
+        </li>
+        <li>
+          <strong>Authentication Data:</strong> If you use admin features, we use Firebase Authentication 
+          to securely manage your login credentials.
         </li>
       </ul>
 
@@ -33,9 +42,12 @@ export default function PrivacyPolicy() {
         2. How We Use Your Information
       </h2>
       <ul className="list-disc list-inside mb-4">
-        <li>Providing and improving the app’s features</li>
+        <li>Providing and improving the app's features and services</li>
+        <li>Fetching and displaying your JNTUH exam results</li>
         <li>Sending important updates or notifications (if you opt-in)</li>
-        <li>Understanding how users interact with the app</li>
+        <li>Understanding how users interact with the app through analytics</li>
+        <li>Maintaining app security and preventing abuse</li>
+        <li>Responding to user feedback and support requests</li>
       </ul>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">
@@ -58,9 +70,24 @@ export default function PrivacyPolicy() {
         5. Third-Party Services
       </h2>
       <p className="mb-4">
-        Our app may use third-party services (e.g., analytics, cloud storage)
-        that have their own privacy policies. We encourage you to review those
-        policies as we are not responsible for their practices.
+        Our app uses the following third-party services that have their own privacy policies:
+      </p>
+      <ul className="list-disc list-inside mb-4">
+        <li>
+          <strong>Firebase (Google):</strong> Used for authentication, database (Firestore), 
+          and analytics. <a href="https://firebase.google.com/support/privacy" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">Firebase Privacy Policy</a>
+        </li>
+        <li>
+          <strong>Google Analytics:</strong> Used to understand app usage and improve user experience. 
+          <a href="https://policies.google.com/privacy" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer"> Google Privacy Policy</a>
+        </li>
+        <li>
+          <strong>Vercel:</strong> Our hosting provider. 
+          <a href="https://vercel.com/legal/privacy-policy" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer"> Vercel Privacy Policy</a>
+        </li>
+      </ul>
+      <p className="mb-4">
+        We encourage you to review these policies as we are not responsible for their practices.
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">

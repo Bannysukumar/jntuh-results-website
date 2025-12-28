@@ -99,6 +99,16 @@ const Footer = () => {
           </Link>
           , thanks!
         </span> */}
+        
+        {/* Privacy Policy Link */}
+        <div className="text-center mt-4 mb-4">
+          <Link
+            href="/privacy"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm md:text-base underline underline-offset-2 transition-colors inline-block px-2 py-1"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </div>
       {/* <AdComponent /> */}
     </>
