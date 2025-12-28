@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.manajntuhresults.app',
+  appId: 'com.manajntuhresults.mobile',
   appName: 'Mana JNTUH Results',
   webDir: 'out',
   server: {
