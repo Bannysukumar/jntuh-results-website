@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { App } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { Keyboard } from '@capacitor/keyboard';
+import { Keyboard, KeyboardStyle, KeyboardResize } from '@capacitor/keyboard';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { useRouter, usePathname } from 'next/navigation';
 import { isNative, hapticFeedback } from '@/lib/native-features';
@@ -93,8 +93,8 @@ export default function NativeInit() {
         keyboardListeners.current = [keyboardWillShow, keyboardWillHide];
 
         // Set keyboard style
-        await Keyboard.setStyle({ style: 'dark' });
-        await Keyboard.setResizeMode({ mode: 'body' });
+        await Keyboard.setStyle({ style: KeyboardStyle.Dark });
+        await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
 
         // Handle app launch
         const appInfo = await App.getInfo();
