@@ -12,11 +12,9 @@ const nextConfig = {
     unoptimized: true, // Required if using static export for Android
   },
   
-  // Note: For Android app, we recommend using the live website URL approach
-  // (configured in capacitor.config.ts) instead of static export.
-  // This ensures all API routes and dynamic features work correctly.
-  // If you want to use static export, uncomment the line below:
-  // output: 'export',
+  // For native app with API routes, we keep dynamic rendering
+  // The app loads from URL but has native features for enhanced UX
+  // output: 'export', // Uncomment only if you move all APIs to external services
 };
 
 module.exports = nextConfig;

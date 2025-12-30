@@ -8,6 +8,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import StructuredData from "@/components/metadata/structured-data";
 import CanonicalUrl from "@/components/metadata/canonical-url";
 import AdminWrapper from "@/components/admin/AdminWrapper";
+import NativeInit from "@/components/native/native-init";
+import OfflineIndicator from "@/components/native/offline-indicator";
+import NativeNotificationHandler from "@/components/native/native-notification-handler";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -157,6 +160,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <NativeInit />
+          <NativeNotificationHandler />
+          <OfflineIndicator />
           <AdminWrapper>
             {children}
           </AdminWrapper>

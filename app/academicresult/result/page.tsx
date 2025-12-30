@@ -1,6 +1,6 @@
 "use client";
 
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, Save } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ResultDetails from "@/components/result/details";
@@ -10,13 +10,19 @@ import ResultDetailsSkeleton from "@/components/skeleton/ResultDetailsSkeleton";
 import AcademicResultSkeleton from "@/components/skeleton/AcademicResultsSkeleton";
 import Print from "@/components/download/print";
 import { fetchAcademicResult } from "@/components/api/fetchResults";
+import { saveResultToLocal, isNative, hapticFeedback } from "@/lib/native-features";
+import { ImpactStyle } from "@capacitor/haptics";
+import toast from "react-hot-toast";
 
 const AcademicResultResult = () => {
   const router = useRouter();
   const htno = useSearchParams().get("htno");
   const [academicResult, setAcademicResult] =
     useState<AcademicResulProps | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const componentRef = useRef(null);
+  const isNativeApp = isNative();
+
   useEffect(() => {
     const fetchResult = async () => {
       const academicResult = await fetchAcademicResult(htno || "");
@@ -32,6 +38,27 @@ const AcademicResultResult = () => {
     fetchResult();
   }, [htno, router]);
 
+  const handleSaveResult = async () => {
+    if (!academicResult || !htno) return;
+
+    setIsSaving(true);
+    await hapticFeedback(ImpactStyle.Medium);
+
+    try {
+      const result = await saveResultToLocal(htno, academicResult);
+      if (result.success) {
+        toast.success(result.message || 'Result saved successfully!');
+      } else {
+        toast.error(result.message || 'Failed to save result');
+      }
+    } catch (error) {
+      console.error('Error saving result:', error);
+      toast.error('Failed to save result');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <>
       <div
@@ -41,7 +68,17 @@ const AcademicResultResult = () => {
         <div className="text-center grid grid-cols-3 font-bold my-5 text-xs lg:text-2xl">
           <div></div>
           <div className="justify-center">ACADEMIC RESULTS</div>
-          <div className="justify-end flex ">
+          <div className="justify-end flex gap-2">
+            {isNativeApp && academicResult && (
+              <button
+                onClick={handleSaveResult}
+                disabled={isSaving}
+                className="border border-white p-1 md:p-2 rounded cursor-pointer justify-center items-center hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+                title="Save Result"
+              >
+                <Save size={16} className={isSaving ? "animate-pulse" : ""} />
+              </button>
+            )}
             <div
               className="border border-white p-1 md:p-2 md:hidden rounded cursor-pointer justify-center items-center  hidden"
               onClick={() => {}}

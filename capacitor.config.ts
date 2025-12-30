@@ -4,12 +4,12 @@ const config: CapacitorConfig = {
   appId: 'com.manajntuhresults.mobile',
   appName: 'Mana JNTUH Results',
   webDir: 'out',
+  // Using live URL ensures API routes work, but we add native features
+  // for enhanced mobile experience (share, save, haptics, etc.)
   server: {
     androidScheme: 'https',
-    // Using live website URL ensures all API routes and features work correctly
-    // The app will load from your deployed website
     url: 'https://manajntuhresults.vercel.app',
-    cleartext: true, // Allow HTTP connections if needed
+    cleartext: true,
   },
   plugins: {
     SplashScreen: {
@@ -21,6 +21,18 @@ const config: CapacitorConfig = {
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: true,
+    },
+    StatusBar: {
+      style: 'dark',
+      backgroundColor: '#000000',
+    },
+    Keyboard: {
+      resize: 'body',
+      style: 'dark',
+      resizeOnFullScreen: true,
+    },
+    App: {
+      launchUrl: 'https://manajntuhresults.vercel.app',
     },
   },
 };

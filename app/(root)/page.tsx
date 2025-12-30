@@ -1,4 +1,7 @@
+"use client";
+
 // import AdComponent from "@/components/ads/adcomponent";
+import { useState, useEffect } from "react";
 import Title from "@/components/homepage/title";
 import { homeLinks } from "@/constants/homeLinks";
 import Link from "next/link";
@@ -14,8 +17,10 @@ import {
   Bell,
   HelpCircle,
   ArrowRight,
-  TrendingUp
+  TrendingUp,
+  Save
 } from "lucide-react";
+import { isNative } from "@/lib/native-features";
 
 const iconMap: { [key: string]: any } = {
   "Academic Result": GraduationCap,
@@ -32,6 +37,12 @@ const iconMap: { [key: string]: any } = {
 };
 
 export default function Home() {
+  const [isNativeApp, setIsNativeApp] = useState(false);
+
+  useEffect(() => {
+    setIsNativeApp(isNative());
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
       {/* Hero Section */}
@@ -206,6 +217,29 @@ export default function Home() {
               </div>
             </Card>
           </Link>
+
+          {isNativeApp && (
+            <Link href="/saved-results">
+              <Card className="h-full p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:scale-105 border-2 hover:border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 group">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <Save className="h-6 w-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
+                        Saved Results
+                      </h3>
+                      <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-green-500 group-hover:translate-x-1 transition-all" />
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                      View and manage your saved results locally on your device
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+          )}
         </section>
       </main>
 

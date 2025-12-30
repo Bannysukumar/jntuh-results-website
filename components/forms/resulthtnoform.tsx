@@ -1,10 +1,11 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { NativeButton } from "@/components/native/native-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Ticket, Loader2 } from "lucide-react";
+import { ImpactStyle } from "@capacitor/haptics";
 
 interface FormProps {
   title: string;
@@ -94,11 +95,12 @@ const Form = ({
               </div>
             )}
 
-            <Button
+            <NativeButton
               type="submit"
               className="w-full h-12 text-lg font-semibold"
               disabled={isDisabled || hallticketno.length < 10 || (hallticketno2 !== undefined && (hallticketno2?.length || 0) < 10)}
               onClick={onSubmit}
+              hapticStyle={ImpactStyle.Medium}
             >
               {isDisabled ? (
                 <>
@@ -108,7 +110,7 @@ const Form = ({
               ) : (
                 "Get Results"
               )}
-            </Button>
+            </NativeButton>
 
             {isDisabled && (
               <p className="text-xs text-center text-gray-500 dark:text-gray-400">

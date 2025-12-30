@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { NativeButton } from "@/components/native/native-button";
+import { ImpactStyle } from "@capacitor/haptics";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -192,10 +193,11 @@ export default function FeedbackPage() {
 
                 {/* Submit Button */}
                 <div className="pt-4">
-                  <Button
+                  <NativeButton
                     type="submit"
                     className="w-full h-12 text-base font-semibold bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:transform-none"
                     disabled={isSubmitting || message.length < 10}
+                    hapticStyle={ImpactStyle.Medium}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
@@ -211,7 +213,7 @@ export default function FeedbackPage() {
                         Submit Feedback
                       </span>
                     )}
-                  </Button>
+                  </NativeButton>
                 </div>
               </form>
             )}
