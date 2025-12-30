@@ -4,6 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.manajntuhresults.mobile',
   appName: 'Mana JNTUH Results',
   webDir: 'out',
+  version: '0.2.0',
   // Using live URL ensures API routes work, but we add native features
   // for enhanced mobile experience (share, save, haptics, etc.)
   server: {
