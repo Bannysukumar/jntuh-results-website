@@ -1,4 +1,4 @@
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, CapacitorHttp } from '@capacitor/core';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { App } from '@capacitor/app';
@@ -325,5 +325,152 @@ export const isOffline = (): boolean => {
     return !navigator.onLine;
   }
   return false;
+};
+
+/**
+ * Make HTTP GET request using native HTTP (bypasses CORS) or fetch (web)
+ */
+export const nativeHttpGet = async (
+  url: string,
+  options?: {
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
+    timeout?: number;
+  }
+): Promise<{ status: number; data: any; headers?: Record<string, string> }> => {
+  if (isNative()) {
+    // Use CapacitorHttp to bypass CORS restrictions
+    try {
+      const urlObj = new URL(url);
+      if (options?.params) {
+        Object.entries(options.params).forEach(([key, value]) => {
+          urlObj.searchParams.append(key, value);
+        });
+      }
+
+      const response = await CapacitorHttp.get({
+        url: urlObj.toString(),
+        headers: options?.headers || {},
+      });
+
+      return {
+        status: response.status,
+        data: response.data,
+        headers: response.headers,
+      };
+    } catch (error: any) {
+      // Handle errors similar to axios
+      if (error.message?.includes('timeout')) {
+        throw { code: 'ECONNABORTED', message: 'Request timed out' };
+      }
+      throw error;
+    }
+  } else {
+    // Web: use fetch
+    const urlObj = new URL(url);
+    if (options?.params) {
+      Object.entries(options.params).forEach(([key, value]) => {
+        urlObj.searchParams.append(key, value);
+      });
+    }
+
+    const controller = new AbortController();
+    const timeoutId = options?.timeout
+      ? setTimeout(() => controller.abort(), options.timeout)
+      : null;
+
+    try {
+      const response = await fetch(urlObj.toString(), {
+        method: 'GET',
+        headers: options?.headers || {},
+        signal: controller.signal,
+      });
+
+      if (timeoutId) clearTimeout(timeoutId);
+
+      const data = await response.json();
+      return {
+        status: response.status,
+        data,
+        headers: Object.fromEntries(response.headers.entries()),
+      };
+    } catch (error: any) {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw { code: 'ECONNABORTED', message: 'Request timed out' };
+      }
+      throw error;
+    }
+  }
+};
+
+/**
+ * Make HTTP POST request using native HTTP (bypasses CORS) or fetch (web)
+ */
+export const nativeHttpPost = async (
+  url: string,
+  data?: any,
+  options?: {
+    headers?: Record<string, string>;
+    timeout?: number;
+  }
+): Promise<{ status: number; data: any; headers?: Record<string, string> }> => {
+  if (isNative()) {
+    // Use CapacitorHttp to bypass CORS restrictions
+    try {
+      const response = await CapacitorHttp.post({
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options?.headers || {}),
+        },
+        data: data || {},
+      });
+
+      return {
+        status: response.status,
+        data: response.data,
+        headers: response.headers,
+      };
+    } catch (error: any) {
+      if (error.message?.includes('timeout')) {
+        throw { code: 'ECONNABORTED', message: 'Request timed out' };
+      }
+      throw error;
+    }
+  } else {
+    // Web: use fetch
+    const controller = new AbortController();
+    const timeoutId = options?.timeout
+      ? setTimeout(() => controller.abort(), options.timeout)
+      : null;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options?.headers || {}),
+        },
+        body: data ? JSON.stringify(data) : undefined,
+        signal: controller.signal,
+      });
+
+      if (timeoutId) clearTimeout(timeoutId);
+
+      const responseData = await response.json();
+      return {
+        status: response.status,
+        data: responseData,
+        headers: Object.fromEntries(response.headers.entries()),
+      };
+    } catch (error: any) {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw { code: 'ECONNABORTED', message: 'Request timed out' };
+      }
+      throw error;
+    }
+  }
 };
 

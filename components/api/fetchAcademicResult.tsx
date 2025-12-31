@@ -1,5 +1,5 @@
 import axios from "axios";
-import { isNative } from "@/lib/native-features";
+import { isNative, nativeHttpGet } from "@/lib/native-features";
 
 async function getRedisData(htno: string) {
   // In native mode, skip Redis API call (server-side only)
@@ -41,7 +41,11 @@ const grades_to_gpa: { [key: string]: number } = {
 };
 const fetchData = async (htno: string, url: string) => {
   try {
-    const response = await axios.get(url, { timeout: 7000 });
+    // Use native HTTP for native apps (bypasses CORS), axios for web
+    const response = isNative()
+      ? await nativeHttpGet(url, { timeout: 7000 })
+      : await axios.get(url, { timeout: 7000 });
+    
     console.log(response);
     if (response.status == 200 && typeof response.data === "object") {
       const expiryDate = new Date();
@@ -53,8 +57,12 @@ const fetchData = async (htno: string, url: string) => {
       localStorage.setItem(htno, JSON.stringify(dataToStore));
       return response.data;
     }
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 422) {
+  } catch (error: any) {
+    // Handle both axios errors and native HTTP errors
+    const isAxiosError = axios.isAxiosError ? axios.isAxiosError(error) : false;
+    const status = isAxiosError ? error.response?.status : error.status;
+    
+    if (status === 422) {
       return 422;
     }
     return null;
@@ -249,14 +257,21 @@ export async function fetchAcademicallResult(htno: string) {
   const url =
     "https://jntuhresults.up.railway.app/api/academicallresult?htno=" + htno;
   try {
-    const response = await axios.get(url, { timeout: 20 * 1000 });
+    // Use native HTTP for native apps (bypasses CORS), axios for web
+    const response = isNative()
+      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
+      : await axios.get(url, { timeout: 20 * 1000 });
 
     if (response.status == 200 && typeof response.data === "object") {
       computationAcademicResult(response.data);
       return response.data;
     }
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 422) {
+  } catch (error: any) {
+    // Handle both axios errors and native HTTP errors
+    const isAxiosError = axios.isAxiosError ? axios.isAxiosError(error) : false;
+    const status = isAxiosError ? error.response?.status : error.status;
+    
+    if (status === 422) {
       return 422;
     }
     return null;

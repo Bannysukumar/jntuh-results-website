@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/themeprovider/theme-provider";
 import { Toaster } from "react-hot-toast";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import SpeedInsightsWrapper from "@/components/analytics/SpeedInsightsWrapper";
 import StructuredData from "@/components/metadata/structured-data";
 import CanonicalUrl from "@/components/metadata/canonical-url";
 import AdminWrapper from "@/components/admin/AdminWrapper";
@@ -153,7 +153,7 @@ export default function RootLayout({
       </head>
       <GoogleAnalytics />
       <body className={inter.className}>
-        <SpeedInsights />
+        <SpeedInsightsWrapper />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

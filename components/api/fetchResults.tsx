@@ -1,6 +1,6 @@
 import axios from "axios";
 import { saveToLocalStorage } from "../customfunctions/localStorage";
-import { isNative } from "@/lib/native-features";
+import { isNative, nativeHttpGet } from "@/lib/native-features";
 
 import toast from "react-hot-toast";
 
@@ -18,10 +18,13 @@ export const fetchAcademicResult = async (
 
     toast.loading("Fetching result...");
 
-    const response = await axios.get(url, {
-      timeout: 20 * 1000,
-      validateStatus: () => true,
-    });
+    // Use native HTTP for native apps (bypasses CORS), axios for web
+    const response = isNative()
+      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
+      : await axios.get(url, {
+          timeout: 20 * 1000,
+          validateStatus: () => true,
+        });
 
     switch (response.status) {
       case 200: {
@@ -80,16 +83,18 @@ export const fetchAcademicResult = async (
   } catch (e: any) {
     toast.dismiss();
 
-    if (axios.isAxiosError(e)) {
-      if (e.code === "ECONNABORTED") {
-        toast.error("Request timed out. Try again later.");
-      } else if (e.response) {
-        toast.error(`Server error: ${e.response.status}`);
-      } else {
-        toast.error("Network issue. Please check your connection.");
-      }
+    // Handle both axios errors and native HTTP errors
+    const isAxiosError = axios.isAxiosError ? axios.isAxiosError(e) : false;
+    const isTimeoutError = e.code === "ECONNABORTED" || e.message?.includes('timeout');
+
+    if (isTimeoutError) {
+      toast.error("Request timed out. Try again later.");
+    } else if (isAxiosError && e.response) {
+      toast.error(`Server error: ${e.response.status}`);
+    } else if (e.status) {
+      toast.error(`Server error: ${e.status}`);
     } else {
-      toast.error("Unexpected error occurred.");
+      toast.error("Network issue. Please check your connection.");
     }
 
     return null;
@@ -106,10 +111,13 @@ export const fetchAllResult = async (htno: string) => {
 
     toast.loading("Fetching result...");
 
-    const response = await axios.get(url, {
-      timeout: 20 * 1000,
-      validateStatus: () => true,
-    });
+    // Use native HTTP for native apps (bypasses CORS), axios for web
+    const response = isNative()
+      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
+      : await axios.get(url, {
+          timeout: 20 * 1000,
+          validateStatus: () => true,
+        });
 
     switch (response.status) {
       case 200: {
@@ -172,16 +180,17 @@ export const fetchAllResult = async (htno: string) => {
   } catch (e: any) {
     toast.dismiss();
 
-    if (axios.isAxiosError(e)) {
-      if (e.code === "ECONNABORTED") {
-        toast.error("Request timed out. Try again later.");
-      } else if (e.response) {
-        toast.error(`Server error: ${e.response.status}`);
-      } else {
-        toast.error("Network issue. Please check your connection.");
-      }
+    const isAxiosError = axios.isAxiosError ? axios.isAxiosError(e) : false;
+    const isTimeoutError = e.code === "ECONNABORTED" || e.message?.includes('timeout');
+
+    if (isTimeoutError) {
+      toast.error("Request timed out. Try again later.");
+    } else if (isAxiosError && e.response) {
+      toast.error(`Server error: ${e.response.status}`);
+    } else if (e.status) {
+      toast.error(`Server error: ${e.status}`);
     } else {
-      toast.error("Unexpected error occurred.");
+      toast.error("Network issue. Please check your connection.");
     }
 
     return false;
@@ -196,7 +205,9 @@ export const fetchBacklogReport = async (htno: string) => {
       ? `${baseUrl}/getBacklogs?rollNumber=${htno}`
       : `/api/proxy?endpoint=getBacklogs&rollNumber=${htno}`;
 
-    const response = await axios.get(url, { timeout: 20 * 1000 });
+    const response = isNative()
+      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
+      : await axios.get(url, { timeout: 20 * 1000 });
     if ("details" in response.data) {
       saveToLocalStorage(
         htno + "-Backlogreport",
@@ -228,7 +239,9 @@ export const fetchCreditsCheckerReport = async (htno: string) => {
       : `/api/proxy?endpoint=getCreditsChecker&rollNumber=${htno}`;
 
     toast.loading("Result are been fetched");
-    const response = await axios.get(url, { timeout: 20 * 1000 });
+    const response = isNative()
+      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
+      : await axios.get(url, { timeout: 20 * 1000 });
     if ("details" in response.data) {
       saveToLocalStorage(
         htno + "-CreditsCheckerreport",
@@ -266,7 +279,9 @@ export const fetchCreditContrastReport = async (
       : `/api/proxy?endpoint=getResultContrast&rollNumber1=${htno1}&rollNumber2=${htno2}`;
 
     toast.loading("Result are been fetched");
-    response = await axios.get(url, { timeout: 20 * 1000 });
+    response = isNative()
+      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
+      : await axios.get(url, { timeout: 20 * 1000 });
     if ("studentProfiles" in response.data) {
       saveToLocalStorage(
         htno1 + "-" + htno2 + "-CreditContrastreport",
@@ -301,7 +316,9 @@ export const fetchNotifications = async (params: Params) => {
     let url: string = isNative()
       ? `${baseUrl}/notifications?page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`
       : `/api/proxy?endpoint=notifications&page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
-    const response = await axios.get(url);
+    const response = isNative()
+      ? await nativeHttpGet(url)
+      : await axios.get(url);
 
     if (response.status === 200) {
       if (response.data.status === "success") {
@@ -334,7 +351,9 @@ export const fetchClassResult = async (
 
     toast.loading("Result are been fetched");
 
-    const response = await axios.get(url, { timeout: 20 * 1000 });
+    const response = isNative()
+      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
+      : await axios.get(url, { timeout: 20 * 1000 });
 
     console.log(response);
     if (response.data && response.data.length > 0) {
@@ -375,7 +394,9 @@ export const fetchGraceMarksEligibility = async (htno: string) => {
       : `/api/grace-marks/eligibility?rollNumber=${htno}`;
 
     toast.loading("Checking grace marks eligibility...");
-    const response = await axios.get(url, { timeout: 20 * 1000 });
+    const response = isNative()
+      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
+      : await axios.get(url, { timeout: 20 * 1000 });
     
     if (response.data && ("eligibility" in response.data || "details" in response.data)) {
       saveToLocalStorage(
@@ -417,7 +438,9 @@ export const fetchGraceMarksProof = async (htno: string) => {
       : `/api/grace-marks/proof?rollNumber=${htno}`;
 
     toast.loading("Fetching grace marks proof...");
-    const response = await axios.get(url, { timeout: 20 * 1000 });
+    const response = isNative()
+      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
+      : await axios.get(url, { timeout: 20 * 1000 });
     
     if (response.data && ("proof" in response.data || "details" in response.data)) {
       saveToLocalStorage(

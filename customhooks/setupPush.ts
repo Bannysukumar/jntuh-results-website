@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { isNative } from "@/lib/native-features";
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -12,6 +13,13 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 }
 
 export async function setupPush(rollNumber?: string) {
+  // Skip service worker registration for native apps
+  // Native apps use Capacitor's push notification system instead
+  if (isNative()) {
+    console.log("Skipping service worker registration - native app uses Capacitor push notifications");
+    return;
+  }
+
   try {
     const anonId = localStorage.getItem("anonId") || uuidv4();
     localStorage.setItem("anonId", anonId);

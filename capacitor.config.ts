@@ -29,6 +29,9 @@ const config: CapacitorConfig = {
     App: {
       // No launchUrl - this is a standalone native app, not a web wrapper
     },
+    CapacitorHttp: {
+      enabled: true, // Enable native HTTP to bypass CORS restrictions
+    },
   },
 };
 
