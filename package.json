@@ -11,7 +11,7 @@
     "generate-android-icons": "node scripts/generate-android-icons.js",
     "android:sync": "npx cap sync android",
     "android:open": "npx cap open android",
-    "android:build": "npm run build && npx cap sync android"
+    "android:build": "cross-env NEXT_EXPORT=true npm run build && npx cap sync android"
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
