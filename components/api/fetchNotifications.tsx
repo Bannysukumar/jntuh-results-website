@@ -1,6 +1,12 @@
 import axios from "axios";
+import { isNative } from "@/lib/native-features";
 
 export async function fetchNotifications() {
+  // In native mode, skip Redis API call (server-side only)
+  if (isNative()) {
+    return null;
+  }
+  
   try {
     const response = await axios.get("/api/redisdata", {
       params: {

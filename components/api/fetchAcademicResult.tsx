@@ -1,6 +1,13 @@
 import axios from "axios";
+import { isNative } from "@/lib/native-features";
 
 async function getRedisData(htno: string) {
+  // In native mode, skip Redis API call (server-side only)
+  // Use localStorage cache instead
+  if (isNative()) {
+    return null;
+  }
+  
   try {
     const response = await axios.get(`/api/redisdata?htno=${htno}`);
     if (response.status === 200) {
@@ -98,46 +105,60 @@ export const getLocalStoragedata = (htno: string, backlog: boolean = false) => {
 };
 
 export async function fetchAcademicResult(htno: string) {
-  //Redis Data
+  // Check localStorage cache first (works in both native and web)
+  const cacheKey = localStorage.getItem(htno);
+  if (cacheKey) {
+    try {
+      const parsed = JSON.parse(cacheKey);
+      // Check if cache is still valid (1 minute expiry)
+      if (parsed.expiry && parsed.expiry > Date.now() && parsed.value) {
+        return parsed.value;
+      }
+    } catch (e) {
+      // Invalid cache, continue to fetch
+    }
+  }
+  
+  // Also check processed cache data
+  const cachedData = getLocalStoragedata(htno);
+  if (cachedData && cachedData.value) {
+    return cachedData.value;
+  }
+
+  //Redis Data (web only)
   let response = await getRedisData(htno);
   if (response != null) {
     return response;
   }
 
-  //primary urls
-  const urls = [
-    "https://jntuhresults.up.railway.app/api/academicresult?htno=",
-    "/api/academicresult?htno=",
-    "http://localhost:8000/api/academicresult?htno=",
-    "/api/academicresult?htno=",
-    "https://jntuhresultss.vercel.app/api/academicresult?htno=",
-    "https://jntuhresultsss.vercel.app/api/academicresult?htno=",
-  ];
-  // console.log("came here");
-  // const primaryUrl = urls[2] + htno;
-  // response = await fetchData(htno, primaryUrl);
-  // console.log(response);
-  // if (response !== null) {
-  //   console.log(response);
-  //   return response;
-  // }
-  // //Rechecking Redis Data
-  // response = await getRedisData(htno);
-  // if (response != null) {
-  //   return response;
-  // }
-  const secondaryUrl = urls[0] + htno;
-  response = await fetchData(htno, secondaryUrl);
-  console.log(response);
-  if (response !== null) {
-    console.log(response);
-    return response;
+  // API URLs - prioritize external URLs for native apps
+  const urls = isNative() 
+    ? [
+        "https://jntuhresults.up.railway.app/api/academicresult?htno=",
+        "https://jntuhresultss.vercel.app/api/academicresult?htno=",
+        "https://jntuhresultsss.vercel.app/api/academicresult?htno=",
+      ]
+    : [
+        "https://jntuhresults.up.railway.app/api/academicresult?htno=",
+        "/api/academicresult?htno=",
+        "https://jntuhresultss.vercel.app/api/academicresult?htno=",
+        "https://jntuhresultsss.vercel.app/api/academicresult?htno=",
+      ];
+
+  // Try each URL until one works
+  for (const url of urls) {
+    response = await fetchData(htno, url + htno);
+    if (response !== null && response !== 422) {
+      return response;
+    }
   }
-  //Rechecking Redis Data
+
+  // Recheck Redis Data (web only)
   response = await getRedisData(htno);
   if (response != null) {
     return response;
   }
+  
   return null;
 }
 

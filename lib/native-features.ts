@@ -10,6 +10,34 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 export const isNative = () => Capacitor.isNativePlatform();
 
 /**
+ * Get the API base URL - use external URLs for native apps
+ * This ensures the standalone app works without needing local API routes
+ */
+export const getApiBaseUrl = () => {
+  if (isNative()) {
+    // Use external API endpoints for native apps
+    return 'https://jntuhresults.up.railway.app';
+  }
+  // Use relative paths for web (works with Next.js API routes)
+  return '';
+};
+
+/**
+ * Get full API URL for a given endpoint
+ */
+export const getApiUrl = (endpoint: string, params?: Record<string, string>) => {
+  const baseUrl = getApiBaseUrl();
+  const url = baseUrl ? `${baseUrl}${endpoint}` : endpoint;
+  
+  if (params) {
+    const searchParams = new URLSearchParams(params);
+    return `${url}?${searchParams.toString()}`;
+  }
+  
+  return url;
+};
+
+/**
  * Share content using native share dialog
  */
 export const shareContent = async (options: {

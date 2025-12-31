@@ -92,9 +92,20 @@ export default function NativeInit() {
 
         keyboardListeners.current = [keyboardWillShow, keyboardWillHide];
 
-        // Set keyboard style
-        await Keyboard.setStyle({ style: KeyboardStyle.Dark });
-        await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
+        // Set keyboard style (iOS only - Android uses config file settings)
+        try {
+          await Keyboard.setStyle({ style: KeyboardStyle.Dark });
+        } catch (error) {
+          // setStyle is iOS-only, ignore on Android
+          console.log('Keyboard.setStyle not available on this platform');
+        }
+        
+        try {
+          await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
+        } catch (error) {
+          // setResizeMode is iOS-only, ignore on Android
+          console.log('Keyboard.setResizeMode not available on this platform');
+        }
 
         // Handle app launch
         const appInfo = await App.getInfo();

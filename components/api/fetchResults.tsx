@@ -1,5 +1,6 @@
 import axios from "axios";
 import { saveToLocalStorage } from "../customfunctions/localStorage";
+import { isNative } from "@/lib/native-features";
 
 import toast from "react-hot-toast";
 
@@ -7,7 +8,13 @@ export const fetchAcademicResult = async (
   htno: string,
 ): Promise<null | AcademicResulProps> => {
   try {
-    let url: string = `/api/proxy?endpoint=getAcademicResult&rollNumber=${htno}`;
+    // Use external API directly in native mode, proxy route in web mode
+    const baseUrl = isNative() 
+      ? 'https://jntuhresults.dhethi.com/api'
+      : '';
+    let url: string = isNative()
+      ? `${baseUrl}/getAcademicResult?rollNumber=${htno}`
+      : `/api/proxy?endpoint=getAcademicResult&rollNumber=${htno}`;
 
     toast.loading("Fetching result...");
 
@@ -90,7 +97,12 @@ export const fetchAcademicResult = async (
 };
 export const fetchAllResult = async (htno: string) => {
   try {
-    let url: string = `/api/proxy?endpoint=getAllResult&rollNumber=${htno}`;
+    const baseUrl = isNative() 
+      ? 'https://jntuhresults.dhethi.com/api'
+      : '';
+    let url: string = isNative()
+      ? `${baseUrl}/getAllResult?rollNumber=${htno}`
+      : `/api/proxy?endpoint=getAllResult&rollNumber=${htno}`;
 
     toast.loading("Fetching result...");
 
@@ -177,7 +189,12 @@ export const fetchAllResult = async (htno: string) => {
 };
 export const fetchBacklogReport = async (htno: string) => {
   try {
-    let url: string = `/api/proxy?endpoint=getBacklogs&rollNumber=${htno}`;
+    const baseUrl = isNative() 
+      ? 'https://jntuhresults.dhethi.com/api'
+      : '';
+    let url: string = isNative()
+      ? `${baseUrl}/getBacklogs?rollNumber=${htno}`
+      : `/api/proxy?endpoint=getBacklogs&rollNumber=${htno}`;
 
     const response = await axios.get(url, { timeout: 20 * 1000 });
     if ("details" in response.data) {
@@ -203,7 +220,12 @@ export const fetchBacklogReport = async (htno: string) => {
 
 export const fetchCreditsCheckerReport = async (htno: string) => {
   try {
-    let url: string = `/api/proxy?endpoint=getCreditsChecker&rollNumber=${htno}`;
+    const baseUrl = isNative() 
+      ? 'https://jntuhresults.dhethi.com/api'
+      : '';
+    let url: string = isNative()
+      ? `${baseUrl}/getCreditsChecker?rollNumber=${htno}`
+      : `/api/proxy?endpoint=getCreditsChecker&rollNumber=${htno}`;
 
     toast.loading("Result are been fetched");
     const response = await axios.get(url, { timeout: 20 * 1000 });
@@ -236,7 +258,12 @@ export const fetchCreditContrastReport = async (
 ) => {
   let response;
   try {
-    let url: string = `/api/proxy?endpoint=getResultContrast&rollNumber1=${htno1}&rollNumber2=${htno2}`;
+    const baseUrl = isNative() 
+      ? 'https://jntuhresults.dhethi.com/api'
+      : '';
+    let url: string = isNative()
+      ? `${baseUrl}/getResultContrast?rollNumber1=${htno1}&rollNumber2=${htno2}`
+      : `/api/proxy?endpoint=getResultContrast&rollNumber1=${htno1}&rollNumber2=${htno2}`;
 
     toast.loading("Result are been fetched");
     response = await axios.get(url, { timeout: 20 * 1000 });
@@ -268,7 +295,12 @@ export const fetchCreditContrastReport = async (
 
 export const fetchNotifications = async (params: Params) => {
   try {
-    let url: string = `/api/proxy?endpoint=notifications&page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
+    const baseUrl = isNative() 
+      ? 'https://jntuhresults.dhethi.com/api'
+      : '';
+    let url: string = isNative()
+      ? `${baseUrl}/notifications?page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`
+      : `/api/proxy?endpoint=notifications&page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
     const response = await axios.get(url);
 
     if (response.status === 200) {
@@ -293,7 +325,12 @@ export const fetchClassResult = async (
   type: string = "academicresult",
 ) => {
   try {
-    let url: string = `/api/proxy?endpoint=getClassResults&rollNumber=${htno}`;
+    const baseUrl = isNative() 
+      ? 'https://jntuhresults.dhethi.com/api'
+      : '';
+    let url: string = isNative()
+      ? `${baseUrl}/getClassResults?rollNumber=${htno}`
+      : `/api/proxy?endpoint=getClassResults&rollNumber=${htno}`;
 
     toast.loading("Result are been fetched");
 
@@ -330,7 +367,12 @@ export const fetchClassResult = async (
 
 export const fetchGraceMarksEligibility = async (htno: string) => {
   try {
-    let url: string = `/api/grace-marks/eligibility?rollNumber=${htno}`;
+    const baseUrl = isNative() 
+      ? 'https://jntuhresults.dhethi.com/api'
+      : '';
+    let url: string = isNative()
+      ? `${baseUrl}/grace-marks/eligibility?rollNumber=${htno}`
+      : `/api/grace-marks/eligibility?rollNumber=${htno}`;
 
     toast.loading("Checking grace marks eligibility...");
     const response = await axios.get(url, { timeout: 20 * 1000 });
@@ -367,7 +409,12 @@ export const fetchGraceMarksEligibility = async (htno: string) => {
 
 export const fetchGraceMarksProof = async (htno: string) => {
   try {
-    let url: string = `/api/grace-marks/proof?rollNumber=${htno}`;
+    const baseUrl = isNative() 
+      ? 'https://jntuhresults.dhethi.com/api'
+      : '';
+    let url: string = isNative()
+      ? `${baseUrl}/grace-marks/proof?rollNumber=${htno}`
+      : `/api/grace-marks/proof?rollNumber=${htno}`;
 
     toast.loading("Fetching grace marks proof...");
     const response = await axios.get(url, { timeout: 20 * 1000 });

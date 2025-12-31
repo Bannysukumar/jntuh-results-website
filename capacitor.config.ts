@@ -4,13 +4,9 @@ const config: CapacitorConfig = {
   appId: 'com.manajntuhresults.mobile',
   appName: 'Mana JNTUH Results',
   webDir: 'out',
-  // Using live URL ensures API routes work, but we add native features
-  // for enhanced mobile experience (share, save, haptics, etc.)
-  server: {
-    androidScheme: 'https',
-    url: 'https://manajntuhresults.vercel.app',
-    cleartext: true,
-  },
+  // Standalone app - no remote URL to ensure it's not a web wrapper
+  // All API calls use external endpoints or client-side logic
+  androidScheme: 'https',
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
@@ -30,7 +26,7 @@ const config: CapacitorConfig = {
       resizeOnFullScreen: true,
     },
     App: {
-      launchUrl: 'https://manajntuhresults.vercel.app',
+      // No launchUrl - this is a standalone native app, not a web wrapper
     },
   },
 };
