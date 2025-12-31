@@ -6,6 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'out',
   // Standalone app - no remote URL to ensure it's not a web wrapper
   // All API calls use external endpoints or client-side logic
+  // @ts-ignore - androidScheme is valid but not in TypeScript types for Capacitor 6
   androidScheme: 'https',
   plugins: {
     SplashScreen: {
