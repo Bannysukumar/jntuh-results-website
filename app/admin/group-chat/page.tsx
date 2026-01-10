@@ -224,7 +224,7 @@ export default function GroupChatAdmin() {
         setUniqueUsernames(data.uniqueUsernames || []);
         setUsernameToDeviceIds(data.usernameToDeviceIds || {});
         if (data.messages.length === 0) {
-          toast.info("No messages found for this username");
+          toast("No messages found for this username");
         }
       } else {
         toast.error("Failed to search for user");
