@@ -11,7 +11,8 @@
     "generate-android-icons": "node scripts/generate-android-icons.js",
     "android:sync": "npx cap sync android",
     "android:open": "npx cap open android",
-    "android:build": "node scripts/build-static.js && npx cap sync android"
+    "android:build": "node scripts/build-static.js && npx cap sync android",
+    "init-admin": "node scripts/init-admin.js"
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
@@ -41,6 +42,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "firebase": "^10.14.1",
+    "firebase-admin": "^13.6.0",
     "framer-motion": "^10.16.5",
     "ioredis": "^5.3.2",
     "lucide-react": "^0.293.0",

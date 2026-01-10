@@ -32,11 +32,16 @@ import toast from "react-hot-toast";
 import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import { getSettings, saveSettings } from "@/lib/settings";
+import { auth } from "@/lib/firebase";
 
 export default function AdminSettings() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isAdmin } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [savingMaintenanceMode, setSavingMaintenanceMode] = useState(false);
+  const [savingRegistration, setSavingRegistration] = useState(false);
+  const [savingEmailNotifications, setSavingEmailNotifications] = useState(false);
+  const [savingAdsEnabled, setSavingAdsEnabled] = useState(false);
   const [showClearDataDialog, setShowClearDataDialog] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [settings, setSettings] = useState({
@@ -54,10 +59,10 @@ export default function AdminSettings() {
   });
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!authLoading && (!user || !isAdmin)) {
       router.push("/admin/login");
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, isAdmin, router]);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -91,7 +96,9 @@ export default function AdminSettings() {
   const handleSave = async () => {
     setLoading(true);
     try {
-      await saveSettings(settings);
+      // Get ID token from current user
+      const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : undefined;
+      await saveSettings(settings, idToken);
       toast.success("Settings saved successfully!");
     } catch (error: any) {
       toast.error(error.message || "Failed to save settings");
@@ -101,20 +108,44 @@ export default function AdminSettings() {
   };
 
   const handleClearData = async () => {
+    setLoading(true);
     try {
-      // TODO: Implement clear all data functionality
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Get ID token for authentication
+      const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : undefined;
+      
+      if (!idToken) {
+        throw new Error("Authentication required");
+      }
+
+      // Call API to clear all data
+      const response = await fetch("/api/admin/clear-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to clear data");
+      }
+
       toast.success("All data cleared successfully!");
       setShowClearDataDialog(false);
     } catch (error: any) {
-      toast.error(error.message || "Failed to clear data");
+      console.error("Error clearing data:", error);
+      toast.error(error.message || "Failed to clear data. This feature may not be fully implemented yet.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleResetSettings = async () => {
+    setLoading(true);
     try {
-      // TODO: Implement reset settings functionality
-      setSettings({
+      const defaultSettings = {
         siteName: "Mana JNTUH Results",
         siteUrl: "https://manajntuhresults.vercel.app",
         emailNotifications: true,
@@ -126,12 +157,22 @@ export default function AdminSettings() {
         adsEnabled: true,
         adsPublisherId: "ca-pub-1589551808134823",
         adsSlotId: "8618507332",
-      });
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      toast.success("Settings reset to default values!");
+      };
+      
+      // Update local state
+      setSettings(defaultSettings);
+      
+      // Save to Firebase
+      const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : undefined;
+      await saveSettings(defaultSettings, idToken);
+      
+      toast.success("Settings reset to default values and saved successfully!");
       setShowResetDialog(false);
     } catch (error: any) {
+      console.error("Error resetting settings:", error);
       toast.error(error.message || "Failed to reset settings");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -231,9 +272,28 @@ export default function AdminSettings() {
                   <Switch
                     id="emailNotifications"
                     checked={settings.emailNotifications}
-                    onCheckedChange={(checked) =>
-                      setSettings({ ...settings, emailNotifications: checked })
-                    }
+                    disabled={loading || savingEmailNotifications}
+                    onCheckedChange={async (checked) => {
+                      const updatedSettings = { ...settings, emailNotifications: checked };
+                      setSettings(updatedSettings);
+                      
+                      // Auto-save email notifications setting immediately
+                      setSavingEmailNotifications(true);
+                      try {
+                        const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : undefined;
+                        await saveSettings(updatedSettings, idToken);
+                        toast.success(
+                          `Email notifications ${checked ? "enabled" : "disabled"} successfully!`
+                        );
+                      } catch (error: any) {
+                        console.error("Error saving email notifications setting:", error);
+                        toast.error(error.message || "Failed to update email notifications setting");
+                        // Revert on error
+                        setSettings({ ...settings, emailNotifications: !checked });
+                      } finally {
+                        setSavingEmailNotifications(false);
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -258,10 +318,35 @@ export default function AdminSettings() {
                   <Switch
                     id="maintenanceMode"
                     checked={settings.maintenanceMode}
-                    onCheckedChange={(checked) =>
-                      setSettings({ ...settings, maintenanceMode: checked })
-                    }
+                    disabled={loading || savingMaintenanceMode}
+                    onCheckedChange={async (checked) => {
+                      const updatedSettings = { ...settings, maintenanceMode: checked };
+                      setSettings(updatedSettings);
+                      
+                      // Auto-save maintenance mode immediately
+                      setSavingMaintenanceMode(true);
+                      try {
+                        // Get ID token from current user
+                        const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : undefined;
+                        await saveSettings(updatedSettings, idToken);
+                        toast.success(
+                          `Maintenance mode ${checked ? "enabled" : "disabled"} successfully!`
+                        );
+                      } catch (error: any) {
+                        console.error("Error saving maintenance mode:", error);
+                        toast.error(error.message || "Failed to update maintenance mode");
+                        // Revert on error
+                        setSettings({ ...settings, maintenanceMode: !checked });
+                      } finally {
+                        setSavingMaintenanceMode(false);
+                      }
+                    }}
                   />
+                  {savingMaintenanceMode && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Saving...
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
@@ -273,9 +358,29 @@ export default function AdminSettings() {
                   <Switch
                     id="allowRegistrations"
                     checked={settings.allowRegistrations}
-                    onCheckedChange={(checked) =>
-                      setSettings({ ...settings, allowRegistrations: checked })
-                    }
+                    disabled={loading || savingRegistration}
+                    onCheckedChange={async (checked) => {
+                      const updatedSettings = { ...settings, allowRegistrations: checked };
+                      setSettings(updatedSettings);
+                      
+                      // Auto-save registration setting immediately
+                      setSavingRegistration(true);
+                      try {
+                        // Get ID token from current user
+                        const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : undefined;
+                        await saveSettings(updatedSettings, idToken);
+                        toast.success(
+                          `User registrations ${checked ? "enabled" : "disabled"} successfully!`
+                        );
+                      } catch (error: any) {
+                        console.error("Error saving registration setting:", error);
+                        toast.error(error.message || "Failed to update registration setting");
+                        // Revert on error
+                        setSettings({ ...settings, allowRegistrations: !checked });
+                      } finally {
+                        setSavingRegistration(false);
+                      }
+                    }}
                   />
                 </div>
                 <div>
@@ -361,9 +466,28 @@ export default function AdminSettings() {
                   <Switch
                     id="adsEnabled"
                     checked={settings.adsEnabled}
-                    onCheckedChange={(checked) =>
-                      setSettings({ ...settings, adsEnabled: checked })
-                    }
+                    disabled={loading || savingAdsEnabled}
+                    onCheckedChange={async (checked) => {
+                      const updatedSettings = { ...settings, adsEnabled: checked };
+                      setSettings(updatedSettings);
+                      
+                      // Auto-save ads enabled setting immediately
+                      setSavingAdsEnabled(true);
+                      try {
+                        const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : undefined;
+                        await saveSettings(updatedSettings, idToken);
+                        toast.success(
+                          `Ads ${checked ? "enabled" : "disabled"} successfully!`
+                        );
+                      } catch (error: any) {
+                        console.error("Error saving ads enabled setting:", error);
+                        toast.error(error.message || "Failed to update ads setting");
+                        // Revert on error
+                        setSettings({ ...settings, adsEnabled: !checked });
+                      } finally {
+                        setSavingAdsEnabled(false);
+                      }
+                    }}
                   />
                 </div>
                 {settings.adsEnabled && (

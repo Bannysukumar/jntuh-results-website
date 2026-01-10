@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -22,11 +23,48 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
 
+  const checkAdminStatus = async (user: User | null) => {
+    if (!user) {
+      setIsAdmin(false);
+      return;
+    }
+
+    try {
+      // Get ID token
+      const idToken = await user.getIdToken(true); // Force refresh to get latest claims
+      
+      // Verify admin status via API
+      const response = await fetch("/api/admin/check-admin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsAdmin(data.isAdmin || false);
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+      setIsAdmin(false);
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
+      if (user) {
+        await checkAdminStatus(user);
+      } else {
+        setIsAdmin(false);
+      }
       setLoading(false);
     });
 
@@ -35,9 +73,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/admin/dashboard");
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Wait for Firebase to process the login
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Force token refresh multiple times to ensure we get the latest claims
+      // Sometimes Firebase needs a moment to propagate custom claims
+      let adminVerified = false;
+      let attempts = 0;
+      const maxAttempts = 3;
+      
+      while (!adminVerified && attempts < maxAttempts) {
+        attempts++;
+        
+        // Force token refresh
+        const idToken = await userCredential.user.getIdToken(true);
+        
+        // Wait a bit for token to propagate
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Check admin status
+        const response = await fetch("/api/admin/check-admin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ idToken }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Admin check result:", data); // Debug log
+          
+          if (data.isAdmin) {
+            setIsAdmin(true);
+            adminVerified = true;
+            router.push("/admin/dashboard");
+            return; // Success - exit early
+          }
+        }
+        
+        // If not admin yet, wait and try again
+        if (attempts < maxAttempts) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
+      
+      // If we've exhausted all attempts and still not admin
+      if (!adminVerified) {
+        await signOut(auth);
+        setIsAdmin(false);
+        throw new Error("Access denied. Admin privileges required. Please contact an administrator.");
+      }
     } catch (error: any) {
+      setIsAdmin(false);
+      // Don't sign out if it's already an auth error (wrong password, etc.)
+      if (error.code && error.code.startsWith("auth/")) {
+        throw error;
+      }
       throw new Error(error.message || "Failed to login");
     }
   };
@@ -45,6 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await signOut(auth);
+      setIsAdmin(false);
       router.push("/admin/login");
     } catch (error: any) {
       throw new Error(error.message || "Failed to logout");
@@ -52,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

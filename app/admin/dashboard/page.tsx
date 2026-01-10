@@ -1,25 +1,76 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { LogOut, User, Shield, BarChart3, Settings, FileText } from "lucide-react";
+import { LogOut, User, Shield, BarChart3, Settings, FileText, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
 import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
 export default function AdminDashboard() {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, isAdmin, logout } = useAuth();
   const router = useRouter();
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    resultsChecked: 0,
+    loading: true,
+  });
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && (!user || !isAdmin)) {
       router.push("/admin/login");
     }
-  }, [user, loading, router]);
+  }, [user, loading, isAdmin, router]);
+
+  const fetchStats = async () => {
+    if (!user || !isAdmin) return;
+    
+    setStats(prev => ({ ...prev, loading: true }));
+    try {
+      // Fetch total users
+      const usersResponse = await fetch("/api/admin/users");
+      const usersData = await usersResponse.json();
+      const totalUsers = usersData.success ? usersData.count || 0 : 0;
+
+      // Fetch results checked (from analytics if available, otherwise 0)
+      let resultsChecked = 0;
+      try {
+        // Get ID token for authorization
+        const idToken = await user.getIdToken();
+        const analyticsResponse = await fetch("/api/admin/analytics/stats", {
+          headers: {
+            "Authorization": `Bearer ${idToken}`,
+          },
+        });
+        if (analyticsResponse.ok) {
+          const analyticsData = await analyticsResponse.json();
+          resultsChecked = analyticsData.resultsChecked || 0;
+        }
+      } catch (error) {
+        // Analytics endpoint might not exist yet, that's okay
+        console.log("Analytics endpoint not available yet");
+      }
+
+      setStats({
+        totalUsers,
+        resultsChecked,
+        loading: false,
+      });
+    } catch (error: any) {
+      console.error("Error fetching dashboard stats:", error);
+      setStats(prev => ({ ...prev, loading: false }));
+    }
+  };
+
+  useEffect(() => {
+    if (user && isAdmin) {
+      fetchStats();
+    }
+  }, [user, isAdmin]);
 
   const handleLogout = async () => {
     try {
@@ -79,7 +130,11 @@ export default function AdminDashboard() {
                   Total Users
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">
-                  -
+                  {stats.loading ? (
+                    <span className="text-gray-400">Loading...</span>
+                  ) : (
+                    stats.totalUsers.toLocaleString()
+                  )}
                 </p>
               </div>
               <BarChart3 className="h-8 w-8 text-blue-500" />
@@ -93,7 +148,11 @@ export default function AdminDashboard() {
                   Results Checked
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">
-                  -
+                  {stats.loading ? (
+                    <span className="text-gray-400">Loading...</span>
+                  ) : (
+                    stats.resultsChecked.toLocaleString()
+                  )}
                 </p>
               </div>
               <Shield className="h-8 w-8 text-green-500" />
@@ -113,6 +172,19 @@ export default function AdminDashboard() {
               <Settings className="h-8 w-8 text-purple-500" />
             </div>
           </Card>
+        </div>
+
+        {/* Refresh Stats Button */}
+        <div className="mt-6 flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={fetchStats}
+            disabled={stats.loading}
+          >
+            <RefreshCw className={`mr-2 h-4 w-4 ${stats.loading ? "animate-spin" : ""}`} />
+            Refresh Stats
+          </Button>
         </div>
 
         {/* Admin Actions */}

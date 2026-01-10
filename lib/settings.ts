@@ -47,17 +47,41 @@ export async function getSettings(): Promise<SiteSettings | null> {
   }
 }
 
-export async function saveSettings(settings: SiteSettings): Promise<void> {
+export async function saveSettings(settings: SiteSettings, idToken?: string): Promise<void> {
   try {
     if (typeof window === "undefined") {
       throw new Error("Cannot save settings on server side");
     }
 
-    const settingsRef = doc(db, "settings", SETTINGS_DOC_ID);
-    await setDoc(settingsRef, {
-      ...settings,
-      updatedAt: Timestamp.now(),
-    }, { merge: true });
+    // Get ID token from Firebase Auth if not provided
+    let token = idToken;
+    if (!token) {
+      const { auth } = await import("./firebase");
+      const user = auth.currentUser;
+      if (user) {
+        token = await user.getIdToken();
+      }
+    }
+
+    if (!token) {
+      throw new Error("Authentication required. Please log in.");
+    }
+
+    // Use API route for saving settings (more secure, uses Admin SDK)
+    const response = await fetch("/api/admin/settings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(settings),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Failed to save settings");
+    }
   } catch (error: any) {
     console.error("Error saving settings:", error);
     throw new Error(error.message || "Failed to save settings");

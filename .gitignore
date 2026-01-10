@@ -42,3 +42,13 @@ next-env.d.ts
 /android/
 /ios/
 /.capacitor/
+
+# Firebase Admin SDK credentials (SECURITY: Never commit these!)
+*-firebase-adminsdk-*.json
+firebase-admin-key.json
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!components.json
+!tailwind.config.*
