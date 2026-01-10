@@ -50,7 +50,7 @@ export default function AdminSettings() {
     adminEmail: "",
     adsEnabled: true,
     adsPublisherId: "ca-pub-1589551808134823",
-    adsSlotId: "1398487082",
+    adsSlotId: "8618507332",
   });
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function AdminSettings() {
               adminEmail: loadedSettings.adminEmail || "",
               adsEnabled: loadedSettings.adsEnabled !== false,
               adsPublisherId: loadedSettings.adsPublisherId || "ca-pub-1589551808134823",
-              adsSlotId: loadedSettings.adsSlotId || "1398487082",
+              adsSlotId: loadedSettings.adsSlotId || "8618507332",
             });
           }
         } catch (error: any) {
@@ -125,7 +125,7 @@ export default function AdminSettings() {
         adminEmail: "",
         adsEnabled: true,
         adsPublisherId: "ca-pub-1589551808134823",
-        adsSlotId: "1398487082",
+        adsSlotId: "8618507332",
       });
       await new Promise((resolve) => setTimeout(resolve, 500));
       toast.success("Settings reset to default values!");

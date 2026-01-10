@@ -6,7 +6,7 @@ import { getAdsConfig } from "@/lib/settings";
 export function useAdsEnabled() {
   const [adsEnabled, setAdsEnabled] = useState<boolean>(true);
   const [publisherId, setPublisherId] = useState<string>("ca-pub-1589551808134823");
-  const [slotId, setSlotId] = useState<string>("1398487082");
+  const [slotId, setSlotId] = useState<string>("8618507332");
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

@@ -86,7 +86,7 @@ export async function getAdsConfig(): Promise<{
     return {
       enabled: settings?.adsEnabled !== false,
       publisherId: settings?.adsPublisherId || "ca-pub-1589551808134823",
-      slotId: settings?.adsSlotId || "1398487082",
+      slotId: settings?.adsSlotId || "8618507332",
     };
   } catch (error: any) {
     console.error("Error getting ads config:", error);
@@ -94,7 +94,7 @@ export async function getAdsConfig(): Promise<{
     return {
       enabled: true,
       publisherId: "ca-pub-1589551808134823",
-      slotId: "1398487082",
+      slotId: "8618507332",
     };
   }
 }
