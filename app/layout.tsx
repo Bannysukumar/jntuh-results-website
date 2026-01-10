@@ -21,10 +21,10 @@ const siteUrl = "https://manajntuhresults.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Mana JNTUH Results - Check Your UG & PG Exam Results Online | Mana JNTUH Results Portal",
-    template: "%s | Mana JNTUH Results"
+    default: "JNTUH RESULTS",
+    template: "%s | JNTUH RESULTS"
   },
-  description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs, and academic performance. Features: Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, Notifications. Official Mana JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad.",
+  description: "Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs, and academic performance. Features: Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, Notifications.",
   keywords: [
     "mana jntuh results",
     "mana jntuhresults",
@@ -85,9 +85,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: "Mana JNTUH Results",
-    title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
-    description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility, Syllabus, Jobs & Careers, and Notifications on Mana JNTUH Results portal.",
+    siteName: "JNTUH RESULTS",
+    title: "JNTUH RESULTS",
+    description: "Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility, Syllabus, Jobs & Careers, and Notifications.",
     images: [
       {
         url: `${siteUrl}/jntuhresults_md.png`,
@@ -105,8 +105,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
-    description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications.",
+    title: "JNTUH RESULTS",
+    description: "Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications.",
     images: [`${siteUrl}/jntuhresults_md.png`, `${siteUrl}/icon-512x512.png`],
     creator: "@Bannysukumar",
   },
@@ -119,7 +119,7 @@ export const metadata: Metadata = {
   category: "Education",
   classification: "University Results Portal",
   other: {
-    "application-name": "Mana JNTUH Results",
+    "application-name": "JNTUH RESULTS",
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "black-translucent",
