@@ -46,8 +46,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkingAdminRef.current = true;
 
     try {
-      // Get ID token
-      const idToken = await user.getIdToken(true); // Force refresh to get latest claims
+      // Get ID token - handle potential token errors
+      let idToken: string;
+      try {
+        idToken = await user.getIdToken(true); // Force refresh to get latest claims
+      } catch (tokenError: any) {
+        console.error("Error getting ID token:", tokenError);
+        setIsAdmin(false);
+        setAdminChecked(true);
+        setLoading(false);
+        checkingAdminRef.current = false;
+        return;
+      }
       
       // Verify admin status via API
       const response = await fetch("/api/admin/check-admin", {
@@ -61,14 +71,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         setIsAdmin(data.isAdmin || false);
+        setAdminChecked(true); // Only mark as checked on success
       } else {
-        setIsAdmin(false);
+        // Handle different error statuses
+        if (response.status === 401) {
+          // Unauthorized - token invalid or expired
+          console.warn("Admin check returned 401 - token may be invalid");
+          setIsAdmin(false);
+          setAdminChecked(true); // Still mark as checked to prevent infinite loops
+        } else {
+          // Other errors - retry might help
+          console.error("Admin check failed with status:", response.status);
+          setIsAdmin(false);
+          setAdminChecked(true);
+        }
       }
-      setAdminChecked(true); // Mark as checked after API call completes
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error checking admin status:", error);
       setIsAdmin(false);
-      setAdminChecked(true); // Mark as checked even on error
+      // Only mark as checked if it's a network error or similar
+      // Don't mark as checked if it's a token error that might be transient
+      if (error.code && error.code.startsWith("auth/")) {
+        // Auth errors - might be transient, but still mark as checked to prevent loops
+        setAdminChecked(true);
+      } else {
+        // Network or other errors
+        setAdminChecked(true);
+      }
     } finally {
       setLoading(false);
       checkingAdminRef.current = false;

@@ -13,8 +13,14 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { login, user, loading, isAdmin, adminChecked } = useAuth();
   const router = useRouter();
+
+  // Track if component is mounted to prevent hydration mismatches
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Redirect if already logged in and admin status is verified
   useEffect(() => {
@@ -48,7 +54,8 @@ export default function AdminLogin() {
   };
 
   // Show loading while checking auth status or admin status
-  if (loading || (user && !adminChecked)) {
+  // Use mounted flag to prevent hydration mismatch
+  if (!mounted || loading || (user && !adminChecked)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
@@ -60,7 +67,7 @@ export default function AdminLogin() {
   }
 
   // Don't render login form if already logged in as admin (redirect will happen)
-  if (user && adminChecked && isAdmin) {
+  if (mounted && user && adminChecked && isAdmin) {
     return null;
   }
 
