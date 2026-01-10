@@ -77,6 +77,7 @@ export default function AdminDashboard() {
     if (user && isAdmin) {
       fetchStats();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isAdmin]);
 
   const handleLogout = async () => {

@@ -239,7 +239,7 @@ const GroupChat = () => {
     } catch (error) {
       console.error("Error initializing presence tracking:", error);
     }
-  }, [username, sessionId, deviceId]);
+  }, [username, sessionId, deviceId, isBanned]);
 
   // Remove presence and stop all listeners immediately when user gets banned
   useEffect(() => {

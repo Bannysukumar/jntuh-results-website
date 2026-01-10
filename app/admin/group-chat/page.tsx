@@ -80,6 +80,7 @@ export default function GroupChatAdmin() {
       fetchBannedUsers();
       fetchReports();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isAdmin, reportStatusFilter]);
 
   const fetchActiveUsers = async () => {
@@ -489,9 +490,9 @@ export default function GroupChatAdmin() {
                   <br />
                   • Device IDs are automatically shown if found in messages, active users, or user mappings
                   <br />
-                  • If device ID is shown, click "Ban" button next to it for quick ban
+                  • If device ID is shown, click &quot;Ban&quot; button next to it for quick ban
                   <br />
-                  • If no device ID is shown, check "Active Users" list above or enter device ID manually
+                  • If no device ID is shown, check &quot;Active Users&quot; list above or enter device ID manually
                 </p>
                 {Array.from(usernameToMessages.entries()).map(([username, messages]) => (
                   <div
