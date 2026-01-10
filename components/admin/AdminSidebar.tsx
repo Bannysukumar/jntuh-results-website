@@ -12,7 +12,8 @@ import {
   Heart,
   RefreshCw,
   X,
-  Menu
+  Menu,
+  MessageCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,11 @@ const menuItems = [
     title: "Users",
     href: "/admin/users",
     icon: Users,
+  },
+  {
+    title: "Group Chat",
+    href: "/admin/group-chat",
+    icon: MessageCircle,
   },
   {
     title: "Health",

@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Group chat messages - public read/write access
+    match /groupChatMessages/{messageId} {
+      allow read: if true; // Anyone can read messages
+      allow create: if request.resource.data.keys().hasAll(['username', 'text', 'timestamp', 'deviceId'])
+                    && request.resource.data.username is string
+                    && request.resource.data.text is string
+                    && request.resource.data.timestamp is timestamp
+                    && request.resource.data.deviceId is string
+                    && request.resource.data.username.size() > 0
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() <= 1000
+                    && request.resource.data.deviceId.size() > 0;
+      allow update, delete: if false; // No updates or deletes allowed
+    }
+
+    // Banned users - public read, admin write only
+    match /bannedUsers/{deviceId} {
+      allow read: if true; // Anyone can check if they're banned
+      allow write: if false; // Only admins can write (use Firebase Admin SDK)
+    }
+
+    // User device mappings - allow users to write their own mapping
+    match /userDeviceMappings/{username} {
+      allow read: if true; // Anyone can read for admin lookup
+      allow create, update: if request.resource.data.username == username
+                            && request.resource.data.deviceId is string
+                            && request.resource.data.deviceId.size() > 0;
+      allow delete: if false; // Only admins can delete
+    }
+
+    // Message reactions - public read, users can add/remove their own reactions
+    match /messageReactions/{messageId} {
+      allow read: if true; // Anyone can read reactions
+      allow create, update: if request.resource.data.keys().hasAll(['messageId', 'reactions'])
+                    && request.resource.data.messageId is string
+                    && request.resource.data.reactions is map;
+      allow delete: if false; // Only admins can delete
+    }
+
+    // Message reports - users can create, admins can read/update
+    match /messageReports/{reportId} {
+      allow read: if false; // Only admins can read (via Admin SDK)
+      allow create: if request.resource.data.keys().hasAll(['messageId', 'messageText', 'reportedUsername', 'reportedDeviceId', 'reporterDeviceId', 'reason', 'timestamp'])
+                    && request.resource.data.messageId is string
+                    && request.resource.data.messageText is string
+                    && request.resource.data.reportedUsername is string
+                    && request.resource.data.reportedDeviceId is string
+                    && request.resource.data.reporterDeviceId is string
+                    && request.resource.data.reason is string
+                    && request.resource.data.timestamp is timestamp
+                    && request.resource.data.reason.size() > 0
+                    && request.resource.data.reason.size() <= 500;
+      allow update, delete: if false; // Only admins can update/delete (via Admin SDK)
+    }
+
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

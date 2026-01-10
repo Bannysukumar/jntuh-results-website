@@ -61,6 +61,7 @@ try {
     adminApp = admin.initializeApp({
       credential,
       projectId,
+      databaseURL: "https://mana-jntuh-results-default-rtdb.firebaseio.com",
     });
 
     adminAuth = getAuth(adminApp);
