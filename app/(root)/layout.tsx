@@ -68,22 +68,22 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
-    twitter: {
-      card: "summary_large_image",
-      title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
-      description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications.",
-      images: ["https://manajntuhresults.vercel.app/jntuhresults_md.png", "https://manajntuhresults.vercel.app/icon-512x512.png"],
-    },
-    alternates: {
-      canonical: "https://manajntuhresults.vercel.app",
-    },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mana JNTUH Results - Check Your UG & PG Exam Results Online",
+    description: "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications.",
+    images: ["https://manajntuhresults.vercel.app/jntuhresults_md.png", "https://manajntuhresults.vercel.app/icon-512x512.png"],
+  },
+  alternates: {
+    canonical: "https://manajntuhresults.vercel.app",
+  },
     verification: {
       google: "google-site-verification=2d4d1883a5e2e03b",
       other: {
         "impact-site-verification": "595ebfea-50e4-4e69-8e54-fa5f6f1c476c",
       },
     },
-  };
+};
 
 export default function RootLayout({
   children,

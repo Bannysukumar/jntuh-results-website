@@ -25,11 +25,13 @@ import {
   Database,
   Mail,
   Key,
-  AlertTriangle
+  AlertTriangle,
+  DollarSign
 } from "lucide-react";
 import toast from "react-hot-toast";
 import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import { getSettings, saveSettings } from "@/lib/settings";
 
 export default function AdminSettings() {
   const { user, loading: authLoading } = useAuth();
@@ -46,6 +48,9 @@ export default function AdminSettings() {
     maxFileSize: "10",
     sessionTimeout: "30",
     adminEmail: "",
+    adsEnabled: true,
+    adsPublisherId: "ca-pub-1589551808134823",
+    adsSlotId: "1398487082",
   });
 
   useEffect(() => {
@@ -54,11 +59,39 @@ export default function AdminSettings() {
     }
   }, [user, authLoading, router]);
 
+  useEffect(() => {
+    const loadSettings = async () => {
+      if (user) {
+        try {
+          const loadedSettings = await getSettings();
+          if (loadedSettings) {
+            setSettings({
+              siteName: loadedSettings.siteName || "Mana JNTUH Results",
+              siteUrl: loadedSettings.siteUrl || "https://manajntuhresults.vercel.app",
+              emailNotifications: loadedSettings.emailNotifications !== false,
+              maintenanceMode: loadedSettings.maintenanceMode === true,
+              allowRegistrations: loadedSettings.allowRegistrations !== false,
+              maxFileSize: loadedSettings.maxFileSize || "10",
+              sessionTimeout: loadedSettings.sessionTimeout || "30",
+              adminEmail: loadedSettings.adminEmail || "",
+              adsEnabled: loadedSettings.adsEnabled !== false,
+              adsPublisherId: loadedSettings.adsPublisherId || "ca-pub-1589551808134823",
+              adsSlotId: loadedSettings.adsSlotId || "1398487082",
+            });
+          }
+        } catch (error: any) {
+          console.error("Error loading settings:", error);
+          toast.error("Failed to load settings");
+        }
+      }
+    };
+    loadSettings();
+  }, [user]);
+
   const handleSave = async () => {
     setLoading(true);
     try {
-      // TODO: Save settings to Firebase or your backend
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await saveSettings(settings);
       toast.success("Settings saved successfully!");
     } catch (error: any) {
       toast.error(error.message || "Failed to save settings");
@@ -90,6 +123,9 @@ export default function AdminSettings() {
         maxFileSize: "10",
         sessionTimeout: "30",
         adminEmail: "",
+        adsEnabled: true,
+        adsPublisherId: "ca-pub-1589551808134823",
+        adsSlotId: "1398487082",
       });
       await new Promise((resolve) => setTimeout(resolve, 500));
       toast.success("Settings reset to default values!");
@@ -303,6 +339,79 @@ export default function AdminSettings() {
                     Configured via environment variables
                   </p>
                 </div>
+              </div>
+            </Card>
+
+            {/* Ads Settings */}
+            <Card className="p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <DollarSign className="h-5 w-5 text-green-500" />
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Ads Settings
+                </h2>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="adsEnabled">Enable Ads</Label>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Show Google AdSense ads on your website
+                    </p>
+                  </div>
+                  <Switch
+                    id="adsEnabled"
+                    checked={settings.adsEnabled}
+                    onCheckedChange={(checked) =>
+                      setSettings({ ...settings, adsEnabled: checked })
+                    }
+                  />
+                </div>
+                {settings.adsEnabled && (
+                  <>
+                    <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                      <p className="text-sm text-green-700 dark:text-green-300">
+                        ✓ Ads are currently enabled. They will be displayed on your website.
+                      </p>
+                    </div>
+                    <div>
+                      <Label htmlFor="adsPublisherId">AdSense Publisher ID</Label>
+                      <Input
+                        id="adsPublisherId"
+                        value={settings.adsPublisherId}
+                        onChange={(e) =>
+                          setSettings({ ...settings, adsPublisherId: e.target.value })
+                        }
+                        placeholder="ca-pub-XXXXXXXXXXXXXXXXX"
+                        className="mt-1"
+                      />
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Your Google AdSense Publisher ID (starts with ca-pub-)
+                      </p>
+                    </div>
+                    <div>
+                      <Label htmlFor="adsSlotId">AdSense Slot ID</Label>
+                      <Input
+                        id="adsSlotId"
+                        value={settings.adsSlotId}
+                        onChange={(e) =>
+                          setSettings({ ...settings, adsSlotId: e.target.value })
+                        }
+                        placeholder="1234567890"
+                        className="mt-1"
+                      />
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Your Google AdSense Ad Slot ID
+                      </p>
+                    </div>
+                  </>
+                )}
+                {!settings.adsEnabled && (
+                  <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Ads are currently disabled. They will not be displayed on your website.
+                    </p>
+                  </div>
+                )}
               </div>
             </Card>
 
