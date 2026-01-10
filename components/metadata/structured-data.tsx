@@ -1,17 +1,18 @@
 export default function StructuredData() {
   const organizationSchema = {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    "name": "Mana JNTUH Results Portal",
-    "alternateName": "Mana JNTUH Results",
+    "@type": "Organization",
+    "name": "JNTUH RESULTS",
+    "alternateName": ["JNTUH Results", "JNTUH Results Portal", "Mana JNTUH Results"],
     "url": "https://manajntuhresults.vercel.app",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://manajntuhresults.vercel.app/jntuhresults_md.png",
+      "url": "https://manajntuhresults.vercel.app/icon-512x512.png",
       "width": 512,
       "height": 512
     },
-    "description": "Mana JNTUH Results - Official portal for checking JNTUH (Jawaharlal Nehru Technological University Hyderabad) exam results online. Get your UG & PG results, CGPA, backlogs, and academic performance on Mana JNTUH Results.",
+    "image": "https://manajntuhresults.vercel.app/icon-512x512.png",
+    "description": "JNTUH RESULTS - Official portal for checking JNTUH (Jawaharlal Nehru Technological University Hyderabad) exam results online. Get your UG & PG results, CGPA, backlogs, and academic performance.",
     "sameAs": [
       "https://github.com/Bannysukumar",
       "https://www.linkedin.com/in/adepusukumar",
@@ -21,21 +22,31 @@ export default function StructuredData() {
       "@type": "ContactPoint",
       "contactType": "Technical Support",
       "url": "https://manajntuhresults.vercel.app/helpcenter"
+    },
+    "brand": {
+      "@type": "Brand",
+      "name": "JNTUH RESULTS",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://manajntuhresults.vercel.app/icon-512x512.png",
+        "width": 512,
+        "height": 512
+      }
     }
   };
 
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Mana JNTUH Results",
+    "name": "JNTUH RESULTS",
     "url": "https://manajntuhresults.vercel.app",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://manajntuhresults.vercel.app/jntuhresults_md.png",
+      "url": "https://manajntuhresults.vercel.app/icon-512x512.png",
       "width": 512,
       "height": 512
     },
-    "description": "Mana JNTUH Results - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy on Mana JNTUH Results portal.",
+    "description": "JNTUH RESULTS - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
@@ -125,7 +136,7 @@ export default function StructuredData() {
         "@type": "SiteNavigationElement",
         "name": "Help Center",
         "url": "https://manajntuhresults.vercel.app/helpcenter",
-        "description": "Get help and support for using Mana JNTUH Results portal"
+        "description": "Get help and support for using JNTUH RESULTS portal"
       }
     ]
   };
@@ -133,8 +144,8 @@ export default function StructuredData() {
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "name": "Mana JNTUH Results - Main Features",
-    "description": "Key features and pages available on Mana JNTUH Results portal",
+    "name": "JNTUH RESULTS - Main Features",
+    "description": "Key features and pages available on JNTUH RESULTS portal",
     "itemListElement": [
       {
         "@type": "ListItem",
