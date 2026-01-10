@@ -4,6 +4,8 @@ import { adminDb } from "@/lib/firebase-admin";
 import { adminApp } from "@/lib/firebase-admin";
 import { getDatabase } from "firebase-admin/database";
 
+export const dynamic = 'force-dynamic';
+
 async function verifyAdmin(request: NextRequest): Promise<{ isAdmin: boolean; error?: string }> {
   try {
     const authHeader = request.headers.get("authorization");
@@ -113,8 +115,8 @@ export async function GET(request: NextRequest) {
 
     // Try to get device IDs from active users (Realtime Database)
     try {
-      const databaseURL = "https://mana-jntuh-results-default-rtdb.firebaseio.com";
-      const db = getDatabase(adminApp, databaseURL);
+      // Get database instance (databaseURL is already set in firebase-admin.ts initialization)
+      const db = getDatabase(adminApp);
       const presenceRef = db.ref("presence");
       const snapshot = await presenceRef.once("value");
       const presenceData = snapshot.val();

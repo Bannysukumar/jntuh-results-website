@@ -3,6 +3,8 @@ import { verifyAdminUser } from "@/lib/admin-auth";
 import { getDatabase } from "firebase-admin/database";
 import { adminApp } from "@/lib/firebase-admin";
 
+export const dynamic = 'force-dynamic';
+
 async function verifyAdmin(request: NextRequest): Promise<{ isAdmin: boolean; error?: string }> {
   try {
     const authHeader = request.headers.get("authorization");
@@ -42,10 +44,8 @@ export async function GET(request: NextRequest) {
     }
     
     try {
-      // Get database with explicit URL to ensure it works
-      // Even if databaseURL wasn't set in initializeApp, we can pass it here
-      const databaseURL = "https://mana-jntuh-results-default-rtdb.firebaseio.com";
-      const db = getDatabase(adminApp, databaseURL);
+      // Get database instance (databaseURL is already set in firebase-admin.ts initialization)
+      const db = getDatabase(adminApp);
       
       const presenceRef = db.ref("presence");
 
