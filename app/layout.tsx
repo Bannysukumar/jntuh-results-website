@@ -12,6 +12,7 @@ import AdminWrapper from "@/components/admin/AdminWrapper";
 import NativeInit from "@/components/native/native-init";
 import OfflineIndicator from "@/components/native/offline-indicator";
 import NativeNotificationHandler from "@/components/native/native-notification-handler";
+import AIChatBot from "@/components/ai/AIChatBot";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -154,14 +155,14 @@ export default function RootLayout({
         <CanonicalUrl />
         <StructuredData />
       </head>
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589551808134823"
-        crossOrigin="anonymous"
-        strategy="beforeInteractive"
-      />
-      <GoogleAnalytics />
       <body className={inter.className}>
+        <GoogleAnalytics />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589551808134823"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <SpeedInsightsWrapper />
         <ThemeProvider
           attribute="class"
@@ -178,6 +179,7 @@ export default function RootLayout({
           <div className=" md:block">
             <Toaster position="bottom-right" reverseOrder={false} />
           </div>
+          <AIChatBot />
         </ThemeProvider>
       </body>
     </html>
