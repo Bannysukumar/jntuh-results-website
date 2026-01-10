@@ -35,7 +35,7 @@ import { getSettings, saveSettings } from "@/lib/settings";
 import { auth } from "@/lib/firebase";
 
 export default function AdminSettings() {
-  const { user, loading: authLoading, isAdmin } = useAuth();
+  const { user, loading: authLoading, isAdmin, adminChecked } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [savingMaintenanceMode, setSavingMaintenanceMode] = useState(false);
@@ -59,10 +59,13 @@ export default function AdminSettings() {
   });
 
   useEffect(() => {
-    if (!authLoading && (!user || !isAdmin)) {
-      router.push("/admin/login");
+    // Only redirect after loading is complete AND admin check is complete
+    if (!authLoading && adminChecked) {
+      if (!user || (user && !isAdmin)) {
+        router.replace("/admin/login");
+      }
     }
-  }, [user, authLoading, isAdmin, router]);
+  }, [user, authLoading, isAdmin, adminChecked, router]);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -176,11 +179,13 @@ export default function AdminSettings() {
     }
   };
 
-  if (authLoading) {
+  // Show loading while checking auth status or admin status
+  if (authLoading || !adminChecked) {
     return <Loading />;
   }
 
-  if (!user) {
+  // Don't render if not admin (redirect will happen)
+  if (!user || !isAdmin) {
     return null;
   }
 

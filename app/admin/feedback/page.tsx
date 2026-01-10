@@ -13,23 +13,26 @@ import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
 export default function AdminFeedback() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isAdmin, adminChecked } = useAuth();
   const router = useRouter();
   const [feedback, setFeedback] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "new" | "read" | "resolved">("all");
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/admin/login");
+    // Only redirect after loading is complete AND admin check is complete
+    if (!authLoading && adminChecked) {
+      if (!user || (user && !isAdmin)) {
+        router.replace("/admin/login");
+      }
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, isAdmin, adminChecked, router]);
 
   useEffect(() => {
-    if (user) {
+    if (user && isAdmin && adminChecked) {
       fetchFeedback();
     }
-  }, [user]);
+  }, [user, isAdmin, adminChecked]);
 
   const fetchFeedback = async () => {
     try {
@@ -94,11 +97,13 @@ export default function AdminFeedback() {
     ? feedback 
     : feedback.filter((item) => item.status === filter);
 
-  if (authLoading || loading) {
+  // Show loading while checking auth status or admin status
+  if (authLoading || loading || !adminChecked) {
     return <Loading />;
   }
 
-  if (!user) {
+  // Don't render if not admin (redirect will happen)
+  if (!user || !isAdmin) {
     return null;
   }
 

@@ -35,7 +35,7 @@ interface HealthStatus {
 }
 
 export default function AdminHealth() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isAdmin, adminChecked } = useAuth();
   const router = useRouter();
   const [healthData, setHealthData] = useState<HealthStatus | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,10 +43,13 @@ export default function AdminHealth() {
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/admin/login");
+    // Only redirect after loading is complete AND admin check is complete
+    if (!authLoading && adminChecked) {
+      if (!user || (user && !isAdmin)) {
+        router.replace("/admin/login");
+      }
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, isAdmin, adminChecked, router]);
 
   const fetchHealth = async () => {
     try {
@@ -77,13 +80,13 @@ export default function AdminHealth() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && isAdmin && adminChecked) {
       fetchHealth();
       // Auto-refresh every 30 seconds
       const interval = setInterval(fetchHealth, 30000);
       return () => clearInterval(interval);
     }
-  }, [user]);
+  }, [user, isAdmin, adminChecked]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -108,11 +111,13 @@ export default function AdminHealth() {
     return `${secs}s`;
   };
 
-  if (authLoading || loading) {
+  // Show loading while checking auth status or admin status
+  if (authLoading || loading || !adminChecked) {
     return <Loading />;
   }
 
-  if (!user) {
+  // Don't render if not admin (redirect will happen)
+  if (!user || !isAdmin) {
     return null;
   }
 

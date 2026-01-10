@@ -58,7 +58,7 @@ interface User {
 }
 
 export default function AdminUsers() {
-  const { user: currentUser, loading: authLoading, isAdmin } = useAuth();
+  const { user: currentUser, loading: authLoading, isAdmin, adminChecked } = useAuth();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState<User[]>([]);
@@ -87,15 +87,18 @@ export default function AdminUsers() {
   const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
-    if (!authLoading && (!currentUser || !isAdmin)) {
-      router.push("/admin/login");
+    // Only redirect after loading is complete AND admin check is complete
+    if (!authLoading && adminChecked) {
+      if (!currentUser || (currentUser && !isAdmin)) {
+        router.replace("/admin/login");
+      }
     }
-  }, [currentUser, authLoading, isAdmin, router]);
+  }, [currentUser, authLoading, isAdmin, adminChecked, router]);
 
   // Fetch users from Firebase
   useEffect(() => {
     const fetchUsers = async () => {
-      if (currentUser && isAdmin) {
+      if (currentUser && isAdmin && adminChecked) {
         setLoading(true);
         try {
           const response = await fetch("/api/admin/users");
@@ -120,7 +123,7 @@ export default function AdminUsers() {
     };
 
     fetchUsers();
-  }, [currentUser, isAdmin]);
+  }, [currentUser, isAdmin, adminChecked]);
 
   const filteredUsers = users.filter((u) =>
     u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -458,11 +461,13 @@ export default function AdminUsers() {
     }
   };
 
-  if (authLoading || loading) {
+  // Show loading while checking auth status or admin status
+  if (authLoading || loading || !adminChecked) {
     return <Loading />;
   }
 
-  if (!currentUser) {
+  // Don't render if not admin (redirect will happen)
+  if (!currentUser || !isAdmin) {
     return null;
   }
 

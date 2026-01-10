@@ -12,7 +12,7 @@ import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
 export default function AdminDashboard() {
-  const { user, loading, isAdmin, logout } = useAuth();
+  const { user, loading, isAdmin, adminChecked, logout } = useAuth();
   const router = useRouter();
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -21,10 +21,17 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    if (!loading && (!user || !isAdmin)) {
-      router.push("/admin/login");
+    // Only redirect after loading is complete AND admin check is complete
+    if (!loading && adminChecked) {
+      // If no user or user exists but is not admin, redirect to login
+      if (!user) {
+        router.replace("/admin/login");
+      } else if (user && !isAdmin) {
+        // Only redirect if we've checked and confirmed they're not admin
+        router.replace("/admin/login");
+      }
     }
-  }, [user, loading, isAdmin, router]);
+  }, [user, loading, isAdmin, adminChecked, router]);
 
   const fetchStats = async () => {
     if (!user || !isAdmin) return;
@@ -81,11 +88,13 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading) {
+  // Show loading while checking auth status or admin status
+  if (loading || !adminChecked) {
     return <Loading />;
   }
 
-  if (!user) {
+  // Don't render anything if not admin (redirect will happen)
+  if (!user || !isAdmin) {
     return null;
   }
 

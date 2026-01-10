@@ -21,7 +21,7 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 import { getFeedback } from "@/lib/feedback";
 
 export default function AdminAnalytics() {
-  const { user, loading: authLoading, isAdmin } = useAuth();
+  const { user, loading: authLoading, isAdmin, adminChecked } = useAuth();
   const router = useRouter();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -39,10 +39,13 @@ export default function AdminAnalytics() {
   });
 
   useEffect(() => {
-    if (!authLoading && (!user || !isAdmin)) {
-      router.push("/admin/login");
+    // Only redirect after loading is complete AND admin check is complete
+    if (!authLoading && adminChecked) {
+      if (!user || (user && !isAdmin)) {
+        router.replace("/admin/login");
+      }
     }
-  }, [user, authLoading, isAdmin, router]);
+  }, [user, authLoading, isAdmin, adminChecked, router]);
 
   const fetchAnalytics = async () => {
     if (!user || !isAdmin) return;
@@ -112,11 +115,11 @@ export default function AdminAnalytics() {
   };
 
   useEffect(() => {
-    if (user && isAdmin) {
+    if (user && isAdmin && adminChecked) {
       fetchAnalytics();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, isAdmin]);
+  }, [user, isAdmin, adminChecked]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -163,10 +166,12 @@ export default function AdminAnalytics() {
     toast.success("Analytics data exported successfully!");
   };
 
-  if (authLoading || loading) {
+  // Show loading while checking auth status or admin status
+  if (authLoading || loading || !adminChecked) {
     return <Loading />;
   }
 
+  // Don't render if not admin (redirect will happen)
   if (!user || !isAdmin) {
     return null;
   }

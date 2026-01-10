@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useRef } from "react";
 import {
   User,
   signInWithEmailAndPassword,
@@ -14,6 +14,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAdmin: boolean;
+  adminChecked: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -24,13 +25,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminChecked, setAdminChecked] = useState(false); // Track if we've completed admin check
   const router = useRouter();
+  const checkingAdminRef = useRef(false);
 
-  const checkAdminStatus = async (user: User | null) => {
+  const checkAdminStatus = async (user: User | null, skipConcurrencyCheck: boolean = false) => {
     if (!user) {
       setIsAdmin(false);
+      setAdminChecked(true);
+      setLoading(false);
+      checkingAdminRef.current = false;
       return;
     }
+
+    // Prevent concurrent admin checks
+    if (!skipConcurrencyCheck && checkingAdminRef.current) {
+      return;
+    }
+
+    checkingAdminRef.current = true;
 
     try {
       // Get ID token
@@ -51,21 +64,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         setIsAdmin(false);
       }
+      setAdminChecked(true); // Mark as checked after API call completes
     } catch (error) {
       console.error("Error checking admin status:", error);
       setIsAdmin(false);
+      setAdminChecked(true); // Mark as checked even on error
+    } finally {
+      setLoading(false);
+      checkingAdminRef.current = false;
     }
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setLoading(true); // Start with loading true
+      setAdminChecked(false); // Reset checked flag when auth state changes
       setUser(user);
       if (user) {
+        // Check admin status and wait for it to complete
+        // This will set loading to false and adminChecked to true when done
         await checkAdminStatus(user);
       } else {
         setIsAdmin(false);
+        setAdminChecked(true);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -93,7 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Wait a bit for token to propagate
         await new Promise(resolve => setTimeout(resolve, 1500));
         
-        // Check admin status
+        // Check admin status (skip concurrency check during login)
         const response = await fetch("/api/admin/check-admin", {
           method: "POST",
           headers: {
@@ -108,8 +131,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           if (data.isAdmin) {
             setIsAdmin(true);
+            setAdminChecked(true); // Mark as checked
             adminVerified = true;
-            router.push("/admin/dashboard");
+            // Don't redirect here - let the login page's useEffect handle it after state updates
+            // This prevents blinking caused by race conditions
             return; // Success - exit early
           }
         }
@@ -122,8 +147,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // If we've exhausted all attempts and still not admin
       if (!adminVerified) {
+        setAdminChecked(true);
         await signOut(auth);
-        setIsAdmin(false);
         throw new Error("Access denied. Admin privileges required. Please contact an administrator.");
       }
     } catch (error: any) {
@@ -140,14 +165,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await signOut(auth);
       setIsAdmin(false);
-      router.push("/admin/login");
+      setAdminChecked(false);
+      // Don't redirect here - onAuthStateChanged will handle it
     } catch (error: any) {
       throw new Error(error.message || "Failed to logout");
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, adminChecked, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

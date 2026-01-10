@@ -40,7 +40,7 @@ interface RefreshResponse {
 }
 
 export default function AdminHardRefresh() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isAdmin, adminChecked } = useAuth();
   const router = useRouter();
   const [htno, setHtno] = useState("");
   const [loading, setLoading] = useState(false);
@@ -48,10 +48,13 @@ export default function AdminHardRefresh() {
   const [clearAllDialogOpen, setClearAllDialogOpen] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/admin/login");
+    // Only redirect after loading is complete AND admin check is complete
+    if (!authLoading && adminChecked) {
+      if (!user || (user && !isAdmin)) {
+        router.replace("/admin/login");
+      }
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, isAdmin, adminChecked, router]);
 
   const handleRefreshByHtno = async () => {
     if (!htno || htno.length !== 10) {
@@ -121,11 +124,13 @@ export default function AdminHardRefresh() {
     }
   };
 
-  if (authLoading) {
+  // Show loading while checking auth status or admin status
+  if (authLoading || !adminChecked) {
     return <Loading />;
   }
 
-  if (!user) {
+  // Don't render if not admin (redirect will happen)
+  if (!user || !isAdmin) {
     return null;
   }
 

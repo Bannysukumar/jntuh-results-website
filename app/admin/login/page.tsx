@@ -13,15 +13,20 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login, user } = useAuth();
+  const { login, user, loading, isAdmin, adminChecked } = useAuth();
   const router = useRouter();
 
-  // Redirect if already logged in
+  // Redirect if already logged in and admin status is verified
   useEffect(() => {
-    if (user) {
-      router.push("/admin/dashboard");
+    // Wait for loading to complete, admin check to complete, and ensure we have both user and admin status
+    if (!loading && adminChecked && user && isAdmin) {
+      // Small delay to ensure all state is updated
+      const timer = setTimeout(() => {
+        router.replace("/admin/dashboard");
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, [user, router]);
+  }, [user, loading, isAdmin, adminChecked, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,13 +39,30 @@ export default function AdminLogin() {
     setIsLoading(true);
     try {
       await login(email, password);
-      toast.success("Login successful!");
+      // Login function will handle redirect, so we don't need to do anything here
+      // Don't show success toast as redirect is immediate
     } catch (error: any) {
       toast.error(error.message || "Invalid email or password");
-    } finally {
       setIsLoading(false);
     }
   };
+
+  // Show loading while checking auth status or admin status
+  if (loading || (user && !adminChecked)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-gray-600 dark:text-gray-400" />
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render login form if already logged in as admin (redirect will happen)
+  if (user && adminChecked && isAdmin) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
