@@ -92,7 +92,6 @@ export async function POST(request: NextRequest) {
     // Set disabled status based on status
     // - Suspended: disabled = true (user cannot login)
     // - Inactive or Active: disabled = false (user can login)
-    const userStatus = status || "active";
     if (userStatus === "suspended") {
       await adminAuth.updateUser(userRecord.uid, {
         disabled: true,
