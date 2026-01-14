@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@/components/themeprovider/theme-provider";
 import { Toaster } from "react-hot-toast";
@@ -152,17 +151,16 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Delicious+Handrawn&family=Inter:wght@300&family=Roboto+Slab&display=swap"
           rel="stylesheet"
         />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589551808134823"
+          crossOrigin="anonymous"
+        ></script>
         <CanonicalUrl />
         <StructuredData />
       </head>
       <body className={inter.className}>
         <GoogleAnalytics />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589551808134823"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
         <SpeedInsightsWrapper />
         <ThemeProvider
           attribute="class"
