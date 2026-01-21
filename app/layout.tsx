@@ -152,8 +152,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://fundingchoicesmessages.google.com" />
-        <link rel="dns-prefetch" href="https://quge5.com" />
-        <link rel="dns-prefetch" href="https://pl28531594.effectivegatecpm.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
@@ -214,22 +212,12 @@ export default function RootLayout({
                 })();
                 
                 // Error protection is handled by the recovery script above
-                
-                // PropellerAds script
-                var propellerScript = document.createElement('script');
-                propellerScript.src = 'https://quge5.com/88/tag.min.js';
-                propellerScript.setAttribute('data-zone', '204123');
-                propellerScript.async = true;
-                propellerScript.setAttribute('data-cfasync', 'false');
-                document.head.appendChild(propellerScript);
               });
             `,
           }}
         ></script>
         <CanonicalUrl />
         <StructuredData />
-        {/* PropellerAds Popunder */}
-        <script src="https://pl28531594.effectivegatecpm.com/85/9f/80/859f801b4829bdc4a54a19a0a5564dbd.js" async></script>
       </head>
       <body className={inter.className}>
         <GoogleAnalytics />
