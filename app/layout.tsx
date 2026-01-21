@@ -229,7 +229,7 @@ export default function RootLayout({
         <CanonicalUrl />
         <StructuredData />
         {/* PropellerAds Popunder */}
-        <script src="https://pl28531594.effectivegatecpm.com/85/9f/80/859f801b4829bdc4a54a19a0a5564dbd.js"></script>
+        <script src="https://pl28531594.effectivegatecpm.com/85/9f/80/859f801b4829bdc4a54a19a0a5564dbd.js" async></script>
       </head>
       <body className={inter.className}>
         <GoogleAnalytics />
