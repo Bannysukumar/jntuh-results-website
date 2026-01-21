@@ -174,19 +174,18 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Delicious+Handrawn&family=Inter:wght@300&family=Roboto+Slab&display=swap"
           rel="stylesheet"
         />
-        {/* Defer AdSense scripts to load after page render */}
+        {/* Google AdSense Script */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589551808134823"
+          crossOrigin="anonymous"
+        ></script>
+        {/* Ad blocking recovery and Funding Choices */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Load AdSense after page load
+              // Load ad blocking recovery after page load
               window.addEventListener('load', function() {
-                // AdSense script
-                var adsScript = document.createElement('script');
-                adsScript.async = true;
-                adsScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589551808134823';
-                adsScript.crossOrigin = 'anonymous';
-                document.head.appendChild(adsScript);
-                
                 // Ad blocking recovery script
                 var recoveryScript = document.createElement('script');
                 recoveryScript.async = true;
@@ -210,8 +209,6 @@ export default function RootLayout({
                   }
                   signalGooglefcPresent();
                 })();
-                
-                // Error protection is handled by the recovery script above
               });
             `,
           }}
