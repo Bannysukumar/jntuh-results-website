@@ -153,6 +153,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://fundingchoicesmessages.google.com" />
         <link rel="dns-prefetch" href="https://quge5.com" />
+        <link rel="dns-prefetch" href="https://pl28531594.effectivegatecpm.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
@@ -227,6 +228,8 @@ export default function RootLayout({
         ></script>
         <CanonicalUrl />
         <StructuredData />
+        {/* PropellerAds Popunder */}
+        <script src="https://pl28531594.effectivegatecpm.com/85/9f/80/859f801b4829bdc4a54a19a0a5564dbd.js"></script>
       </head>
       <body className={inter.className}>
         <GoogleAnalytics />
