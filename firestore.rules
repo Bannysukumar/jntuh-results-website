@@ -87,6 +87,23 @@ service cloud.firestore {
       allow write: if false; // Only admins can write (via Admin SDK)
     }
 
+    // Feedback - users can create, admins can read/update
+    match /feedback/{feedbackId} {
+      allow read: if false; // Only admins can read (via Admin SDK)
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'subject', 'message', 'status', 'createdAt', 'updatedAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.email is string
+                    && request.resource.data.subject is string
+                    && request.resource.data.message is string
+                    && request.resource.data.status is string
+                    && request.resource.data.createdAt is timestamp
+                    && request.resource.data.updatedAt is timestamp
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.message.size() > 0
+                    && request.resource.data.message.size() <= 2000;
+      allow update, delete: if false; // Only admins can update/delete (via Admin SDK)
+    }
+
     // Default deny all other collections
     match /{document=**} {
       allow read, write: if false;
