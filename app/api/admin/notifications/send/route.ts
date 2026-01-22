@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
+import { Timestamp } from "firebase-admin/firestore";
 import webpush, { PushSubscription } from "web-push";
 
 export const dynamic = 'force-dynamic';
@@ -141,7 +142,7 @@ export async function POST(request: NextRequest) {
       totalSubscriptions,
       successful,
       failed,
-      sentAt: new Date(),
+      sentAt: Timestamp.now(),
       sentBy: "admin", // Could be enhanced to track which admin sent it
     });
 
