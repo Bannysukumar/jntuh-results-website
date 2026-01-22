@@ -75,6 +75,12 @@ service cloud.firestore {
       allow read, write: if false; // Only admins can access (via Admin SDK)
     }
 
+    // Site settings - public read, admin write only
+    match /settings/{settingId} {
+      allow read: if true; // Anyone can read settings (for site name, etc.)
+      allow write: if false; // Only admins can write (via Admin SDK)
+    }
+
     // Default deny all other collections
     match /{document=**} {
       allow read, write: if false;
