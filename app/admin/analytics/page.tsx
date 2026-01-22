@@ -56,11 +56,19 @@ export default function AdminAnalytics() {
       const usersData = await usersResponse.json();
       const totalUsers = usersData.success ? usersData.count || 0 : 0;
 
-      // Fetch feedback count from Firestore
+      // Fetch feedback count from API
       let totalFeedback = 0;
       try {
-        const feedbackList = await getFeedback();
-        totalFeedback = feedbackList.length;
+        const idToken = await user.getIdToken();
+        const feedbackResponse = await fetch("/api/admin/feedback", {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+        if (feedbackResponse.ok) {
+          const feedbackData = await feedbackResponse.json();
+          totalFeedback = feedbackData.feedback?.length || 0;
+        }
       } catch (error) {
         console.log("Error fetching feedback count:", error);
       }
