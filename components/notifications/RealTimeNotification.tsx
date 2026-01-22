@@ -27,98 +27,113 @@ export default function RealTimeNotification() {
       return;
     }
 
-    try {
-      // Listen for new real-time notifications
-      // Try with orderBy first, fallback to simple query if index not available
-      let notificationsQuery;
+    let unsubscribe: (() => void) | null = null;
+    let retryCount = 0;
+    const maxRetries = 3;
+
+    const setupListener = () => {
       try {
-        notificationsQuery = query(
+        // Use simple query without orderBy to avoid index requirement
+        // We'll sort in memory instead
+        const notificationsQuery = query(
           collection(db, "realTimeNotifications"),
-          orderBy("createdAt", "desc"),
-          limit(5) // Only show the 5 most recent
+          limit(10) // Get more to sort, then take top 5
         );
-      } catch (queryError) {
-        // If orderBy fails (index not created), use simple query
-        console.warn("OrderBy query failed, using simple query:", queryError);
-        notificationsQuery = query(
-          collection(db, "realTimeNotifications"),
-          limit(5)
-        );
-      }
 
-      const unsubscribe = onSnapshot(
-        notificationsQuery,
-        (snapshot) => {
-          const newNotifications: RealTimeNotification[] = [];
-          snapshot.forEach((doc) => {
-            const data = doc.data();
-            newNotifications.push({
-              id: doc.id,
-              title: data.title,
-              message: data.message,
-              url: data.url,
-              createdAt: data.createdAt,
-              type: data.type || "info",
+        unsubscribe = onSnapshot(
+          notificationsQuery,
+          (snapshot) => {
+            const newNotifications: RealTimeNotification[] = [];
+            snapshot.forEach((doc) => {
+              const data = doc.data();
+              newNotifications.push({
+                id: doc.id,
+                title: data.title,
+                message: data.message,
+                url: data.url,
+                createdAt: data.createdAt,
+                type: data.type || "info",
+              });
             });
-          });
 
-          // Sort by createdAt if we used simple query
-          if (newNotifications.length > 0 && newNotifications[0].createdAt) {
+            // Sort by createdAt in descending order (most recent first)
             newNotifications.sort((a, b) => {
-              const aTime = a.createdAt?.toMillis?.() || 0;
-              const bTime = b.createdAt?.toMillis?.() || 0;
+              const aTime = a.createdAt?.toMillis?.() || a.createdAt?.seconds || 0;
+              const bTime = b.createdAt?.toMillis?.() || b.createdAt?.seconds || 0;
               return bTime - aTime; // Descending order
             });
-          }
 
-          // Only show notifications that haven't been dismissed
-          setNotifications(
-            newNotifications.filter((notif) => !dismissedIds.has(notif.id))
-          );
+            // Take only the 5 most recent
+            const top5 = newNotifications.slice(0, 5);
 
-          // Show toast for the most recent notification if it's new
-          if (newNotifications.length > 0) {
-            const latest = newNotifications[0];
-            if (!dismissedIds.has(latest.id)) {
-              toast(
-                (t) => (
-                  <div className="flex items-start gap-3">
-                    <Bell className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1">
-                      <p className="font-semibold text-sm">{latest.title}</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                        {latest.message}
-                      </p>
+            // Only show notifications that haven't been dismissed
+            setNotifications(
+              top5.filter((notif) => !dismissedIds.has(notif.id))
+            );
+
+            // Show toast for the most recent notification if it's new
+            if (top5.length > 0) {
+              const latest = top5[0];
+              if (!dismissedIds.has(latest.id)) {
+                toast(
+                  (t) => (
+                    <div className="flex items-start gap-3">
+                      <Bell className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <p className="font-semibold text-sm">{latest.title}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                          {latest.message}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          toast.dismiss(t.id);
+                          setDismissedIds((prev) => new Set(prev).add(latest.id));
+                        }}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        toast.dismiss(t.id);
-                        setDismissedIds((prev) => new Set(prev).add(latest.id));
-                      }}
-                      className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ),
-                {
-                  duration: 10000,
-                  position: "top-center",
-                }
-              );
+                  ),
+                  {
+                    duration: 10000,
+                    position: "top-center",
+                  }
+                );
+              }
+            }
+          },
+          (error: any) => {
+            // Only log permission errors, don't spam console
+            if (error?.code === "permission-denied" || error?.code === "missing-or-insufficient-permissions") {
+              // Silently fail - rules might not be deployed yet
+              console.warn("Real-time notifications: Permission denied. Please deploy Firestore rules.");
+            } else {
+              console.error("Error listening to real-time notifications:", error);
+            }
+            
+            // Retry logic for non-permission errors
+            if (error?.code !== "permission-denied" && error?.code !== "missing-or-insufficient-permissions" && retryCount < maxRetries) {
+              retryCount++;
+              setTimeout(() => {
+                setupListener();
+              }, 2000 * retryCount); // Exponential backoff
             }
           }
-        },
-        (error) => {
-          console.error("Error listening to real-time notifications:", error);
-          // Don't show error to user, just log it
-        }
-      );
+        );
+      } catch (error) {
+        console.error("Error setting up real-time notifications listener:", error);
+      }
+    };
 
-      return () => unsubscribe();
-    } catch (error) {
-      console.error("Error setting up real-time notifications listener:", error);
-    }
+    setupListener();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [dismissedIds]);
 
   const handleDismiss = (id: string) => {
