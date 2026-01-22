@@ -18,7 +18,6 @@ import {
 import toast from "react-hot-toast";
 import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import { getFeedback } from "@/lib/feedback";
 
 export default function AdminAnalytics() {
   const { user, loading: authLoading, isAdmin, adminChecked } = useAuth();

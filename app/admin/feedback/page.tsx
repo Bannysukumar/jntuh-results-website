@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, CheckCircle, Circle, XCircle, RefreshCw } from "lucide-react";
-import { getFeedback, updateFeedbackStatus, Feedback } from "@/lib/feedback";
+import { Feedback } from "@/lib/feedback";
 import toast from "react-hot-toast";
 import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
@@ -35,10 +35,24 @@ export default function AdminFeedback() {
   }, [user, isAdmin, adminChecked]);
 
   const fetchFeedback = async () => {
+    if (!user || !isAdmin) return;
+    
     try {
       setLoading(true);
-      const data = await getFeedback();
-      setFeedback(data);
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/admin/feedback", {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFeedback(data.feedback || []);
+      } else {
+        const error = await response.json();
+        toast.error(error.error || "Failed to load feedback");
+      }
     } catch (error: any) {
       toast.error(error.message || "Failed to load feedback");
     } finally {
@@ -47,14 +61,30 @@ export default function AdminFeedback() {
   };
 
   const handleStatusChange = async (id: string, newStatus: "new" | "read" | "resolved") => {
+    if (!user || !isAdmin) return;
+    
     try {
-      await updateFeedbackStatus(id, newStatus);
-      setFeedback((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, status: newStatus } : item
-        )
-      );
-      toast.success("Status updated successfully");
+      const idToken = await user.getIdToken();
+      const response = await fetch(`/api/admin/feedback/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        setFeedback((prev) =>
+          prev.map((item) =>
+            item.id === id ? { ...item, status: newStatus } : item
+          )
+        );
+        toast.success("Status updated successfully");
+      } else {
+        const error = await response.json();
+        toast.error(error.error || "Failed to update status");
+      }
     } catch (error: any) {
       toast.error(error.message || "Failed to update status");
     }
