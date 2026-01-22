@@ -22,73 +22,103 @@ export default function RealTimeNotification() {
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    // Listen for new real-time notifications
-    const notificationsQuery = query(
-      collection(db, "realTimeNotifications"),
-      orderBy("createdAt", "desc"),
-      limit(5) // Only show the 5 most recent
-    );
+    // Check if Firebase is initialized
+    if (!db || typeof window === "undefined") {
+      return;
+    }
 
-    const unsubscribe = onSnapshot(
-      notificationsQuery,
-      (snapshot) => {
-        const newNotifications: RealTimeNotification[] = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          newNotifications.push({
-            id: doc.id,
-            title: data.title,
-            message: data.message,
-            url: data.url,
-            createdAt: data.createdAt,
-            type: data.type || "info",
-          });
-        });
-
-        // Only show notifications that haven't been dismissed
-        setNotifications(
-          newNotifications.filter((notif) => !dismissedIds.has(notif.id))
+    try {
+      // Listen for new real-time notifications
+      // Try with orderBy first, fallback to simple query if index not available
+      let notificationsQuery;
+      try {
+        notificationsQuery = query(
+          collection(db, "realTimeNotifications"),
+          orderBy("createdAt", "desc"),
+          limit(5) // Only show the 5 most recent
         );
-
-        // Show toast for the most recent notification if it's new
-        if (newNotifications.length > 0) {
-          const latest = newNotifications[0];
-          if (!dismissedIds.has(latest.id)) {
-            toast(
-              (t) => (
-                <div className="flex items-start gap-3">
-                  <Bell className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="font-semibold text-sm">{latest.title}</p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                      {latest.message}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      toast.dismiss(t.id);
-                      setDismissedIds((prev) => new Set(prev).add(latest.id));
-                    }}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              ),
-              {
-                duration: 10000,
-                position: "top-center",
-              }
-            );
-          }
-        }
-      },
-      (error) => {
-        console.error("Error listening to real-time notifications:", error);
+      } catch (queryError) {
+        // If orderBy fails (index not created), use simple query
+        console.warn("OrderBy query failed, using simple query:", queryError);
+        notificationsQuery = query(
+          collection(db, "realTimeNotifications"),
+          limit(5)
+        );
       }
-    );
 
-    return () => unsubscribe();
+      const unsubscribe = onSnapshot(
+        notificationsQuery,
+        (snapshot) => {
+          const newNotifications: RealTimeNotification[] = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            newNotifications.push({
+              id: doc.id,
+              title: data.title,
+              message: data.message,
+              url: data.url,
+              createdAt: data.createdAt,
+              type: data.type || "info",
+            });
+          });
+
+          // Sort by createdAt if we used simple query
+          if (newNotifications.length > 0 && newNotifications[0].createdAt) {
+            newNotifications.sort((a, b) => {
+              const aTime = a.createdAt?.toMillis?.() || 0;
+              const bTime = b.createdAt?.toMillis?.() || 0;
+              return bTime - aTime; // Descending order
+            });
+          }
+
+          // Only show notifications that haven't been dismissed
+          setNotifications(
+            newNotifications.filter((notif) => !dismissedIds.has(notif.id))
+          );
+
+          // Show toast for the most recent notification if it's new
+          if (newNotifications.length > 0) {
+            const latest = newNotifications[0];
+            if (!dismissedIds.has(latest.id)) {
+              toast(
+                (t) => (
+                  <div className="flex items-start gap-3">
+                    <Bell className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="font-semibold text-sm">{latest.title}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        {latest.message}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        toast.dismiss(t.id);
+                        setDismissedIds((prev) => new Set(prev).add(latest.id));
+                      }}
+                      className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ),
+                {
+                  duration: 10000,
+                  position: "top-center",
+                }
+              );
+            }
+          }
+        },
+        (error) => {
+          console.error("Error listening to real-time notifications:", error);
+          // Don't show error to user, just log it
+        }
+      );
+
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Error setting up real-time notifications listener:", error);
+    }
   }, [dismissedIds]);
 
   const handleDismiss = (id: string) => {
