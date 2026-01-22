@@ -263,7 +263,7 @@ export default function AdminVapidKeys() {
                     disabled={isSaving}
                   />
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Keep this key secret! It's used to send push notifications
+                    Keep this key secret! It&apos;s used to send push notifications
                   </p>
                 </div>
 
