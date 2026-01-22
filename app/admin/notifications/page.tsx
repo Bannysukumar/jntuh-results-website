@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Bell, Send, Loader2, Users, CheckCircle2, XCircle, RefreshCw, History, Clock } from "lucide-react";
+import { Bell, Send, Loader2, Users, CheckCircle2, XCircle, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
 import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
@@ -20,8 +20,10 @@ export default function AdminNotifications() {
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [notificationHistory, setNotificationHistory] = useState<any[]>([]);
-  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [stats, setStats] = useState({
+    totalSubscriptions: 0,
+    loading: true,
+  });
 
   useEffect(() => {
     if (!loading && adminChecked) {
@@ -33,13 +35,13 @@ export default function AdminNotifications() {
     }
   }, [user, loading, isAdmin, adminChecked, router]);
 
-  const fetchHistory = async () => {
+  const fetchStats = async () => {
     if (!user || !isAdmin) return;
 
-    setLoadingHistory(true);
+    setStats(prev => ({ ...prev, loading: true }));
     try {
       const idToken = await user.getIdToken();
-      const response = await fetch("/api/admin/notifications/history", {
+      const response = await fetch("/api/admin/notifications/stats", {
         headers: {
           Authorization: `Bearer ${idToken}`,
         },
@@ -47,18 +49,22 @@ export default function AdminNotifications() {
 
       if (response.ok) {
         const data = await response.json();
-        setNotificationHistory(data.notifications || []);
+        setStats({
+          totalSubscriptions: data.totalSubscriptions || 0,
+          loading: false,
+        });
+      } else {
+        setStats(prev => ({ ...prev, loading: false }));
       }
     } catch (error: any) {
-      console.error("Error fetching notification history:", error);
-    } finally {
-      setLoadingHistory(false);
+      console.error("Error fetching notification stats:", error);
+      setStats(prev => ({ ...prev, loading: false }));
     }
   };
 
   useEffect(() => {
     if (user && isAdmin) {
-      fetchHistory();
+      fetchStats();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isAdmin]);
@@ -110,7 +116,6 @@ export default function AdminNotifications() {
         setTitle("");
         setBody("");
         setUrl("");
-        fetchHistory(); // Refresh history to show the new notification
       } else {
         toast.error(data.error || "Failed to send notifications");
       }
@@ -152,6 +157,36 @@ export default function AdminNotifications() {
 
         {/* Main Content */}
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Stats Card */}
+          <Card className="p-6 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Total Subscribers
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={fetchStats}
+                    disabled={stats.loading}
+                    className="h-8"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${stats.loading ? "animate-spin" : ""}`} />
+                  </Button>
+                </div>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">
+                  {stats.loading ? (
+                    <span className="text-gray-400">Loading...</span>
+                  ) : (
+                    stats.totalSubscriptions.toLocaleString()
+                  )}
+                </p>
+              </div>
+              <Users className="h-8 w-8 text-blue-500 ml-4" />
+            </div>
+          </Card>
+
           {/* Notification Form */}
           <Card className="p-6">
             <form onSubmit={handleSend} className="space-y-6">
@@ -245,86 +280,6 @@ export default function AdminNotifications() {
                 </Button>
               </div>
             </form>
-          </Card>
-
-          {/* Notification History */}
-          <Card className="p-6 mt-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <History className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Notification History
-                </h2>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={fetchHistory}
-                disabled={loadingHistory}
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${loadingHistory ? "animate-spin" : ""}`} />
-                Refresh
-              </Button>
-            </div>
-
-            {loadingHistory ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-              </div>
-            ) : notificationHistory.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No notifications sent yet</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {notificationHistory.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                          {notification.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                          {notification.body}
-                        </p>
-                        {notification.url && (
-                          <p className="text-xs text-blue-600 dark:text-blue-400 mb-2">
-                            URL: {notification.url}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        <span>
-                          {notification.sentAt
-                            ? new Date(notification.sentAt).toLocaleString()
-                            : "Unknown date"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="text-green-600 dark:text-green-400">
-                          ✓ {notification.successful || 0} successful
-                        </span>
-                        {notification.failed > 0 && (
-                          <span className="text-red-600 dark:text-red-400">
-                            ✗ {notification.failed} failed
-                          </span>
-                        )}
-                        <span className="text-gray-600 dark:text-gray-400">
-                          Total: {notification.totalSubscriptions || 0}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </Card>
 
           {/* Info Card */}
