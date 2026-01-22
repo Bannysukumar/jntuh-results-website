@@ -18,6 +18,10 @@ const AIChatBot = dynamic(() => import("@/components/ai/AIChatBot"), {
   ssr: false,
 });
 
+const RealTimeNotification = dynamic(() => import("@/components/notifications/RealTimeNotification"), {
+  ssr: false,
+});
+
 const inter = Inter({ 
   subsets: ["latin"],
   display: "swap",
@@ -235,6 +239,7 @@ export default function RootLayout({
             <Toaster position="bottom-right" reverseOrder={false} />
           </div>
           <AIChatBot />
+          <RealTimeNotification />
         </ThemeProvider>
       </body>
     </html>

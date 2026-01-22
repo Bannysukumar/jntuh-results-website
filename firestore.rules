@@ -81,6 +81,12 @@ service cloud.firestore {
       allow write: if false; // Only admins can write (via Admin SDK)
     }
 
+    // Real-time notifications - public read, admin write only
+    match /realTimeNotifications/{notificationId} {
+      allow read: if true; // Anyone can read real-time notifications
+      allow write: if false; // Only admins can write (via Admin SDK)
+    }
+
     // Default deny all other collections
     match /{document=**} {
       allow read, write: if false;

@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Bell, Send, Loader2, Users, CheckCircle2, XCircle, RefreshCw } from "lucide-react";
+import { Bell, Send, Loader2, Users, CheckCircle2, XCircle, RefreshCw, Radio } from "lucide-react";
 import toast from "react-hot-toast";
 import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
@@ -20,6 +20,11 @@ export default function AdminNotifications() {
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [realtimeTitle, setRealtimeTitle] = useState("");
+  const [realtimeMessage, setRealtimeMessage] = useState("");
+  const [realtimeUrl, setRealtimeUrl] = useState("");
+  const [isSendingRealtime, setIsSendingRealtime] = useState(false);
+  const [notificationType, setNotificationType] = useState<"push" | "realtime">("push");
   const [stats, setStats] = useState({
     totalSubscriptions: 0,
     loading: true,
@@ -68,6 +73,65 @@ export default function AdminNotifications() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isAdmin]);
+
+  const handleSendRealtime = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!realtimeTitle.trim() || !realtimeMessage.trim()) {
+      toast.error("Please fill in title and message");
+      return;
+    }
+
+    if (realtimeTitle.length > 100) {
+      toast.error("Title must be 100 characters or less");
+      return;
+    }
+
+    if (realtimeMessage.length > 500) {
+      toast.error("Message must be 500 characters or less");
+      return;
+    }
+
+    setIsSendingRealtime(true);
+    try {
+      const idToken = await user?.getIdToken();
+      if (!idToken) {
+        toast.error("Authentication required");
+        setIsSendingRealtime(false);
+        return;
+      }
+
+      const response = await fetch("/api/admin/notifications/realtime", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          title: realtimeTitle.trim(),
+          message: realtimeMessage.trim(),
+          url: realtimeUrl.trim() || undefined,
+          type: "info",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || "Real-time notification sent successfully!");
+        setRealtimeTitle("");
+        setRealtimeMessage("");
+        setRealtimeUrl("");
+      } else {
+        toast.error(data.error || "Failed to send real-time notification");
+      }
+    } catch (error: any) {
+      console.error("Error sending real-time notification:", error);
+      toast.error("Failed to send real-time notification");
+    } finally {
+      setIsSendingRealtime(false);
+    }
+  };
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -157,7 +221,34 @@ export default function AdminNotifications() {
 
         {/* Main Content */}
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Stats Card */}
+          {/* Notification Type Tabs */}
+          <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-700">
+            <button
+              onClick={() => setNotificationType("push")}
+              className={`px-4 py-2 font-medium text-sm transition-colors ${
+                notificationType === "push"
+                  ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+              }`}
+            >
+              <Bell className="h-4 w-4 inline mr-2" />
+              Push Notifications
+            </button>
+            <button
+              onClick={() => setNotificationType("realtime")}
+              className={`px-4 py-2 font-medium text-sm transition-colors ${
+                notificationType === "realtime"
+                  ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+              }`}
+            >
+              <Radio className="h-4 w-4 inline mr-2" />
+              Real-Time Notifications
+            </button>
+          </div>
+
+          {/* Stats Card - Only show for push notifications */}
+          {notificationType === "push" && (
           <Card className="p-6 mb-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
@@ -186,8 +277,10 @@ export default function AdminNotifications() {
               <Users className="h-8 w-8 text-blue-500 ml-4" />
             </div>
           </Card>
+          )}
 
-          {/* Notification Form */}
+          {/* Push Notification Form */}
+          {notificationType === "push" && (
           <Card className="p-6">
             <form onSubmit={handleSend} className="space-y-6">
               <div>
@@ -281,6 +374,110 @@ export default function AdminNotifications() {
               </div>
             </form>
           </Card>
+          )}
+
+          {/* Real-Time Notification Form */}
+          {notificationType === "realtime" && (
+          <Card className="p-6">
+            <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                <Radio className="h-4 w-4 inline mr-2" />
+                Real-time notifications appear instantly to all users currently browsing the website.
+              </p>
+            </div>
+            <form onSubmit={handleSendRealtime} className="space-y-6">
+              <div>
+                <Label htmlFor="realtimeTitle" className="text-base font-medium">
+                  Notification Title *
+                </Label>
+                <Input
+                  id="realtimeTitle"
+                  type="text"
+                  value={realtimeTitle}
+                  onChange={(e) => setRealtimeTitle(e.target.value)}
+                  placeholder="Enter notification title (max 100 characters)"
+                  maxLength={100}
+                  required
+                  className="mt-2"
+                  disabled={isSendingRealtime}
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {realtimeTitle.length}/100 characters
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="realtimeMessage" className="text-base font-medium">
+                  Message *
+                </Label>
+                <Textarea
+                  id="realtimeMessage"
+                  value={realtimeMessage}
+                  onChange={(e) => setRealtimeMessage(e.target.value)}
+                  placeholder="Enter notification message (max 500 characters)"
+                  maxLength={500}
+                  required
+                  rows={5}
+                  className="mt-2"
+                  disabled={isSendingRealtime}
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {realtimeMessage.length}/500 characters
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="realtimeUrl" className="text-base font-medium">
+                  URL (Optional)
+                </Label>
+                <Input
+                  id="realtimeUrl"
+                  type="url"
+                  value={realtimeUrl}
+                  onChange={(e) => setRealtimeUrl(e.target.value)}
+                  placeholder="https://manajntuhresults.vercel.app/academicresult"
+                  className="mt-2"
+                  disabled={isSendingRealtime}
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Leave empty if no action needed
+                </p>
+              </div>
+
+              <div className="flex items-center gap-4 pt-4">
+                <Button
+                  type="submit"
+                  disabled={isSendingRealtime || !realtimeTitle.trim() || !realtimeMessage.trim()}
+                  className="flex items-center gap-2"
+                >
+                  {isSendingRealtime ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Radio className="h-4 w-4" />
+                      Send Real-Time Notification
+                    </>
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setRealtimeTitle("");
+                    setRealtimeMessage("");
+                    setRealtimeUrl("");
+                  }}
+                  disabled={isSendingRealtime}
+                >
+                  Clear
+                </Button>
+              </div>
+            </form>
+          </Card>
+          )}
 
           {/* Info Card */}
           <Card className="p-6 mt-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
