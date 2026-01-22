@@ -30,7 +30,24 @@ export async function setupPush(rollNumber?: string) {
     console.log("Waiting for ready...");
     const reg = await navigator.serviceWorker.ready;
 
-    const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    // Try to get VAPID key from API first, fallback to environment variable
+    let key: string | null = null;
+    
+    try {
+      const response = await fetch("/api/vapid-public-key");
+      if (response.ok) {
+        const data = await response.json();
+        key = data.publicKey;
+      }
+    } catch (error) {
+      console.warn("Failed to fetch VAPID key from API, using environment variable");
+    }
+
+    // Fallback to environment variable
+    if (!key) {
+      key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || null;
+    }
+
     if (!key) {
       console.warn("VAPID public key is not configured. Push notifications will not work.");
       return;
@@ -48,9 +65,8 @@ export async function setupPush(rollNumber?: string) {
 
     console.log("Subscription success!", sub);
 
-    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-
-    await fetch(`${url}save-subscription`, {
+    // Save subscription to our API
+    await fetch("/api/save-subscription", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
