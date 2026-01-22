@@ -37,6 +37,8 @@ export async function GET(request: NextRequest) {
       .get();
 
     const totalSubscriptions = subscriptionsSnapshot.size;
+    
+    console.log(`Total subscriptions found: ${totalSubscriptions}`);
 
     return NextResponse.json({
       success: true,

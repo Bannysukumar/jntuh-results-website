@@ -65,18 +65,36 @@ export async function setupPush(rollNumber?: string) {
 
     console.log("Subscription success!", sub);
 
+    // Convert PushSubscription to JSON-serializable format
+    // PushSubscription has a toJSON() method, but we'll extract the data directly
+    const subscriptionJson = sub.toJSON ? sub.toJSON() : {
+      endpoint: sub.endpoint,
+      keys: {
+        p256dh: (sub as any).keys?.p256dh,
+        auth: (sub as any).keys?.auth,
+      },
+    };
+
+    console.log("Subscription JSON:", subscriptionJson);
+
     // Save subscription to our API
-    await fetch("/api/save-subscription", {
+    const response = await fetch("/api/save-subscription", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         anon_id: anonId,
         roll_number: rollNumber || null,
-        subscription: sub,
+        subscription: subscriptionJson,
       }),
     });
 
-    console.log("Subscription saved.");
+    if (response.ok) {
+      const result = await response.json();
+      console.log("Subscription saved successfully:", result);
+    } else {
+      const error = await response.json();
+      console.error("Failed to save subscription:", error);
+    }
   } catch (err) {
     console.error("❌ Push setup failed:", err);
   }

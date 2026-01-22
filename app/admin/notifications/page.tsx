@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Bell, Send, Loader2, Users, CheckCircle2, XCircle } from "lucide-react";
+import { Bell, Send, Loader2, Users, CheckCircle2, XCircle, RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
 import Loading from "@/components/loading/loading";
 import AdminSidebar from "@/components/admin/AdminSidebar";
@@ -65,6 +65,11 @@ export default function AdminNotifications() {
   useEffect(() => {
     if (user && isAdmin) {
       fetchStats();
+      // Refresh stats every 10 seconds to show real-time updates
+      const interval = setInterval(() => {
+        fetchStats();
+      }, 10000);
+      return () => clearInterval(interval);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isAdmin]);
@@ -161,10 +166,21 @@ export default function AdminNotifications() {
           {/* Stats Card */}
           <Card className="p-6 mb-6">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Total Subscribers
-                </p>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    Total Subscribers
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={fetchStats}
+                    disabled={stats.loading}
+                    className="h-8"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${stats.loading ? "animate-spin" : ""}`} />
+                  </Button>
+                </div>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">
                   {stats.loading ? (
                     <span className="text-gray-400">Loading...</span>
@@ -172,8 +188,11 @@ export default function AdminNotifications() {
                     stats.totalSubscriptions.toLocaleString()
                   )}
                 </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Auto-refreshes every 10 seconds
+                </p>
               </div>
-              <Users className="h-8 w-8 text-blue-500" />
+              <Users className="h-8 w-8 text-blue-500 ml-4" />
             </div>
           </Card>
 
