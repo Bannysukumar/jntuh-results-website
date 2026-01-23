@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, body, url } = await request.json();
+    const { title, body, url, duration } = await request.json();
 
     if (!title || !body) {
       return NextResponse.json(
@@ -139,6 +139,7 @@ export async function POST(request: NextRequest) {
       title,
       body,
       url: url || null,
+      duration: duration || 30, // Store duration (in seconds) for reference
       totalSubscriptions,
       successful,
       failed,

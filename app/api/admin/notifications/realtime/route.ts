@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, message, url, type } = await request.json();
+    const { title, message, url, type, duration } = await request.json();
 
     if (!title || !message) {
       return NextResponse.json(
@@ -55,12 +55,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate duration (default to 30 seconds if not provided or invalid)
+    const displayDuration = duration && duration >= 5 && duration <= 300 ? duration : 30;
+
     // Create real-time notification in Firestore
     const notificationData = {
       title: title.trim(),
       message: message.trim(),
       url: url?.trim() || null,
       type: type || "info",
+      duration: displayDuration, // Duration in seconds
       createdAt: Timestamp.now(),
       sentBy: "admin",
     };

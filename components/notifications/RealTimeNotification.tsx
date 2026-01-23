@@ -15,11 +15,13 @@ interface RealTimeNotification {
   url?: string;
   createdAt: Timestamp;
   type?: "info" | "success" | "warning" | "error";
+  duration?: number; // Duration in seconds
 }
 
 export default function RealTimeNotification() {
   const [notifications, setNotifications] = useState<RealTimeNotification[]>([]);
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
+  const [timeRemaining, setTimeRemaining] = useState<Record<string, number>>({});
 
   useEffect(() => {
     // Check if Firebase is initialized
@@ -53,6 +55,7 @@ export default function RealTimeNotification() {
                 url: data.url,
                 createdAt: data.createdAt,
                 type: data.type || "info",
+                duration: data.duration || 30, // Default to 30 seconds if not specified
               });
             });
 
@@ -67,9 +70,18 @@ export default function RealTimeNotification() {
             const top5 = newNotifications.slice(0, 5);
 
             // Only show notifications that haven't been dismissed
-            setNotifications(
-              top5.filter((notif) => !dismissedIds.has(notif.id))
-            );
+            const activeNotifications = top5.filter((notif) => !dismissedIds.has(notif.id));
+            setNotifications(activeNotifications);
+
+            // Initialize time remaining for new notifications
+            activeNotifications.forEach((notif) => {
+              if (!timeRemaining[notif.id] && notif.duration) {
+                setTimeRemaining((prev) => ({
+                  ...prev,
+                  [notif.id]: notif.duration || 30,
+                }));
+              }
+            });
 
             // Show toast for the most recent notification if it's new
             if (top5.length > 0) {
@@ -97,7 +109,7 @@ export default function RealTimeNotification() {
                     </div>
                   ),
                   {
-                    duration: 10000,
+                    duration: (latest.duration || 30) * 1000, // Convert seconds to milliseconds
                     position: "top-center",
                   }
                 );
@@ -134,11 +146,61 @@ export default function RealTimeNotification() {
         unsubscribe();
       }
     };
-  }, [dismissedIds]);
+  }, [dismissedIds, timeRemaining]);
+
+  // Auto-dismiss notifications after duration expires
+  useEffect(() => {
+    const timers: NodeJS.Timeout[] = [];
+
+    notifications.forEach((notification) => {
+      if (notification.duration && !dismissedIds.has(notification.id)) {
+        const durationMs = notification.duration * 1000;
+        const timer = setTimeout(() => {
+          setDismissedIds((prev) => new Set(prev).add(notification.id));
+          setNotifications((prev) => prev.filter((notif) => notif.id !== notification.id));
+          setTimeRemaining((prev) => {
+            const updated = { ...prev };
+            delete updated[notification.id];
+            return updated;
+          });
+        }, durationMs);
+        timers.push(timer);
+      }
+    });
+
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer));
+    };
+  }, [notifications, dismissedIds]);
+
+  // Update countdown timers
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeRemaining((prev) => {
+        const updated: Record<string, number> = {};
+        notifications.forEach((notif) => {
+          if (notif.duration && !dismissedIds.has(notif.id)) {
+            const current = prev[notif.id] ?? notif.duration;
+            if (current > 0) {
+              updated[notif.id] = Math.max(0, current - 1);
+            }
+          }
+        });
+        return { ...prev, ...updated };
+      });
+    }, 1000); // Update every second
+
+    return () => clearInterval(interval);
+  }, [notifications, dismissedIds]);
 
   const handleDismiss = (id: string) => {
     setDismissedIds((prev) => new Set(prev).add(id));
     setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+    setTimeRemaining((prev) => {
+      const updated = { ...prev };
+      delete updated[id];
+      return updated;
+    });
   };
 
   const handleClick = (notification: RealTimeNotification) => {
@@ -162,9 +224,16 @@ export default function RealTimeNotification() {
           <div className="flex items-start gap-3">
             <Bell className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
             <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-sm text-gray-900 dark:text-white">
-                {notification.title}
-              </h4>
+              <div className="flex items-start justify-between gap-2">
+                <h4 className="font-semibold text-sm text-gray-900 dark:text-white">
+                  {notification.title}
+                </h4>
+                {notification.duration && timeRemaining[notification.id] !== undefined && (
+                  <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                    {Math.ceil(timeRemaining[notification.id])}s
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 {notification.message}
               </p>

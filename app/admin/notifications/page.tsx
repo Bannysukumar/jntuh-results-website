@@ -19,10 +19,12 @@ export default function AdminNotifications() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("");
+  const [duration, setDuration] = useState<number>(30); // Default 30 seconds
   const [isSending, setIsSending] = useState(false);
   const [realtimeTitle, setRealtimeTitle] = useState("");
   const [realtimeMessage, setRealtimeMessage] = useState("");
   const [realtimeUrl, setRealtimeUrl] = useState("");
+  const [realtimeDuration, setRealtimeDuration] = useState<number>(30); // Default 30 seconds
   const [isSendingRealtime, setIsSendingRealtime] = useState(false);
   const [notificationType, setNotificationType] = useState<"push" | "realtime">("push");
   const [stats, setStats] = useState({
@@ -112,6 +114,7 @@ export default function AdminNotifications() {
           message: realtimeMessage.trim(),
           url: realtimeUrl.trim() || undefined,
           type: "info",
+          duration: realtimeDuration, // Duration in seconds
         }),
       });
 
@@ -170,6 +173,7 @@ export default function AdminNotifications() {
           title: title.trim(),
           body: body.trim(),
           url: url.trim() || undefined,
+          duration: duration, // Duration in seconds
         }),
       });
 
@@ -341,6 +345,25 @@ export default function AdminNotifications() {
                 </p>
               </div>
 
+              <div>
+                <Label htmlFor="duration" className="text-base font-medium">
+                  Display Duration (seconds)
+                </Label>
+                <Input
+                  id="duration"
+                  type="number"
+                  min="5"
+                  max="300"
+                  value={duration}
+                  onChange={(e) => setDuration(Math.max(5, Math.min(300, parseInt(e.target.value) || 30)))}
+                  className="mt-2"
+                  disabled={isSending}
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  How long the notification will be visible (5-300 seconds). Default: 30 seconds
+                </p>
+              </div>
+
               <div className="flex items-center gap-4 pt-4">
                 <Button
                   type="submit"
@@ -366,6 +389,7 @@ export default function AdminNotifications() {
                     setTitle("");
                     setBody("");
                     setUrl("");
+                    setDuration(30);
                   }}
                   disabled={isSending}
                 >
@@ -444,6 +468,25 @@ export default function AdminNotifications() {
                 </p>
               </div>
 
+              <div>
+                <Label htmlFor="realtimeDuration" className="text-base font-medium">
+                  Display Duration (seconds)
+                </Label>
+                <Input
+                  id="realtimeDuration"
+                  type="number"
+                  min="5"
+                  max="300"
+                  value={realtimeDuration}
+                  onChange={(e) => setRealtimeDuration(Math.max(5, Math.min(300, parseInt(e.target.value) || 30)))}
+                  className="mt-2"
+                  disabled={isSendingRealtime}
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  How long the notification will be visible to users (5-300 seconds). Default: 30 seconds
+                </p>
+              </div>
+
               <div className="flex items-center gap-4 pt-4">
                 <Button
                   type="submit"
@@ -469,6 +512,7 @@ export default function AdminNotifications() {
                     setRealtimeTitle("");
                     setRealtimeMessage("");
                     setRealtimeUrl("");
+                    setRealtimeDuration(30);
                   }}
                   disabled={isSendingRealtime}
                 >
