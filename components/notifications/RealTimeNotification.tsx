@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { collection, query, orderBy, limit, onSnapshot, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { X, Bell } from "lucide-react";
@@ -22,6 +22,7 @@ export default function RealTimeNotification() {
   const [notifications, setNotifications] = useState<RealTimeNotification[]>([]);
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
   const [timeRemaining, setTimeRemaining] = useState<Record<string, number>>({});
+  const shownToastIdsRef = useRef<Set<string>>(new Set()); // Track which notifications have shown toast
 
   useEffect(() => {
     // Check if Firebase is initialized
@@ -83,10 +84,12 @@ export default function RealTimeNotification() {
               }
             });
 
-            // Show toast for the most recent notification if it's new
+            // Show toast for the most recent notification if it's new and hasn't shown toast yet
             if (top5.length > 0) {
               const latest = top5[0];
-              if (!dismissedIds.has(latest.id)) {
+              // Only show toast if notification hasn't been dismissed and hasn't shown toast before
+              if (!dismissedIds.has(latest.id) && !shownToastIdsRef.current.has(latest.id)) {
+                shownToastIdsRef.current.add(latest.id);
                 toast(
                   (t) => (
                     <div className="flex items-start gap-3">
@@ -111,6 +114,7 @@ export default function RealTimeNotification() {
                   {
                     duration: (latest.duration || 30) * 1000, // Convert seconds to milliseconds
                     position: "top-center",
+                    id: latest.id, // Use notification ID as toast ID to prevent duplicates
                   }
                 );
               }
@@ -146,7 +150,7 @@ export default function RealTimeNotification() {
         unsubscribe();
       }
     };
-  }, [dismissedIds, timeRemaining]);
+  }, []); // Empty dependency array - only setup listener once
 
   // Auto-dismiss notifications after duration expires
   useEffect(() => {
@@ -201,6 +205,8 @@ export default function RealTimeNotification() {
       delete updated[id];
       return updated;
     });
+    // Also remove from shown toast tracking
+    shownToastIdsRef.current.delete(id);
   };
 
   const handleClick = (notification: RealTimeNotification) => {
