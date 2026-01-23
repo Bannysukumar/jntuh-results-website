@@ -21,8 +21,14 @@ interface RealTimeNotification {
 export default function RealTimeNotification() {
   const [notifications, setNotifications] = useState<RealTimeNotification[]>([]);
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
+  const dismissedIdsRef = useRef<Set<string>>(new Set()); // Use ref to track dismissed IDs
   const [timeRemaining, setTimeRemaining] = useState<Record<string, number>>({});
   const shownToastIdsRef = useRef<Set<string>>(new Set()); // Track which notifications have shown toast
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    dismissedIdsRef.current = dismissedIds;
+  }, [dismissedIds]);
 
   useEffect(() => {
     // Check if Firebase is initialized
@@ -70,8 +76,8 @@ export default function RealTimeNotification() {
             // Take only the 5 most recent
             const top5 = newNotifications.slice(0, 5);
 
-            // Only show notifications that haven't been dismissed
-            const activeNotifications = top5.filter((notif) => !dismissedIds.has(notif.id));
+            // Only show notifications that haven't been dismissed (use ref for current value)
+            const activeNotifications = top5.filter((notif) => !dismissedIdsRef.current.has(notif.id));
             setNotifications(activeNotifications);
 
             // Initialize time remaining for new notifications
@@ -88,7 +94,7 @@ export default function RealTimeNotification() {
             if (top5.length > 0) {
               const latest = top5[0];
               // Only show toast if notification hasn't been dismissed and hasn't shown toast before
-              if (!dismissedIds.has(latest.id) && !shownToastIdsRef.current.has(latest.id)) {
+              if (!dismissedIdsRef.current.has(latest.id) && !shownToastIdsRef.current.has(latest.id)) {
                 shownToastIdsRef.current.add(latest.id);
                 toast(
                   (t) => (
@@ -103,7 +109,9 @@ export default function RealTimeNotification() {
                       <button
                         onClick={() => {
                           toast.dismiss(t.id);
-                          setDismissedIds((prev) => new Set(prev).add(latest.id));
+                          const newDismissed = new Set(dismissedIdsRef.current);
+                          newDismissed.add(latest.id);
+                          setDismissedIds(newDismissed);
                         }}
                         className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                       >
