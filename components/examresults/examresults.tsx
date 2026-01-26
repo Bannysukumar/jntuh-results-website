@@ -2,8 +2,11 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import { rollNumberEndings } from "@/constants/rollNumberendings";
+import { User, Users, Search } from "lucide-react";
 
 const ExamResults = ({ title, query }: { title: string; query: string }) => {
   const [singleHtno, setSingleHtno] = useState("");
@@ -44,111 +47,123 @@ const ExamResults = ({ title, query }: { title: string; query: string }) => {
     toast("Not Yet Implemented");
   };
   return (
-    <div className="flex w-full justify-center">
-      <div className="flex justify-center w-full md:max-w-5xl ">
-        <div className="w-full flex justify-center">
-          <Tabs defaultValue="single" className="w-full md:w-[50%]">
-            <TabsList className="md:w-full w-full">
-              <TabsTrigger value="single" className="w-[50%]">
-                Single Result
-              </TabsTrigger>
-              <TabsTrigger value="multi" className="w-[50%]">
-                Multi Results
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="single">
-              <div className="border border-gray-300 p-8 rounded-md">
-                <div className="flex justify-center font-semibold pb-12">
-                  Single Result
+    <div className="w-full">
+      <Tabs defaultValue="single" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100 dark:bg-gray-800">
+          <TabsTrigger 
+            value="single" 
+            className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700"
+          >
+            <User className="h-4 w-4" />
+            Single Result
+          </TabsTrigger>
+          <TabsTrigger 
+            value="multi" 
+            className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700"
+          >
+            <Users className="h-4 w-4" />
+            Multi Results
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="single" className="mt-0">
+          <Card className="border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex flex-col items-center gap-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                    <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Single Result
+                  </h3>
                 </div>
-                <div className="flex justify-center">
-                  <input
-                    className="
-          text-rounded text-center text-[60%] sm:text-[90%]
-          w-[150px] h-[30px] sm:w-[200px] sm:h-[35px]
-          m-[4px]
-          border-[1px] border-double border-black dark:border-white rounded
-          shadow-xl
-          "
-                    name="htno1"
-                    placeholder="Enter your Hall ticket No."
-                    type="text"
-                    value={singleHtno}
-                    onChange={(event) => {
-                      setSingleHtno(event.target.value.toUpperCase());
-                    }}
-                    maxLength={10}
-                  />
+                <div className="w-full max-w-md">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      className="pl-10 h-12 text-center text-base font-medium border-2 focus:border-blue-500 dark:focus:border-blue-400 transition-colors"
+                      placeholder="Enter your Hall ticket No."
+                      type="text"
+                      value={singleHtno}
+                      onChange={(event) => {
+                        setSingleHtno(event.target.value.toUpperCase());
+                      }}
+                      maxLength={10}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2 text-center">
+                    Enter your 10-digit Hall Ticket Number
+                  </p>
                 </div>
-                <div className="flex mt-8 justify-center w-full">
-                  <Button
-                    className="w-24 h-8 text-[80%] md:w-32"
-                    onClick={onSingleResultSubmit}
-                  >
-                    Submit
-                  </Button>
-                </div>
+                <Button
+                  onClick={onSingleResultSubmit}
+                  className="w-full max-w-md h-12 text-base font-semibold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  Search Result
+                </Button>
               </div>
-            </TabsContent>
-            <TabsContent value="multi">
-              <div className="border border-gray-300 p-8 rounded-md">
-                <div className="flex justify-center font-semibold pb-12">
-                  Multi Results
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="multi" className="mt-0">
+          <Card className="border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex flex-col items-center gap-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
+                    <Users className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Multi Results
+                  </h3>
                 </div>
-                <div className="md:flex ml-6 md:ml-0 justify-center">
-                  <input
-                    className="
-          text-rounded text-center text-[60%] sm:text-[90%]
-          w-[150px] h-[30px] sm:w-[200px] sm:h-[35px]
-          m-[4px]
-          border-[1px] border-double border-black dark:border-white rounded
-          shadow-xl
-          "
-                    name="htno1"
-                    placeholder="Enter from Hall ticket No."
-                    type="text"
-                    value={multiHtno[0]}
-                    onChange={(event) => {
-                      const updatedHtno = [...multiHtno];
-                      updatedHtno[0] = event.target.value.toUpperCase();
-                      setMultiHtno(updatedHtno);
-                    }}
-                    maxLength={10}
-                  />
-                  <input
-                    className="
-          text-rounded text-center text-[60%] sm:text-[90%]
-          w-[150px] h-[30px] sm:w-[200px] sm:h-[35px]
-          m-[4px]
-          border-[1px] border-double border-black dark:border-white rounded
-          shadow-xl
-          "
-                    name="htno2"
-                    placeholder="Enter to Hall ticket No."
-                    type="text"
-                    value={multiHtno[1]}
-                    onChange={(event) => {
-                      const updatedHtno = [...multiHtno];
-                      updatedHtno[1] = event.target.value.toUpperCase();
-                      setMultiHtno(updatedHtno);
-                    }}
-                    maxLength={10}
-                  />
+                <div className="w-full max-w-md space-y-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      className="pl-10 h-12 text-center text-base font-medium border-2 focus:border-purple-500 dark:focus:border-purple-400 transition-colors"
+                      placeholder="Enter from Hall ticket No."
+                      type="text"
+                      value={multiHtno[0]}
+                      onChange={(event) => {
+                        const updatedHtno = [...multiHtno];
+                        updatedHtno[0] = event.target.value.toUpperCase();
+                        setMultiHtno(updatedHtno);
+                      }}
+                      maxLength={10}
+                    />
+                  </div>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      className="pl-10 h-12 text-center text-base font-medium border-2 focus:border-purple-500 dark:focus:border-purple-400 transition-colors"
+                      placeholder="Enter to Hall ticket No."
+                      type="text"
+                      value={multiHtno[1]}
+                      onChange={(event) => {
+                        const updatedHtno = [...multiHtno];
+                        updatedHtno[1] = event.target.value.toUpperCase();
+                        setMultiHtno(updatedHtno);
+                      }}
+                      maxLength={10}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Enter the range of Hall Ticket Numbers
+                  </p>
                 </div>
-                <div className="flex mt-8 justify-center w-full">
-                  <Button
-                    type="submit"
-                    className="w-24 h-8 text-[80%] md:w-32"
-                    onClick={onMultiResultSubmit}
-                  >
-                    Submit
-                  </Button>
-                </div>
+                <Button
+                  type="submit"
+                  onClick={onMultiResultSubmit}
+                  className="w-full max-w-md h-12 text-base font-semibold bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  Search Results
+                </Button>
               </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

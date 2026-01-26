@@ -28,7 +28,7 @@ const NotificationResults = ({
   }, [incrementPage]);
 
   const onLinkClick = (query: string) => {
-    const modifiedquery = "notifications/examcode?" + query;
+    const modifiedquery = "/notifications/examcode?" + query;
     window.open(modifiedquery, "_blank");
   };
 
