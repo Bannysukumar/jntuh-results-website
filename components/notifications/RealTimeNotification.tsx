@@ -18,16 +18,87 @@ interface RealTimeNotification {
   duration?: number; // Duration in seconds
 }
 
+const STORAGE_KEY_DISMISSED = "realTimeNotifications_dismissed";
+const STORAGE_KEY_SHOWN_TOASTS = "realTimeNotifications_shownToasts";
+const STORAGE_KEY_FIRST_VISIT = "realTimeNotifications_firstVisit";
+
+// Helper functions to manage localStorage
+const getFirstVisitTimestamp = (): number => {
+  if (typeof window === "undefined") return Date.now();
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY_FIRST_VISIT);
+    if (stored) {
+      return parseInt(stored, 10);
+    } else {
+      // First time visitor - set current timestamp
+      const now = Date.now();
+      localStorage.setItem(STORAGE_KEY_FIRST_VISIT, now.toString());
+      return now;
+    }
+  } catch (error) {
+    console.error("Error getting first visit timestamp:", error);
+    return Date.now();
+  }
+};
+
+const loadDismissedIds = (): Set<string> => {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY_DISMISSED);
+    if (stored) {
+      const ids = JSON.parse(stored);
+      return new Set(Array.isArray(ids) ? ids : []);
+    }
+  } catch (error) {
+    console.error("Error loading dismissed notifications:", error);
+  }
+  return new Set();
+};
+
+const saveDismissedIds = (ids: Set<string>) => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(STORAGE_KEY_DISMISSED, JSON.stringify(Array.from(ids)));
+  } catch (error) {
+    console.error("Error saving dismissed notifications:", error);
+  }
+};
+
+const loadShownToastIds = (): Set<string> => {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY_SHOWN_TOASTS);
+    if (stored) {
+      const ids = JSON.parse(stored);
+      return new Set(Array.isArray(ids) ? ids : []);
+    }
+  } catch (error) {
+    console.error("Error loading shown toast notifications:", error);
+  }
+  return new Set();
+};
+
+const saveShownToastIds = (ids: Set<string>) => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(STORAGE_KEY_SHOWN_TOASTS, JSON.stringify(Array.from(ids)));
+  } catch (error) {
+    console.error("Error saving shown toast notifications:", error);
+  }
+};
+
 export default function RealTimeNotification() {
   const [notifications, setNotifications] = useState<RealTimeNotification[]>([]);
-  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
-  const dismissedIdsRef = useRef<Set<string>>(new Set()); // Use ref to track dismissed IDs
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(() => loadDismissedIds());
+  const dismissedIdsRef = useRef<Set<string>>(loadDismissedIds()); // Use ref to track dismissed IDs
   const [timeRemaining, setTimeRemaining] = useState<Record<string, number>>({});
-  const shownToastIdsRef = useRef<Set<string>>(new Set()); // Track which notifications have shown toast
+  const shownToastIdsRef = useRef<Set<string>>(loadShownToastIds()); // Track which notifications have shown toast
+  const firstVisitTimestampRef = useRef<number>(getFirstVisitTimestamp()); // Track first visit timestamp
 
-  // Keep ref in sync with state
+  // Keep ref in sync with state and persist to localStorage
   useEffect(() => {
     dismissedIdsRef.current = dismissedIds;
+    saveDismissedIds(dismissedIds);
   }, [dismissedIds]);
 
   useEffect(() => {
@@ -66,15 +137,34 @@ export default function RealTimeNotification() {
               });
             });
 
+            // Helper function to get notification timestamp in milliseconds
+            const getNotificationTime = (notif: RealTimeNotification): number => {
+              if (notif.createdAt?.toMillis) {
+                return notif.createdAt.toMillis();
+              }
+              if (notif.createdAt?.seconds) {
+                return notif.createdAt.seconds * 1000;
+              }
+              return 0;
+            };
+
             // Sort by createdAt in descending order (most recent first)
             newNotifications.sort((a, b) => {
-              const aTime = a.createdAt?.toMillis?.() || a.createdAt?.seconds || 0;
-              const bTime = b.createdAt?.toMillis?.() || b.createdAt?.seconds || 0;
+              const aTime = getNotificationTime(a);
+              const bTime = getNotificationTime(b);
               return bTime - aTime; // Descending order
             });
 
-            // Take only the 5 most recent
-            const top5 = newNotifications.slice(0, 5);
+            // Filter out notifications created before user's first visit
+            // This ensures new users only see notifications posted after they first visit
+            const firstVisitTime = firstVisitTimestampRef.current;
+            const notificationsAfterFirstVisit = newNotifications.filter((notif) => {
+              const notifTime = getNotificationTime(notif);
+              return notifTime >= firstVisitTime;
+            });
+
+            // Take only the 5 most recent from notifications after first visit
+            const top5 = notificationsAfterFirstVisit.slice(0, 5);
 
             // Only show notifications that haven't been dismissed (use ref for current value)
             const activeNotifications = top5.filter((notif) => !dismissedIdsRef.current.has(notif.id));
@@ -96,6 +186,7 @@ export default function RealTimeNotification() {
               // Only show toast if notification hasn't been dismissed and hasn't shown toast before
               if (!dismissedIdsRef.current.has(latest.id) && !shownToastIdsRef.current.has(latest.id)) {
                 shownToastIdsRef.current.add(latest.id);
+                saveShownToastIds(shownToastIdsRef.current); // Persist to localStorage
                 toast(
                   (t) => (
                     <div className="flex items-start gap-3">
@@ -168,7 +259,9 @@ export default function RealTimeNotification() {
       if (notification.duration && !dismissedIds.has(notification.id)) {
         const durationMs = notification.duration * 1000;
         const timer = setTimeout(() => {
-          setDismissedIds((prev) => new Set(prev).add(notification.id));
+          const newDismissed = new Set(dismissedIds);
+          newDismissed.add(notification.id);
+          setDismissedIds(newDismissed);
           setNotifications((prev) => prev.filter((notif) => notif.id !== notification.id));
           setTimeRemaining((prev) => {
             const updated = { ...prev };
@@ -206,15 +299,17 @@ export default function RealTimeNotification() {
   }, [notifications, dismissedIds]);
 
   const handleDismiss = (id: string) => {
-    setDismissedIds((prev) => new Set(prev).add(id));
+    const newDismissed = new Set(dismissedIds);
+    newDismissed.add(id);
+    setDismissedIds(newDismissed);
     setNotifications((prev) => prev.filter((notif) => notif.id !== id));
     setTimeRemaining((prev) => {
       const updated = { ...prev };
       delete updated[id];
       return updated;
     });
-    // Also remove from shown toast tracking
-    shownToastIdsRef.current.delete(id);
+    // Also remove from shown toast tracking (though it's fine to keep it)
+    // shownToastIdsRef.current.delete(id);
   };
 
   const handleClick = (notification: RealTimeNotification) => {
