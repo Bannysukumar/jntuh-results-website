@@ -86,7 +86,7 @@ export default function AdSenseLoader() {
         fcScript.src = `https://fundingchoicesmessages.google.com/i/pub-${ADSENSE_CLIENT.replace("ca-pub-", "")}?ers=1`;
         document.head.appendChild(fcScript);
       }
-      if (!(window.frames as Record<string, unknown>)["googlefcPresent"] && document.body) {
+      if (!(window.frames as unknown as Record<string, unknown>)["googlefcPresent"] && document.body) {
         const iframe = document.createElement("iframe");
         iframe.style.cssText = "width:0;height:0;border:none;display:none";
         iframe.name = "googlefcPresent";
