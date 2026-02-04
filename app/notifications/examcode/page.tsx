@@ -1,12 +1,33 @@
-import ExamcodeClient from "./ExamcodeClient";
+"use client"
+import NotificationExamCode from "@/components/notifications/notificationExamCode";
 
-// For static export compatibility, use client component
-// Metadata will be handled by the layout or default metadata
-export const metadata = {
-  title: "Mana JNTUH Results | Notifications",
-  description: "Check out JNTUH notifications in one place.",
-};
+export default function ExamcodePage({
+  searchParams,
+}: {
+  searchParams: {
+    link?: string;
+    date?: string;
+    formatted_date?: string;
+    title?: string;
+  };
+}) {
+  const {
+    link = "",
+    date = "",
+    formatted_date = "",
+    title = "",
+  } = searchParams;
 
-export default function ExamcodePage() {
-  return <ExamcodeClient />;
+  if (!link || !date || !formatted_date || !title) {
+    return <p>Invalid notification link</p>;
+  }
+
+  return (
+    <NotificationExamCode
+      link={link.split("?")[1] || ""}
+      date={date}
+      formatted_date={formatted_date}
+      title={title}
+    />
+  );
 }
