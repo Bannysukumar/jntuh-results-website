@@ -11,6 +11,7 @@ import AdminWrapper from "@/components/admin/AdminWrapper";
 import NativeInit from "@/components/native/native-init";
 import OfflineIndicator from "@/components/native/offline-indicator";
 import NativeNotificationHandler from "@/components/native/native-notification-handler";
+import AdSenseLoader from "@/components/ads/AdSenseLoader";
 import dynamic from "next/dynamic";
 
 // Lazy load heavy components
@@ -178,51 +179,14 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Delicious+Handrawn&family=Inter:wght@300&family=Roboto+Slab&display=swap"
           rel="stylesheet"
         />
-        {/* Google AdSense Script */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1589551808134823"
-          crossOrigin="anonymous"
-        ></script>
-        {/* Ad blocking recovery and Funding Choices */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Load ad blocking recovery after page load
-              window.addEventListener('load', function() {
-                // Ad blocking recovery script
-                var recoveryScript = document.createElement('script');
-                recoveryScript.async = true;
-                recoveryScript.src = 'https://fundingchoicesmessages.google.com/i/pub-1589551808134823?ers=1';
-                document.head.appendChild(recoveryScript);
-                
-                // Signal Google FC Present
-                (function() {
-                  function signalGooglefcPresent() {
-                    if (!window.frames['googlefcPresent']) {
-                      if (document.body) {
-                        const iframe = document.createElement('iframe');
-                        iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
-                        iframe.style.display = 'none';
-                        iframe.name = 'googlefcPresent';
-                        document.body.appendChild(iframe);
-                      } else {
-                        setTimeout(signalGooglefcPresent, 0);
-                      }
-                    }
-                  }
-                  signalGooglefcPresent();
-                })();
-              });
-            `,
-          }}
-        ></script>
+        {/* AdSense loads conditionally via AdSenseLoader - only on content-rich pages (AdSense policy compliance) */}
         <CanonicalUrl />
         <StructuredData />
       </head>
       <body className={inter.className}>
         <GoogleAnalytics />
         <SpeedInsightsWrapper />
+        <AdSenseLoader />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
