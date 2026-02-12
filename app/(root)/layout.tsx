@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "JNTUH RESULTS",
+  title: "JNTUH Results – Check JNTUH Exam Results Online",
   description:
     "Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs, and academic performance. Features: Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, Notifications. Official JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad.",
   keywords: [
@@ -47,35 +48,25 @@ export const metadata: Metadata = {
     "mana jntuh all semester results"
   ],
   openGraph: {
-    title: "JNTUH RESULTS",
+    title: "JNTUH Results – Check JNTUH Exam Results Online",
     description: "Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility, Syllabus, Jobs & Careers, and Notifications.",
-    url: "https://manajntuhresults.vercel.app",
+    url: SITE_URL,
     siteName: "JNTUH RESULTS",
     images: [
-      {
-        url: "https://manajntuhresults.vercel.app/jntuhresults_md.png",
-        width: 512,
-        height: 512,
-        alt: "JNTUH RESULTS Logo",
-      },
-      {
-        url: "https://manajntuhresults.vercel.app/icon-512x512.png",
-        width: 512,
-        height: 512,
-        alt: "JNTUH RESULTS Icon",
-      },
+      { url: `${SITE_URL}/jntuhresults_md.png`, width: 512, height: 512, alt: "JNTUH RESULTS Logo" },
+      { url: `${SITE_URL}/icon-512x512.png`, width: 512, height: 512, alt: "JNTUH RESULTS Icon" },
     ],
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "JNTUH RESULTS",
+    title: "JNTUH Results – Check JNTUH Exam Results Online",
     description: "Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications.",
-    images: ["https://manajntuhresults.vercel.app/jntuhresults_md.png", "https://manajntuhresults.vercel.app/icon-512x512.png"],
+    images: [`${SITE_URL}/jntuhresults_md.png`, `${SITE_URL}/icon-512x512.png`],
   },
   alternates: {
-    canonical: "https://manajntuhresults.vercel.app",
+    canonical: SITE_URL,
   },
     verification: {
       google: "google-site-verification=2d4d1883a5e2e03b",

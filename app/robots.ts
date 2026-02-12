@@ -1,17 +1,16 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = 'https://manajntuhresults.vercel.app'
-  
   return {
     rules: [
       {
-        userAgent: '*',
-        allow: '/',
-        disallow: ['/api/'],
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/", "/admin/"],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
-  }
+    sitemap: `${SITE_URL}/sitemap.xml`,
+  };
 }
 

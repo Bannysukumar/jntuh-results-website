@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Hard Refresh Cache | Admin",
   description: "Clear Redis cache for results and force fresh data fetch",
+  robots: { index: false, follow: true },
 };
 
 export default function AdminHardRefreshLayout({

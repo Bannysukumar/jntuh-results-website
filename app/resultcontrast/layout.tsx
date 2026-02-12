@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Mana JNTUH Results | ACADEMIC CONTRAST",
+  title: "Result Contrast",
   description:
-    "Effortlessly track your academic progress at JNTUH by comparing your performance across semesters and against classmates. Gain valuable insights to improve your learning strategies.",
+    "Compare your JNTUH academic performance across semesters with a classmate. Result contrast and performance insights.",
+  alternates: { canonical: `${SITE_URL}/resultcontrast` },
+  openGraph: {
+    title: "Result Contrast | JNTUH Results",
+    description: "Compare your JNTUH performance across semesters with classmates.",
+    url: `${SITE_URL}/resultcontrast`,
+    siteName: "JNTUH RESULTS",
+  },
 };
 
 export default function RootLayout({

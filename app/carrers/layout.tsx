@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Mana JNTUH Results | JOBS & CARRERS",
+  title: "Jobs & Careers",
   description:
-    "Discover career opportunities!! Find internships, jobs and kick start your journey!!!",
+    "JNTUH jobs and careers. Find internships, placements, and kickstart your professional journey.",
+  alternates: { canonical: `${SITE_URL}/carrers` },
+  openGraph: {
+    title: "Jobs & Careers | JNTUH Results",
+    description: "Find JNTUH internships, jobs, and career opportunities.",
+    url: `${SITE_URL}/carrers`,
+    siteName: "JNTUH RESULTS",
+  },
 };
 
 export default function RootLayout({

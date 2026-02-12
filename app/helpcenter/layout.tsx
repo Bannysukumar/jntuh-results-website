@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Mana JNTUH Results | HelpCenter",
-  description: "Check out academic result with in a go.",
+  title: "Help Center",
+  description:
+    "JNTUH Results help center. Report bugs, get support, and find answers for using the results portal.",
+  alternates: { canonical: `${SITE_URL}/helpcenter` },
+  openGraph: {
+    title: "Help Center | JNTUH Results",
+    description: "Get help, report bugs, and support for JNTUH Results portal.",
+    url: `${SITE_URL}/helpcenter`,
+    siteName: "JNTUH RESULTS",
+  },
 };
 
 export default function RootLayout({

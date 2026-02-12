@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import Title from "@/components/homepage/title";
 import { homeLinks } from "@/constants/homeLinks";
+import { SITELINK_URLS } from "@/lib/seo";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { 
@@ -240,6 +241,24 @@ export default function Home() {
               </Card>
             </Link>
           )}
+        </section>
+
+        {/* Quick Links - Sitelink candidates for SERP */}
+        <section className="mb-8" aria-label="Quick Links">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
+            Quick Links
+          </h2>
+          <nav className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
+            {SITELINK_URLS.filter((s) => s.path !== "/").map((s) => (
+              <Link
+                key={s.path}
+                href={s.path}
+                className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2"
+              >
+                {s.name}
+              </Link>
+            ))}
+          </nav>
         </section>
       </main>
 

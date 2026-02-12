@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Mana JNTUH Results | CREDIT CHECKER",
+  title: "Credits Checker",
   description:
-    "check your credits and find the credits required to promote to next year.",
+    "Check your JNTUH credits and find how many credits you need to promote to the next year or to graduate.",
+  alternates: { canonical: `${SITE_URL}/creditchecker` },
+  openGraph: {
+    title: "Credits Checker | JNTUH Results",
+    description: "Check your JNTUH credits and credits required to promote or graduate.",
+    url: `${SITE_URL}/creditchecker`,
+    siteName: "JNTUH RESULTS",
+  },
 };
 
 export default function RootLayout({

@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "System Health | Admin",
-  description: "Monitor system health and service status",
+  title: "Excel Result",
+  description: "Upload Excel file to view results",
   robots: { index: false, follow: true },
 };
 
-export default function AdminHealthLayout({
+export default function ExcelResultLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return <>{children}</>;
 }
-

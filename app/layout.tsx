@@ -7,12 +7,14 @@ import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import SpeedInsightsWrapper from "@/components/analytics/SpeedInsightsWrapper";
 import StructuredData from "@/components/metadata/structured-data";
 import CanonicalUrl from "@/components/metadata/canonical-url";
+import BreadcrumbSchema from "@/components/metadata/breadcrumb-schema";
 import AdminWrapper from "@/components/admin/AdminWrapper";
 import NativeInit from "@/components/native/native-init";
 import OfflineIndicator from "@/components/native/offline-indicator";
 import NativeNotificationHandler from "@/components/native/native-notification-handler";
 import AdSenseLoader from "@/components/ads/AdSenseLoader";
 import dynamic from "next/dynamic";
+import { SITE_URL } from "@/lib/seo";
 
 // Lazy load heavy components
 const AIChatBot = dynamic(() => import("@/components/ai/AIChatBot"), {
@@ -30,13 +32,11 @@ const inter = Inter({
   adjustFontFallback: true,
 });
 
-const siteUrl = "https://manajntuhresults.vercel.app";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "JNTUH RESULTS",
-    template: "%s | JNTUH RESULTS"
+    default: "JNTUH Results – Check JNTUH Exam Results Online",
+    template: "%s | JNTUH RESULTS",
   },
   description: "Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy. View grades, CGPA, backlogs, and academic performance. Features: Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, Notifications.",
   keywords: [
@@ -98,19 +98,19 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteUrl,
+    url: SITE_URL,
     siteName: "JNTUH RESULTS",
-    title: "JNTUH RESULTS",
+    title: "JNTUH Results – Check JNTUH Exam Results Online",
     description: "Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility, Syllabus, Jobs & Careers, and Notifications.",
     images: [
       {
-        url: `${siteUrl}/jntuhresults_md.png`,
+        url: `${SITE_URL}/jntuhresults_md.png`,
         width: 512,
         height: 512,
         alt: "JNTUH RESULTS Logo",
       },
       {
-        url: `${siteUrl}/icon-512x512.png`,
+        url: `${SITE_URL}/icon-512x512.png`,
         width: 512,
         height: 512,
         alt: "JNTUH RESULTS Icon",
@@ -119,13 +119,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "JNTUH RESULTS",
+    title: "JNTUH Results – Check JNTUH Exam Results Online",
     description: "Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses. View grades, CGPA, backlogs, and academic performance. Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications.",
-    images: [`${siteUrl}/jntuhresults_md.png`, `${siteUrl}/icon-512x512.png`],
+    images: [`${SITE_URL}/jntuhresults_md.png`, `${SITE_URL}/icon-512x512.png`],
     creator: "@Bannysukumar",
   },
   alternates: {
-    canonical: siteUrl,
+    canonical: SITE_URL,
   },
   verification: {
     google: "19aqihOrD-qf3lECIogsri3a8H8WCd2piEQ7xdq2Akg",
@@ -182,6 +182,7 @@ export default function RootLayout({
         {/* AdSense loads conditionally via AdSenseLoader - only on content-rich pages (AdSense policy compliance) */}
         <CanonicalUrl />
         <StructuredData />
+        <BreadcrumbSchema />
       </head>
       <body className={inter.className}>
         <GoogleAnalytics />
