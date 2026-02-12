@@ -7,11 +7,13 @@ export const metadata: Metadata = {
     "Check your JNTUH credits and find how many credits you need to promote to the next year or to graduate.",
   alternates: { canonical: `${SITE_URL}/creditchecker` },
   openGraph: {
+    type: "website",
     title: "Credits Checker | JNTUH Results",
     description: "Check your JNTUH credits and credits required to promote or graduate.",
     url: `${SITE_URL}/creditchecker`,
     siteName: "JNTUH RESULTS",
   },
+  twitter: { card: "summary_large_image", title: "Credits Checker | JNTUH Results", description: "Check your JNTUH credits and credits required to promote or graduate." },
 };
 
 export default function RootLayout({

@@ -7,11 +7,13 @@ export const metadata: Metadata = {
     "Connect with fellow JNTUH students through real-time group chat.",
   alternates: { canonical: `${SITE_URL}/group-chat` },
   openGraph: {
+    type: "website",
     title: "Group Chat | JNTUH Results",
     description: "Real-time group chat for JNTUH students.",
     url: `${SITE_URL}/group-chat`,
     siteName: "JNTUH RESULTS",
   },
+  twitter: { card: "summary_large_image", title: "Group Chat | JNTUH Results", description: "Real-time group chat for JNTUH students." },
 };
 
 export default function GroupChatLayout({

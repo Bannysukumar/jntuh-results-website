@@ -7,11 +7,13 @@ export const metadata: Metadata = {
     "Get your JNTUH grace marks proof document for eligibility verification. Generate proof with hall ticket number.",
   alternates: { canonical: `${SITE_URL}/grace-marks/proof` },
   openGraph: {
+    type: "website",
     title: "Grace Marks Proof | JNTUH Results",
     description: "Get JNTUH grace marks proof document for verification.",
     url: `${SITE_URL}/grace-marks/proof`,
     siteName: "JNTUH RESULTS",
   },
+  twitter: { card: "summary_large_image", title: "Grace Marks Proof | JNTUH Results", description: "Get JNTUH grace marks proof document for verification." },
 };
 
 export default function GraceMarksProofLayout({

@@ -50,7 +50,7 @@ export default function StructuredData() {
       height: 512,
     },
     description:
-      "JNTUH RESULTS - Check your JNTUH exam results online instantly! Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy.",
+      "JNTUH RESULTS - Check JNTUH results 2025, JNTUH BTech results, RCRV, supply results online. Mana JNTUH Results for UG & PG including B.Tech, B.Pharmacy, M.Tech, MBA, MCA.",
     potentialAction: {
       "@type": "SearchAction",
       target: {
@@ -86,6 +86,37 @@ export default function StructuredData() {
     ],
   };
 
+  const faqPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Is Mana JNTUH Results official?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Mana JNTUH Results is an independent portal that fetches and displays results from JNTUH (Jawaharlal Nehru Technological University Hyderabad). It is not operated by JNTUH but provides fast, user-friendly access to official JNTUH result data.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How fast are JNTUH results updated?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "JNTUH results are updated on Mana JNTUH Results as soon as they are published by the university. The portal checks for new results regularly so you can view your BTech, BPharmacy, RCRV, supply, and other exam results quickly.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Which JNTUH results are available?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Mana JNTUH Results supports Academic Result, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility and Proof, RCRV, supply results, and regular semester results for UG and PG courses including BTech, BPharmacy, MTech, MBA, MCA.",
+        },
+      },
+    ],
+  };
+
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -118,6 +149,10 @@ export default function StructuredData() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageSchema) }}
       />
       <script
         type="application/ld+json"

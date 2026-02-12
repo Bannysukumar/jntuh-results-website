@@ -7,11 +7,13 @@ export const metadata: Metadata = {
     "JNTUH academic calendars for the current year. Exam schedules, semester dates, and events in one place.",
   alternates: { canonical: `${SITE_URL}/calendars` },
   openGraph: {
+    type: "website",
     title: "Calendars | JNTUH Results",
     description: "JNTUH academic calendars, exam schedules, and semester dates.",
     url: `${SITE_URL}/calendars`,
     siteName: "JNTUH RESULTS",
   },
+  twitter: { card: "summary_large_image", title: "Calendars | JNTUH Results", description: "JNTUH academic calendars, exam schedules, and semester dates." },
 };
 
 export default function RootLayout({
