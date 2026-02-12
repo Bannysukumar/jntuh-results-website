@@ -118,7 +118,7 @@ const NotificationExamCode = ({
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Link
-                  href={`http://202.63.105.184/results/jsp/SearchResult.jsp?${link}`}
+                  href={`http://202.63.105.184/results/jsp/SearchResult.jsp?${link.split("?")[1]}`}
                   target="_blank"
                   className="group"
                 >
@@ -145,7 +145,7 @@ const NotificationExamCode = ({
                 </Link>
 
                 <Link
-                  href={`http://results.jntuh.ac.in/jsp/SearchResult.jsp?${link}`}
+                  href={link}
                   target="_blank"
                   className="group"
                 >
