@@ -11,6 +11,7 @@ import { ModeToggle } from "../ui/toggle";
 import { useSidebarContext } from "@/customhooks/sidebarhook";
 import { useNavBarContext } from "@/customhooks/navbarhook";
 import { usePathname } from "next/navigation";
+import { GooglePlayBadge } from "@/components/download/googleplay-banner";
 
 const Navbar = () => {
   const path = usePathname();
@@ -19,9 +20,8 @@ const Navbar = () => {
   const { navbar } = useNavBarContext();
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 h-16 w-full z-50 px-4 lg:px-8 py-2 dark:bg-[#09090B] bg-white grid grid-cols-3 lg:grid-cols-2 border-b items-center ${
-        navbar ? "block" : "hidden"
-      }`}
+      className={`fixed inset-y-0 h-16 w-full z-50 p-4 px-4 lg:px-8  dark:bg-[#09090B] bg-white grid grid-cols-3 lg:grid-cols-2 border-b ${navbar ? "block" : "hidden"
+        }`}
     >
       <div className="justify-start flex items-center lg:hidden cursor-pointer">
         <button
@@ -34,56 +34,53 @@ const Navbar = () => {
         </button>
       </div>
       <Link
-        className="flex justify-center lg:justify-start items-center cursor-pointer h-full max-h-16 overflow-hidden"
+        className="flex justify-center lg:justify-start items-center cursor-pointer"
         href="/"
       >
-        <div className="md:hidden h-full flex items-center">
-          <span className="dark:hidden h-full flex items-center">
+        <div className="md:hidden">
+          <span className="dark:hidden">
             <Image
-              src="/jntuhresults_md.png"
-              alt="Mana JNTUH Results Logo"
+              src="/jntuhresults.png"
+              alt="jntuhresults_logo"
               width={65}
               height={40}
               priority={false}
-              className="h-auto w-auto max-h-12 object-contain"
             />
           </span>
-          <span className="hidden dark:block h-full flex items-center">
+          <span className="hidden dark:block">
             <Image
               src="/jntuhresults_black.png"
-              alt="Mana JNTUH Results Logo"
+              alt="jntuhresults_logo"
               width={65}
               height={40}
               priority={false}
-              className="h-auto w-auto max-h-12 object-contain"
             />
           </span>
         </div>
-        <div className="hidden md:block h-full flex items-center">
-          <span className="dark:hidden h-full flex items-center">
+        <div className="hidden md:block">
+          <span className="dark:hidden">
             <Image
               src="/jntuhresults_md.png"
-              alt="Mana JNTUH Results Logo"
+              alt="jntuhresults_logo"
               width={130}
-              height={60}
+              height={80}
               priority={false}
-              className="h-auto w-auto max-h-14 object-contain"
             />
           </span>
-          <span className="hidden dark:block h-full flex items-center">
+          <span className="hidden dark:block">
             <Image
               src="/jntuhresults_md_black.png"
-              alt="Mana JNTUH Results Logo"
+              alt="jntuhresults_logo"
               width={130}
-              height={60}
+              height={80}
               priority={false}
-              className="h-auto w-auto max-h-14 object-contain"
             />
           </span>
         </div>
       </Link>
       <div className="flex justify-end items-center">
-        <span className="flex gap-4 items-center">
+        <span className="flex gap-3 items-center">
+          <GooglePlayBadge className="hidden sm:inline-flex" />
           <span className="hidden items-center md:block">
             <ModeToggle />
           </span>
