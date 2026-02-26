@@ -28,11 +28,13 @@ const HelpCenter = () => {
       title: "How to Check Results",
       description: "Step-by-step guide to checking your exam results",
       icon: BookOpen,
+      href: "/guide",
     },
     {
       title: "Contact Support",
       description: "Get in touch with our support team for assistance",
       icon: Mail,
+      href: "/contact",
     },
   ];
 
@@ -93,9 +95,10 @@ const HelpCenter = () => {
             {quickLinks.map((link, index) => {
               const Icon = link.icon;
               return (
-                <div
+                <Link
                   key={index}
-                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors bg-gray-50 dark:bg-gray-900/50"
+                  href={link.href || "#"}
+                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors bg-gray-50 dark:bg-gray-900/50 block"
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
@@ -110,7 +113,7 @@ const HelpCenter = () => {
                       </p>
                     </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

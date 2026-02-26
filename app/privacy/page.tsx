@@ -28,12 +28,12 @@ export default function PrivacyPolicy() {
           performance and user experience.
         </li>
         <li>
-          <strong>Result Data:</strong> When you check results using your hall ticket number, 
-          we fetch and display your academic results from JNTUH&apos;s official systems. 
+          <strong>Result Data:</strong> When you check results using your hall ticket number,
+          we fetch and display your academic results from JNTUH&apos;s official systems.
           This data is not stored on our servers.
         </li>
         <li>
-          <strong>Authentication Data:</strong> If you use admin features, we use Firebase Authentication 
+          <strong>Authentication Data:</strong> If you use admin features, we use Firebase Authentication
           to securely manage your login credentials.
         </li>
       </ul>
@@ -56,14 +56,33 @@ export default function PrivacyPolicy() {
       <p className="mb-4">
         We do <strong>not</strong> sell, rent, or trade your personal
         information to third parties. We may share non-identifiable, aggregated
-        data for research or analytics purposes.
+        data for research or analytics purposes. We may also disclose information if required by law or to protect our rights.
       </p>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">4. Data Security</h2>
+      <h2 className="text-2xl font-semibold mt-6 mb-2">
+        4. Data Retention and Deletion
+      </h2>
       <p className="mb-4">
-        We implement reasonable security measures to protect your information.
+        We only retain personal information (like email for admin accounts) as long as necessary to provide the service. Result data fetched via hall ticket number is handled locally in your browser and is not stored on our permanent servers. Users can clear their local cache at any time via the settings or navigation menu.
+      </p>
+
+      <h2 className="text-2xl font-semibold mt-6 mb-2">
+        5. Cookies and Tracking Technologies
+      </h2>
+      <p className="mb-4">
+        We use essential cookies for authentication and performance. We also use third-party cookies from Google Analytics and Google AdSense to understand user behavior and provide relevant content. You can manage cookie preferences through your browser settings.
+      </p>
+
+      <h2 className="text-2xl font-semibold mt-6 mb-2">6. Data Security</h2>
+      <p className="mb-4">
+        We implement reasonable security measures including SSL encryption to protect your information.
         However, no app or internet transmission is completely secure, and we
         cannot guarantee absolute security.
+      </p>
+
+      <h2 className="text-2xl font-semibold mt-6 mb-2">7. User Rights</h2>
+      <p className="mb-4">
+        Depending on your location, you may have rights to access, correct, or delete your personal information. If you wish to exercise these rights, please contact us using the information provided in Section 10.
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">
@@ -74,15 +93,15 @@ export default function PrivacyPolicy() {
       </p>
       <ul className="list-disc list-inside mb-4">
         <li>
-          <strong>Firebase (Google):</strong> Used for authentication, database (Firestore), 
+          <strong>Firebase (Google):</strong> Used for authentication, database (Firestore),
           and analytics. <a href="https://firebase.google.com/support/privacy" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">Firebase Privacy Policy</a>
         </li>
         <li>
-          <strong>Google Analytics:</strong> Used to understand app usage and improve user experience. 
+          <strong>Google Analytics:</strong> Used to understand app usage and improve user experience.
           <a href="https://policies.google.com/privacy" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer"> Google Privacy Policy</a>
         </li>
         <li>
-          <strong>Vercel:</strong> Our hosting provider. 
+          <strong>Vercel:</strong> Our hosting provider.
           <a href="https://vercel.com/legal/privacy-policy" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer"> Vercel Privacy Policy</a>
         </li>
       </ul>
@@ -106,7 +125,7 @@ export default function PrivacyPolicy() {
         will be posted in the app with the “Effective Date” updated accordingly.
       </p>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">8. Contact Us</h2>
+      <h2 className="text-2xl font-semibold mt-6 mb-2">10. Contact Us</h2>
       <p>
         If you have any questions about this Privacy Policy, please contact us
         at: <br />

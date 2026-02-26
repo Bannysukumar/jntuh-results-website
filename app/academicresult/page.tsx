@@ -78,6 +78,34 @@ const AcademicResult = () => {
         onSubmit={onSubmit}
         isDisabled={isCooldown}
       />
+
+      {/* Informational Content for AdSense Value */}
+      <section className="max-w-2xl mx-auto px-4 pb-12 mt-8">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+            How to Check Your JNTUH Results
+          </h2>
+          <div className="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+            <p className="leading-relaxed">
+              To check your results on the Mana JNTUH Results portal, follow these simple steps:
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Enter your unique 10-digit <strong>Hall Ticket Number</strong> in the form above.</li>
+              <li>Click on the <strong>Send</strong> button to initiate the search.</li>
+              <li>Our system will interact with the JNTUH official result servers to fetch your latest grades.</li>
+            </ul>
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
+              <p className="text-blue-800 dark:text-blue-300 font-medium mb-1">Supported Regulations</p>
+              <p className="text-xs">
+                Currently, we provide result analysis for R18, R19, R21, R22, and R23 regulations. We also include Revaluation (RC) and Recounting (RV) results for a comprehensive view.
+              </p>
+            </div>
+            <p className="text-xs italic text-center text-gray-500 mt-6">
+              Note: For official certification, always refer to the original mark sheets issued by Jawaharlal Nehru Technological University, Hyderabad.
+            </p>
+          </div>
+        </div>
+      </section>
       <Footer />
     </>
   );

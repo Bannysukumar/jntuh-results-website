@@ -9,7 +9,7 @@ const Footer = () => {
   // Check if it's the group-chat page (handles both /group-chat and /group-chat/)
   const normalizedPath = path?.replace(/\/$/, "") || "";
   const isGroupChatPage = normalizedPath === "/group-chat";
-  
+
   // Debug: uncomment to see pathname in console
   // console.log("Footer path:", path, "normalized:", normalizedPath, "isGroupChat:", isGroupChatPage);
 
@@ -18,12 +18,12 @@ const Footer = () => {
       <div className="mt-2">
         {!isGroupChatPage && (
           <>
-        <div className="font-serif mt-1 block text-left text-[#808080] ml-[17%] text-[55%] md:text-[80%]">
-          It does consider the RCRV Results
-        </div>
-        <div className="font-serif mt-1 block text-left text-[#808080] ml-[17%] mb-4 text-[55%] md:text-[80%]">
-          It only works above R18 Regulation
-        </div>
+            <div className="font-serif mt-1 block text-left text-[#808080] ml-[17%] text-[55%] md:text-[80%]">
+              It does consider the RCRV Results
+            </div>
+            <div className="font-serif mt-1 block text-left text-[#808080] ml-[17%] mb-4 text-[55%] md:text-[80%]">
+              It only works above R18 Regulation
+            </div>
           </>
         )}
         {isGroupChatPage && (
@@ -137,15 +137,46 @@ const Footer = () => {
           </Link>
           , thanks!
         </span> */}
-        
-        {/* Privacy Policy Link */}
-        <div className="text-center mt-4 mb-4">
+
+        {/* Sitelinks Group */}
+        <div className="flex flex-wrap justify-center mt-6 mb-4 gap-x-6 gap-y-2">
+          <Link
+            href="/about"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs md:text-sm transition-colors"
+          >
+            About Us
+          </Link>
+          <Link
+            href="/contact"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs md:text-sm transition-colors"
+          >
+            Contact
+          </Link>
+          <Link
+            href="/disclaimer"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs md:text-sm transition-colors"
+          >
+            Disclaimer
+          </Link>
           <Link
             href="/privacy"
-            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm md:text-base underline underline-offset-2 transition-colors inline-block px-2 py-1"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs md:text-sm transition-colors"
           >
             Privacy Policy
           </Link>
+          <Link
+            href="/guide"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs md:text-sm transition-colors"
+          >
+            Guide
+          </Link>
+        </div>
+
+        {/* Attribution */}
+        <div className="text-center mb-4">
+          <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-500">
+            &copy; 2026 manajntuhresults.vercel.app - Your Premier JNTUH Results Portal
+          </p>
         </div>
       </div>
       {/* <AdComponent /> */}
