@@ -19,6 +19,9 @@ const NotificationForm = ({
   handleChangeParams: (param: string, event: any) => void;
 }) => {
   const regulations = [
+    "R25",
+    "R24",
+    "R23",
     "R22",
     "R19",
     "R18",
