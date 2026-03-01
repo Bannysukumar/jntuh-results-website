@@ -22,8 +22,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { countries } from "@/constants/countries";
-import axios from "axios";
 import { Input } from "../ui/input";
 
 interface Option {
@@ -47,47 +45,38 @@ interface Filters {
 interface CareerFilterProps {
   form: Form;
   setForm: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+  availableCompanies: string[];
 }
 
-const CareerFilters: React.FC<CareerFilterProps> = ({ form, setForm }) => {
+const CareerFilters: React.FC<CareerFilterProps> = ({ form, setForm, availableCompanies }) => {
   const [isActive, setIsActive] = useState<string>("type");
   const [options, setOptions] = useState<Option[]>([]);
 
   const [searchInput, setSearchInput] = useState("");
-  const [filters, setFilters] = useState<Filters>({
+
+  const companyOptions = availableCompanies.map(c => ({ key: c, label: c }));
+
+  const filters: Filters = {
     type: {
-      name: "Type",
+      name: "Location Type",
       options: [
-        { key: "F", label: "In-office" },
-        { key: "T", label: "Remote" },
+        { key: "worldwide", label: "Worldwide Remote" },
+        { key: "restricted", label: "Restricted Region" },
       ],
     },
     experience: {
       name: "Experience",
       options: [
-        { key: "0", label: "No Experience" },
-        { key: "1", label: "1 year Exp" },
-        { key: "2", label: "2 years Exp" },
-        { key: "3", label: "3 years Exp" },
-        { key: "5", label: "5 years Exp" },
-        { key: "8", label: "8 years Exp" },
-        { key: "13", label: "13+ years Exp" },
+        { key: "junior", label: "Junior" },
+        { key: "mid", label: "Mid-level" },
+        { key: "senior", label: "Senior" },
+        { key: "lead", label: "Lead" },
+        { key: "manager", label: "Manager" },
       ],
-    },
-    location: {
-      name: "Location",
-      options: countries, // Assume countries is an array of Option
     },
     company: {
       name: "Company",
-      options: [], // Company options should be set dynamically or from a source
-    },
-    status: {
-      name: "Status",
-      options: [
-        { key: "false", label: "On-Live" },
-        { key: "true", label: "Expired" },
-      ],
+      options: companyOptions,
     },
     dateposted: {
       name: "Date Posted",
@@ -105,17 +94,17 @@ const CareerFilters: React.FC<CareerFilterProps> = ({ form, setForm }) => {
           label: "Past 7 Days",
         },
         {
-          key: "before_past_7_days",
-          label: "Before Past 7 Days",
+          key: "older",
+          label: "Older than 7 days",
         },
-      ], // Date posted options should be set dynamically or from a source
+      ],
     },
-  });
+  };
 
   const filterKeys = Object.keys(filters);
   useEffect(() => {
     setOptions(filters[isActive]?.options || []);
-  }, [isActive, filters]);
+  }, [isActive, availableCompanies]);
 
   const handleSearch = () => {
     setForm((prevForm) => ({
@@ -124,33 +113,11 @@ const CareerFilters: React.FC<CareerFilterProps> = ({ form, setForm }) => {
     }));
   };
 
-  useEffect(() => {
-    const getCompanies = async () => {
-      const url = "https://jobss.up.railway.app/companies";
-      try {
-        const response = await axios.get(url);
-        if (response.status === 200) {
-          const companies = response.data.companies.map((company: string) => ({
-            key: company, // Assuming company name is unique
-            label: company,
-          }));
-
-          // Update the filters state with the fetched company options
-          setFilters((prevFilters) => ({
-            ...prevFilters,
-            company: {
-              ...prevFilters.company,
-              options: companies,
-            },
-          }));
-          response.data.companies;
-        }
-      } catch (err) {
-        console.log("Error occured while fetching companies");
-      }
-    };
-    getCompanies();
-  }, []);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   const handleOptionChange = (optionKey: string) => {
     setForm((prevForm) => ({
@@ -171,21 +138,29 @@ const CareerFilters: React.FC<CareerFilterProps> = ({ form, setForm }) => {
                   job: event,
                 }));
               }}
-              value={form.job}
+              value={form.job || ""}
             >
               <SelectTrigger className="min-w-[100px] w-fit h-8 bg-blue-500 text-white font-semibold text-xs rounded-full">
-                <SelectValue placeholder="Internship" />
+                <SelectValue placeholder="Job Type" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="fulltime">Full-Time</SelectItem>
                 <SelectItem value="intern">Internship</SelectItem>
-                <SelectGroup>
-                  <SelectItem value="fulltime">Full-Time</SelectItem>
-                </SelectGroup>
+                <SelectItem value="contractor">Contractor</SelectItem>
+                <SelectItem value="parttime">Part-Time</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="flex justify-center border-x md:px-2 ">
-            <Select>
+            <Select
+              onValueChange={(event) => {
+                setForm((prevForm) => ({
+                  ...prevForm,
+                  sortby: event,
+                }));
+              }}
+              value={form.sortby || "date"}
+            >
               <SelectTrigger className="w-fit min-w-[100px] h-8 text-xs rounded-full bg-transparent">
                 <SelectValue placeholder="Sort By" />
               </SelectTrigger>
@@ -202,15 +177,22 @@ const CareerFilters: React.FC<CareerFilterProps> = ({ form, setForm }) => {
               {filterKeys.map((key) => (
                 <div className="flex justify-center md:px-2 w-full" key={key}>
                   <Select
-                    onValueChange={handleOptionChange}
-                    value={form[key]}
+                    onValueChange={(val) => {
+                      if (val === 'clear') {
+                        setForm((prevForm) => ({ ...prevForm, [key]: "" }));
+                      } else {
+                        handleOptionChange(val);
+                      }
+                    }}
+                    value={form[key] || undefined}
                     onOpenChange={() => setIsActive(key)}
                   >
-                    <SelectTrigger className="min-w-[130px]  w-fit h-8 focus:outline-offset-0 focus:ring-offset-0 focus:ring-0  text-black dark:text-white font-semibold text-xs rounded-full">
+                    <SelectTrigger className={`min-w-[130px] w-fit h-8 focus:outline-offset-0 focus:ring-offset-0 focus:ring-0 font-semibold text-xs rounded-full ${form[key] ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'text-black dark:text-white'}`}>
                       <SelectValue placeholder={filters[key].name} />
                     </SelectTrigger>
-                    <SelectContent className="w-fit">
+                    <SelectContent className="w-fit max-h-[300px]">
                       <SelectGroup>
+                        <SelectItem value="clear" className="text-red-500 font-medium">Clear Filter</SelectItem>
                         {filters[key].options.map((option) => (
                           <SelectItem value={option.key} key={option.key}>
                             {option.label}
@@ -224,63 +206,72 @@ const CareerFilters: React.FC<CareerFilterProps> = ({ form, setForm }) => {
             </div>
             <div className="flex flex-1 border-l gap-1 border-solid px-2 ">
               <Input
-                className="md:h-[32px]"
-                placeholder="Search the job here..."
-                onChange={(event) => {
-                  setSearchInput(event.target.value);
-                }}
+                className="md:h-[32px] text-sm"
+                placeholder="Search job or company..."
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                onKeyDown={handleKeyDown}
               />
               <div
-                className="p-2 flex border max-h-[32px] rounded justify-center items-center cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 dark:bg-black"
+                className="p-2 flex border min-w-[32px] max-h-[32px] rounded justify-center items-center cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
                 onClick={handleSearch}
               >
-                <SearchIcon size={18} />
+                <SearchIcon size={16} />
               </div>
+              {form.title && (
+                <div
+                  className="p-2 flex border min-w-[32px] max-h-[32px] rounded justify-center items-center cursor-pointer bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 transition-colors"
+                  onClick={() => {
+                    setSearchInput("");
+                    setForm(prev => ({ ...prev, title: "" }));
+                  }}
+                >
+                  <XIcon size={16} />
+                </div>
+              )}
             </div>
           </div>
           <div className="flex justify-center items-center lg:hidden">
             <Drawer>
-              <DrawerTrigger>
-                <div className="w-fit min-w-[90px] flex justify-center border-[#E2E8F0] gap-1 items-center h-8 text-xs rounded-full border border-solid">
+              <DrawerTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 rounded-full flex gap-1 items-center px-4">
                   Filter
                   <ListFilter size="14" />
-                </div>
+                </Button>
               </DrawerTrigger>
               <DrawerContent>
-                <DrawerHeader className="flex justify-between border-b">
+                <DrawerHeader className="flex justify-between border-b shrink-0">
                   <DrawerTitle className="font-semibold">Filters</DrawerTitle>
                   <DrawerClose>
                     <XIcon className="cursor-pointer" />
                   </DrawerClose>
                 </DrawerHeader>
 
-                <div className="flex h-[calc(100vh-50vh)] min-h-fit">
-                  <div className="w-[40%] border-r p-4 gap-2 flex flex-col overflow-scroll">
+                <div className="flex h-[50vh] min-h-[300px]">
+                  <div className="w-[40%] border-r p-2 gap-1 flex flex-col overflow-y-auto">
                     {filterKeys.map((key) => (
-                      <div
-                        className={`p-4 flex text-xs gap-2 rounded-lg items-center text-[#3F3F3F]  ${
-                          isActive === key
-                            ? "bg-[#E5F0FD] dark:bg-[#3F3F3F]"
-                            : ""
-                        } cursor-pointer`}
+                      <button
+                        className={`p-3 w-full text-left text-xs gap-2 rounded-lg items-center flex justify-between ${isActive === key
+                            ? "bg-blue-50 text-blue-600 dark:bg-gray-800 dark:text-blue-400 font-medium"
+                            : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
+                          } cursor-pointer transition-colors`}
                         key={key}
                         onClick={() => setIsActive(key)}
                       >
-                        <span className="text-[#3F3F3F] dark:text-white">
-                          {filters[key].name}
-                        </span>
-                        {form[key] !== "" && (
-                          <div className="bg-red-600 rounded-full w-1 h-1 flex justify-center"></div>
+                        <span>{filters[key].name}</span>
+                        {form[key] && (
+                          <div className="bg-blue-500 rounded-full w-2 h-2 shrink-0"></div>
                         )}
-                      </div>
+                      </button>
                     ))}
                   </div>
                   <div className="w-[60%] flex flex-col">
-                    <div className="border-b px-2 py-1 text-sm flex justify-between items-center font-semibold">
+                    <div className="border-b px-4 py-2 text-sm flex justify-between items-center font-semibold shrink-0">
                       <div>{filters[isActive]?.name}</div>
                       <Button
-                        variant="outline"
-                        className="justify-center text-red-600 text-xs p-4"
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 h-8"
                         onClick={() =>
                           setForm((prevForm) => ({
                             ...prevForm,
@@ -291,23 +282,23 @@ const CareerFilters: React.FC<CareerFilterProps> = ({ form, setForm }) => {
                         Clear
                       </Button>
                     </div>
-                    <div className="p-4 overflow-auto">
+                    <div className="p-4 overflow-y-auto flex-1">
                       <RadioGroup
                         value={form[isActive]}
                         onValueChange={handleOptionChange}
-                        className="overflow-none h-fit"
+                        className="gap-3"
                       >
                         {options.map((option) => (
                           <div
-                            className="flex items-center space-x-2 "
+                            className="flex items-center space-x-3"
                             key={option.key}
                           >
                             <RadioGroupItem
                               value={option.key}
-                              id={option.key}
-                              className="text-sm text-blue-500 border-blue-500"
+                              id={`mobile-${option.key}`}
+                              className="border-gray-300 text-blue-600"
                             />
-                            <Label htmlFor={option.key} className="text-sm">
+                            <Label htmlFor={`mobile-${option.key}`} className="text-sm font-normal cursor-pointer leading-tight">
                               {option.label}
                             </Label>
                           </div>
@@ -316,25 +307,17 @@ const CareerFilters: React.FC<CareerFilterProps> = ({ form, setForm }) => {
                     </div>
                   </div>
                 </div>
-                <DrawerFooter className="p-4 flex justify-end flex-row border-t ">
-                  <DrawerClose>
-                    <div
-                      className="font-medium justify-end text-red-600 text-xs h-10 px-4 py-2  flex gap-1 items-center  rounded-full     hover:bg-primary/90"
-                      onClick={() => {
-                        // Logic for canceling filter
-                      }}
-                    >
-                      Cancel Filter
-                    </div>
+                <DrawerFooter className="p-4 flex flex-row justify-end gap-2 border-t shrink-0">
+                  <DrawerClose asChild>
+                    <Button variant="outline" onClick={() => setForm({ job: "", title: "", type: "", experience: "", company: "", status: "", dateposted: "" })}>
+                      Clear All
+                    </Button>
                   </DrawerClose>
-                  <div>
-                    <DrawerClose>
-                      <div className="h-10 px-4 py-2 justify-end flex gap-1 items-center bg-blue-600 rounded-full text-xs dark:text-white  text-primary-foreground hover:bg-primary/90">
-                        <ArrowRightIcon size="16" />
-                        Apply Filter
-                      </div>
-                    </DrawerClose>
-                  </div>
+                  <DrawerClose asChild>
+                    <Button className="gap-2">
+                      Apply Filters <ArrowRightIcon size="16" />
+                    </Button>
+                  </DrawerClose>
                 </DrawerFooter>
               </DrawerContent>
             </Drawer>
