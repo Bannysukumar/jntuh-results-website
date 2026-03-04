@@ -3,12 +3,20 @@ import { saveToLocalStorage } from "../customfunctions/localStorage";
 
 import toast from "react-hot-toast";
 
+const getApiBaseUrl = () => {
+  const configured = process.env.NEXT_PUBLIC_URL?.trim();
+  if (configured) {
+    return configured.endsWith("/") ? configured : `${configured}/`;
+  }
+  // In production/browser, default to same-origin API routes instead of localhost.
+  return "/";
+};
+
 export const fetchAcademicResult = async (
   htno: string,
 ): Promise<null | AcademicResulProps> => {
   try {
-    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-    url = `${url}api/getAcademicResult?rollNumber=${htno}`;
+    const url = `${getApiBaseUrl()}api/getAcademicResult?rollNumber=${htno}`;
 
     toast.loading("Fetching result...");
 
@@ -106,8 +114,7 @@ export const fetchAcademicResult = async (
 };
 export const fetchAllResult = async (htno: string) => {
   try {
-    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-    url = `${url}api/getAllResult?rollNumber=${htno}`;
+    const url = `${getApiBaseUrl()}api/getAllResult?rollNumber=${htno}`;
 
     toast.loading("Fetching result...");
 
@@ -194,8 +201,7 @@ export const fetchAllResult = async (htno: string) => {
 };
 export const fetchBacklogReport = async (htno: string) => {
   try {
-    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-    url = `${url}api/getBacklogs?rollNumber=${htno}`;
+    const url = `${getApiBaseUrl()}api/getBacklogs?rollNumber=${htno}`;
 
     const response = await axios.get(url, { timeout: 20 * 1000 });
     if ("details" in response.data) {
@@ -221,8 +227,7 @@ export const fetchBacklogReport = async (htno: string) => {
 
 export const fetchCreditsCheckerReport = async (htno: string) => {
   try {
-    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-    url = `${url}api/getCreditsChecker?rollNumber=${htno}`;
+    const url = `${getApiBaseUrl()}api/getCreditsChecker?rollNumber=${htno}`;
 
     toast.loading("Result are been fetched");
     const response = await axios.get(url, { timeout: 20 * 1000 });
@@ -255,8 +260,7 @@ export const fetchCreditContrastReport = async (
 ) => {
   let response;
   try {
-    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-    url = `${url}api/getResultContrast?rollNumber1=${htno1}&rollNumber2=${htno2}`;
+    const url = `${getApiBaseUrl()}api/getResultContrast?rollNumber1=${htno1}&rollNumber2=${htno2}`;
 
     toast.loading("Result are been fetched");
     response = await axios.get(url, { timeout: 20 * 1000 });
@@ -288,8 +292,7 @@ export const fetchCreditContrastReport = async (
 
 export const fetchNotifications = async (params: Params) => {
   try {
-    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-    url = `${url}api/notifications?page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
+    const url = `${getApiBaseUrl()}api/notifications?page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
     const response = await axios.get(url);
 
     if (response.status === 200) {
@@ -314,8 +317,7 @@ export const fetchClassResult = async (
   type: string = "academicresult",
 ) => {
   try {
-    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-    url = `${url}api/getClassResults?rollNumber=${htno}`;
+    const url = `${getApiBaseUrl()}api/getClassResults?rollNumber=${htno}`;
 
     toast.loading("Result are been fetched");
 
@@ -352,8 +354,7 @@ export const fetchClassResult = async (
 
 export const fetchGraceMarksEligibility = async (htno: string) => {
   try {
-    const baseUrl: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-    const url = `${baseUrl}api/grace-marks/eligibility?rollNumber=${htno}`;
+    const url = `${getApiBaseUrl()}api/grace-marks/eligibility?rollNumber=${htno}`;
     toast.loading("Checking grace marks eligibility...");
     const response = await axios.get(url, { timeout: 20 * 1000 });
     toast.dismiss();
@@ -371,8 +372,7 @@ export const fetchGraceMarksEligibility = async (htno: string) => {
 
 export const fetchGraceMarksProof = async (htno: string) => {
   try {
-    const baseUrl: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
-    const url = `${baseUrl}api/grace-marks/proof?rollNumber=${htno}`;
+    const url = `${getApiBaseUrl()}api/grace-marks/proof?rollNumber=${htno}`;
     toast.loading("Fetching grace marks proof...");
     const response = await axios.get(url, { timeout: 20 * 1000 });
     toast.dismiss();
