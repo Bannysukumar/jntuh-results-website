@@ -7,38 +7,44 @@ const MetaData = () => {
   const pathname = usePathname();
   return (
     <>
-      <meta property="og:url" content="https://jntuhresults.vercel.app/" />
+      <meta property="og:url" content="https://manajntuhresults.vercel.app/" />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="JNTUH Results" />
+      <meta property="og:title" content="JNTUH RESULTS" />
       <meta
         property="og:description"
-        content="You can find the Results of your entire semesters here of Jawaharlal Nehru Technological University, Hyderabad (JNTUH)."
+        content="Check your JNTUH exam results online instantly! Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks Eligibility, Syllabus, Jobs & Careers, and Notifications. Official JNTUH Results portal for Jawaharlal Nehru Technological University Hyderabad."
       />
       <meta
         property="og:image"
-        content="https://raw.githubusercontent.com/ThilakReddyy/JNTUHRESULTS-WEB/main/public/FrontPage.png"
+        content="https://manajntuhresults.vercel.app/jntuhresults_md.png"
       />
+      <meta property="og:image:width" content="512" />
+      <meta property="og:image:height" content="512" />
+      <meta property="og:image:alt" content="Mana JNTUH Results Logo" />
       <meta
         property="keywords"
-        content="jntuh, jntuh Results, jntuh vercel, vercel jntuh, jntuh results vercel,  jntuhresults, jntuh notifications, JNTUH Results Engineering, JNTUH Engineering Results, jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results"
+        content="mana jntuh results, mana jntuhresults, manajntuh results, mana jntuh results online, mana jntuh results portal, check mana jntuh results, jntuh, jntuh Results, jntuh vercel, vercel jntuh, jntuh results vercel,  jntuhresults, jntuh notifications, JNTUH Results Engineering, JNTUH Engineering Results, jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results"
       />
-      <meta name="publisher" content="Thilak Reddy" />
-      <meta name="creator" content="Thilak Reddy" />
-      <meta name="author" content="Thilak Reddy" />
+      <meta name="publisher" content="Adepu Sukumar" />
+      <meta name="creator" content="Adepu Sukumar" />
+      <meta name="author" content="Adepu Sukumar" />
       <meta name="twitter:card" content="summary" />
       <meta
         property="twitter:title"
-        content="JNTUH Results - Check Your UG and PG Exam Results Online"
+        content="JNTUH RESULTS"
       />
       <meta
         property="twitter:description"
-        content="JNTUH Results, JNTUH results vercel, jntuh vercel, vercel jntuh, verceljntuh, jntuhresults, jntuh notifications,  jntuh bpharmacy results, jntuh bphar results, jntuh mtech results, jntuh mba results, jntuh mca results, jntuh all semester results, jntuh all semester results r18"
+        content="Check your JNTUH exam results online instantly! Access Academic Results, All Results, Backlog Report, Class Results, Credit Checker, Grace Marks, Syllabus, Jobs & Careers, and Notifications. Get your JNTUH results for UG & PG courses including B.Tech, M.Tech, MBA, MCA, B.Pharmacy."
       />
       {/* <meta */}
       {/*   name="description" */}
       {/*   content="Easily access your JNTUH results for {relevant course and semester} - Find out your grades, CGPA, backlogs, Jobs, Internships and more in one place. Check now!" */}
       {/* /> */}
-      <meta name="google-site-verification" content="0STTwkOucWr-pQpKmDmE6lqQHDvHaNaR7GzFNLxkMTg" />
+      <meta
+        name="google-site-verification"
+        content="19aqihOrD-qf3lECIogsri3a8H8WCd2piEQ7xdq2Akg"
+      />
       <link
         rel="apple-touch-icon"
         sizes="180x180"
@@ -76,17 +82,17 @@ const MetaData = () => {
       <link rel="manifest" href="/manifest.json" />
       <link
         rel="canonical"
-        href={`https://jntuhresults.vercel.app${pathname}`}
+        href={`https://manajntuhresults.vercel.app${pathname}`}
       />
 
       <link rel="manifest" href="/site.webmanifest" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" />
-      <script
+      {/* <script
         async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5512897194230969"
         crossOrigin="anonymous"
-      ></script>
+      ></script> */}
       <link
         href="https://fonts.googleapis.com/css2?family=Delicious+Handrawn&family=Inter:wght@300&family=Roboto+Slab&display=swap"
         rel="stylesheet"
