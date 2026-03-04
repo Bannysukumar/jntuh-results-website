@@ -19,6 +19,8 @@
 # misc
 .DS_Store
 *.pem
+*.jks
+key.jks
 
 # debug
 npm-debug.log*
@@ -27,7 +29,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
-.env
+# .env - commented out to allow committing public env vars (GA tracking ID)
 
 # vercel
 .vercel
@@ -36,5 +38,17 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Sentry Config File
-.env.sentry-build-plugin
+# Capacitor / Android
+/android/
+/ios/
+/.capacitor/
+
+# Firebase Admin SDK credentials (SECURITY: Never commit these!)
+*-firebase-adminsdk-*.json
+firebase-admin-key.json
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!components.json
+!tailwind.config.*
