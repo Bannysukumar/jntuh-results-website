@@ -6,10 +6,14 @@ import toast from "react-hot-toast";
 const getApiBaseUrl = () => {
   const configured = process.env.NEXT_PUBLIC_URL?.trim();
   if (configured) {
+    // If docs URL is mistakenly provided, normalize to API origin.
+    if (configured.includes("jntuhresults.dhethi.com/docs")) {
+      return "https://jntuhresults.dhethi.com/";
+    }
     return configured.endsWith("/") ? configured : `${configured}/`;
   }
-  // In production/browser, default to same-origin API routes instead of localhost.
-  return "/";
+  // Safe production fallback (avoid localhost in deployed builds).
+  return "https://jntuhresults.dhethi.com/";
 };
 
 export const fetchAcademicResult = async (
