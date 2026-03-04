@@ -12,7 +12,7 @@ const GoogleDocViewer: React.FC<GoogleDocViewerProps> = ({
   url,
   splNote,
   width = "100%",
-  height = "92vh",
+  height = "87vh",
 }) => {
   const src = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
   const [isLoading, setIsLoading] = useState(true);
