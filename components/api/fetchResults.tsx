@@ -1,6 +1,5 @@
 import axios from "axios";
 import { saveToLocalStorage } from "../customfunctions/localStorage";
-import { isNative, nativeHttpGet } from "@/lib/native-features";
 
 import toast from "react-hot-toast";
 
@@ -8,23 +7,15 @@ export const fetchAcademicResult = async (
   htno: string,
 ): Promise<null | AcademicResulProps> => {
   try {
-    // Use external API directly in native mode, proxy route in web mode
-    const baseUrl = isNative() 
-      ? 'https://jntuhresults.dhethi.com/api'
-      : '';
-    let url: string = isNative()
-      ? `${baseUrl}/getAcademicResult?rollNumber=${htno}`
-      : `/api/proxy?endpoint=getAcademicResult&rollNumber=${htno}`;
+    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
+    url = `${url}api/getAcademicResult?rollNumber=${htno}`;
 
     toast.loading("Fetching result...");
 
-    // Use native HTTP for native apps (bypasses CORS), axios for web
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
-      : await axios.get(url, {
-          timeout: 20 * 1000,
-          validateStatus: () => true,
-        });
+    const response = await axios.get(url, {
+      timeout: 20 * 1000,
+      validateStatus: () => true,
+    });
 
     switch (response.status) {
       case 200: {
@@ -40,7 +31,7 @@ export const fetchAcademicResult = async (
         toast.dismiss();
         toast(
           response.data.message ||
-            "Result is being prepared. Please check again shortly.",
+          "Result is being prepared. Please check again shortly.",
         );
         return null;
       }
@@ -51,6 +42,21 @@ export const fetchAcademicResult = async (
           response.data.message || "This roll number is already in the queue.",
         );
         return null;
+      }
+      case 423: {
+        toast.dismiss();
+        toast.error(
+          response.data.message || "Server is temporarily overloaded. Please try again later.",
+        );
+        return null;
+      }
+      case 424: {
+        toast.dismiss();
+        toast.error(
+          response.data.message || "Upstream JNTUH servers are down. Try again later.",
+        );
+        return null;
+
       }
 
       case 502: {
@@ -83,18 +89,16 @@ export const fetchAcademicResult = async (
   } catch (e: any) {
     toast.dismiss();
 
-    // Handle both axios errors and native HTTP errors
-    const isAxiosError = axios.isAxiosError ? axios.isAxiosError(e) : false;
-    const isTimeoutError = e.code === "ECONNABORTED" || e.message?.includes('timeout');
-
-    if (isTimeoutError) {
-      toast.error("Request timed out. Try again later.");
-    } else if (isAxiosError && e.response) {
-      toast.error(`Server error: ${e.response.status}`);
-    } else if (e.status) {
-      toast.error(`Server error: ${e.status}`);
+    if (axios.isAxiosError(e)) {
+      if (e.code === "ECONNABORTED") {
+        toast.error("Request timed out. Try again later.");
+      } else if (e.response) {
+        toast.error(`Server error: ${e.response.status}`);
+      } else {
+        toast.error("Network issue. Please check your connection.");
+      }
     } else {
-      toast.error("Network issue. Please check your connection.");
+      toast.error("Unexpected error occurred.");
     }
 
     return null;
@@ -102,22 +106,15 @@ export const fetchAcademicResult = async (
 };
 export const fetchAllResult = async (htno: string) => {
   try {
-    const baseUrl = isNative() 
-      ? 'https://jntuhresults.dhethi.com/api'
-      : '';
-    let url: string = isNative()
-      ? `${baseUrl}/getAllResult?rollNumber=${htno}`
-      : `/api/proxy?endpoint=getAllResult&rollNumber=${htno}`;
+    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
+    url = `${url}api/getAllResult?rollNumber=${htno}`;
 
     toast.loading("Fetching result...");
 
-    // Use native HTTP for native apps (bypasses CORS), axios for web
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
-      : await axios.get(url, {
-          timeout: 20 * 1000,
-          validateStatus: () => true,
-        });
+    const response = await axios.get(url, {
+      timeout: 20 * 1000,
+      validateStatus: () => true,
+    });
 
     switch (response.status) {
       case 200: {
@@ -137,7 +134,7 @@ export const fetchAllResult = async (htno: string) => {
         toast.dismiss();
         toast(
           response.data.message ||
-            "Result is being prepared. Please check again shortly.",
+          "Result is being prepared. Please check again shortly.",
         );
         return false;
       }
@@ -180,17 +177,16 @@ export const fetchAllResult = async (htno: string) => {
   } catch (e: any) {
     toast.dismiss();
 
-    const isAxiosError = axios.isAxiosError ? axios.isAxiosError(e) : false;
-    const isTimeoutError = e.code === "ECONNABORTED" || e.message?.includes('timeout');
-
-    if (isTimeoutError) {
-      toast.error("Request timed out. Try again later.");
-    } else if (isAxiosError && e.response) {
-      toast.error(`Server error: ${e.response.status}`);
-    } else if (e.status) {
-      toast.error(`Server error: ${e.status}`);
+    if (axios.isAxiosError(e)) {
+      if (e.code === "ECONNABORTED") {
+        toast.error("Request timed out. Try again later.");
+      } else if (e.response) {
+        toast.error(`Server error: ${e.response.status}`);
+      } else {
+        toast.error("Network issue. Please check your connection.");
+      }
     } else {
-      toast.error("Network issue. Please check your connection.");
+      toast.error("Unexpected error occurred.");
     }
 
     return false;
@@ -198,16 +194,10 @@ export const fetchAllResult = async (htno: string) => {
 };
 export const fetchBacklogReport = async (htno: string) => {
   try {
-    const baseUrl = isNative() 
-      ? 'https://jntuhresults.dhethi.com/api'
-      : '';
-    let url: string = isNative()
-      ? `${baseUrl}/getBacklogs?rollNumber=${htno}`
-      : `/api/proxy?endpoint=getBacklogs&rollNumber=${htno}`;
+    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
+    url = `${url}api/getBacklogs?rollNumber=${htno}`;
 
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
-      : await axios.get(url, { timeout: 20 * 1000 });
+    const response = await axios.get(url, { timeout: 20 * 1000 });
     if ("details" in response.data) {
       saveToLocalStorage(
         htno + "-Backlogreport",
@@ -231,17 +221,11 @@ export const fetchBacklogReport = async (htno: string) => {
 
 export const fetchCreditsCheckerReport = async (htno: string) => {
   try {
-    const baseUrl = isNative() 
-      ? 'https://jntuhresults.dhethi.com/api'
-      : '';
-    let url: string = isNative()
-      ? `${baseUrl}/getCreditsChecker?rollNumber=${htno}`
-      : `/api/proxy?endpoint=getCreditsChecker&rollNumber=${htno}`;
+    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
+    url = `${url}api/getCreditsChecker?rollNumber=${htno}`;
 
     toast.loading("Result are been fetched");
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
-      : await axios.get(url, { timeout: 20 * 1000 });
+    const response = await axios.get(url, { timeout: 20 * 1000 });
     if ("details" in response.data) {
       saveToLocalStorage(
         htno + "-CreditsCheckerreport",
@@ -271,17 +255,11 @@ export const fetchCreditContrastReport = async (
 ) => {
   let response;
   try {
-    const baseUrl = isNative() 
-      ? 'https://jntuhresults.dhethi.com/api'
-      : '';
-    let url: string = isNative()
-      ? `${baseUrl}/getResultContrast?rollNumber1=${htno1}&rollNumber2=${htno2}`
-      : `/api/proxy?endpoint=getResultContrast&rollNumber1=${htno1}&rollNumber2=${htno2}`;
+    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
+    url = `${url}api/getResultContrast?rollNumber1=${htno1}&rollNumber2=${htno2}`;
 
     toast.loading("Result are been fetched");
-    response = isNative()
-      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
-      : await axios.get(url, { timeout: 20 * 1000 });
+    response = await axios.get(url, { timeout: 20 * 1000 });
     if ("studentProfiles" in response.data) {
       saveToLocalStorage(
         htno1 + "-" + htno2 + "-CreditContrastreport",
@@ -310,15 +288,9 @@ export const fetchCreditContrastReport = async (
 
 export const fetchNotifications = async (params: Params) => {
   try {
-    const baseUrl = isNative() 
-      ? 'https://jntuhresults.dhethi.com/api'
-      : '';
-    let url: string = isNative()
-      ? `${baseUrl}/notifications?page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`
-      : `/api/proxy?endpoint=notifications&page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
-    const response = isNative()
-      ? await nativeHttpGet(url)
-      : await axios.get(url);
+    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
+    url = `${url}api/notifications?page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
+    const response = await axios.get(url);
 
     if (response.status === 200) {
       if (response.data.status === "success") {
@@ -342,18 +314,12 @@ export const fetchClassResult = async (
   type: string = "academicresult",
 ) => {
   try {
-    const baseUrl = isNative() 
-      ? 'https://jntuhresults.dhethi.com/api'
-      : '';
-    let url: string = isNative()
-      ? `${baseUrl}/getClassResults?rollNumber=${htno}`
-      : `/api/proxy?endpoint=getClassResults&rollNumber=${htno}`;
+    let url: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
+    url = `${url}api/getClassResults?rollNumber=${htno}`;
 
     toast.loading("Result are been fetched");
 
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
-      : await axios.get(url, { timeout: 20 * 1000 });
+    const response = await axios.get(url, { timeout: 20 * 1000 });
 
     console.log(response);
     if (response.data && response.data.length > 0) {
@@ -386,134 +352,38 @@ export const fetchClassResult = async (
 
 export const fetchGraceMarksEligibility = async (htno: string) => {
   try {
-    const baseUrl = isNative() 
-      ? 'https://jntuhresults.dhethi.com/api'
-      : '';
-    let url: string = isNative()
-      ? `${baseUrl}/grace-marks/eligibility?rollNumber=${htno}`
-      : `/api/grace-marks/eligibility?rollNumber=${htno}`;
-
+    const baseUrl: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
+    const url = `${baseUrl}api/grace-marks/eligibility?rollNumber=${htno}`;
     toast.loading("Checking grace marks eligibility...");
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
-      : await axios.get(url, { timeout: 20 * 1000 });
-    
-    if (response.data && ("eligibility" in response.data || "details" in response.data)) {
-      saveToLocalStorage(
-        htno + "-GraceMarksEligibility",
-        JSON.stringify(response.data),
-      );
-      toast.dismiss();
-      toast.success("Eligibility checked successfully");
-      return true;
-    }
-    
-    if (response.data.status === "success") {
-      toast.dismiss();
-      toast(response.data.message);
-    } else if (response.data.status === "failure") {
-      toast.dismiss();
-      toast.error(response.data.message);
-    }
-
-    return false;
-  } catch (error: any) {
+    const response = await axios.get(url, { timeout: 20 * 1000 });
     toast.dismiss();
-    if (error.response?.status === 400) {
-      toast.error(error.response.data.detail || error.response.data.error);
-    } else {
-      toast.error("SERVER ISSUE!!");
-    }
-    return false;
+    return response.data;
+  } catch (e: any) {
+    toast.dismiss();
+    const errorMessage =
+      e?.response?.data?.message ||
+      e?.response?.data?.error ||
+      "Failed to check grace marks eligibility";
+    toast.error(errorMessage);
+    return null;
   }
 };
 
 export const fetchGraceMarksProof = async (htno: string) => {
   try {
-    const baseUrl = isNative() 
-      ? 'https://jntuhresults.dhethi.com/api'
-      : '';
-    let url: string = isNative()
-      ? `${baseUrl}/grace-marks/proof?rollNumber=${htno}`
-      : `/api/grace-marks/proof?rollNumber=${htno}`;
-
+    const baseUrl: string = process.env.NEXT_PUBLIC_URL || "http://localhost:8000/";
+    const url = `${baseUrl}api/grace-marks/proof?rollNumber=${htno}`;
     toast.loading("Fetching grace marks proof...");
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 20 * 1000 })
-      : await axios.get(url, { timeout: 20 * 1000 });
-    
-    if (response.data && ("proof" in response.data || "details" in response.data)) {
-      saveToLocalStorage(
-        htno + "-GraceMarksProof",
-        JSON.stringify(response.data),
-      );
-      toast.dismiss();
-      toast.success("Proof fetched successfully");
-      return true;
-    }
-    
-    if (response.data.status === "success") {
-      toast.dismiss();
-      toast(response.data.message);
-    } else if (response.data.status === "failure") {
-      toast.dismiss();
-      toast.error(response.data.message);
-    }
-
-    return false;
-  } catch (error: any) {
+    const response = await axios.get(url, { timeout: 20 * 1000 });
     toast.dismiss();
-    if (error.response?.status === 400) {
-      toast.error(error.response.data.detail || error.response.data.error);
-    } else {
-      toast.error("SERVER ISSUE!!");
-    }
-    return false;
-  }
-};
-
-export const fetchLatestNotifications = async (): Promise<Result[] | null> => {
-  try {
-    let url: string = `/api/getlatestnotifications`;
-    const response = await axios.get(url, { 
-      timeout: 20 * 1000,
-      validateStatus: (status) => status < 500, // Accept 4xx as valid responses
-    });
-
-    if (response.status === 200) {
-      // Check for error status in response data
-      if (response.data?.status === "success" || response.data?.status === "failure") {
-        return null;
-      }
-      
-      // Handle both array and object responses
-      if (Array.isArray(response.data)) {
-        return response.data;
-      } else if (response.data?.notifications && Array.isArray(response.data.notifications)) {
-        return response.data.notifications;
-      } else if (response.data?.data && Array.isArray(response.data.data)) {
-        return response.data.data;
-      } else if (response.data?.results && Array.isArray(response.data.results)) {
-        return response.data.results;
-      }
-      
-      // If response.data exists but is not an array, log and return null
-      if (response.data) {
-        console.warn("Unexpected response format from latest notifications API:", response.data);
-      }
-      
-      return null;
-    } else {
-      console.error(
-        `Failed to fetch latest notifications. Status: ${response.status}`,
-      );
-      return null;
-    }
-  } catch (error: any) {
-    // Only log actual errors, not expected 4xx responses
-    if (error.response?.status >= 500 || !error.response) {
-      console.error("An error occurred while fetching latest notifications:", error);
-    }
+    return response.data;
+  } catch (e: any) {
+    toast.dismiss();
+    const errorMessage =
+      e?.response?.data?.message ||
+      e?.response?.data?.error ||
+      "Failed to fetch grace marks proof";
+    toast.error(errorMessage);
     return null;
   }
 };

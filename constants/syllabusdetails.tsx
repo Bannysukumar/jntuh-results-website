@@ -1,13 +1,22 @@
-export const syllabusDetails = {
+export interface PdfItem {
+  title: string;
+  link: string;
+}
+
+export type SyllabusNode =
+  | { [key: string]: SyllabusNode } // folder
+  | PdfItem[];
+
+export const syllabusDetails: SyllabusNode = {
   "B.Tech": {
     R25: {
       "B.Tech R25 Syllabus": [
         {
-          title: "R25 B.Tech. CSE Syllabus.pdf",
+          title: "R25 B.Tech. CSE  Syllabus.pdf",
           link: "https://jntuh.ac.in/uploads/bulletins/R25B.Tech.CSEIIIYearSyllabus.pdf",
         },
         {
-          title: "R25 B.Tech. CSBS Syllabus.pdf",
+          title: "R25 B.Tech. CSBS  Syllabus.pdf",
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.CSBSIIIYearSyllabus.pdf",
         },
         {
@@ -15,19 +24,19 @@ export const syllabusDetails = {
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.AIMLIIIYearSyllabusV2.pdf",
         },
         {
-          title: "R25 B.Tech. CSE(AIML) Syllabus.pdf",
+          title: "R25 B.Tech. CSE(AIML)  Syllabus.pdf",
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.CSE(AIML)IIIYearSyllabusV2.pdf",
         },
         {
-          title: "R25 B.Tech. CSD Syllabus.pdf",
+          title: "R25 B.Tech. CSD  Syllabus.pdf",
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.CSDIIIYearSyllabusV2.pdf",
         },
         {
-          title: "R25 B.Tech. CSE(DATA Science) Syllabus.pdf",
+          title: "R25 B.Tech. CSE(DATA Science)  Syllabus.pdf",
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.CSE(DataScience)IIIYearSyllabusV2.pdf",
         },
         {
-          title: "R25 B.Tech. AIDS Syllabus.pdf",
+          title: "R25 B.Tech. AIDS  Syllabus.pdf",
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.AIDSIIIYearSyllabusV2.pdf",
         },
         {
@@ -35,15 +44,15 @@ export const syllabusDetails = {
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.EEEIIIYearSyllabusV2.pdf",
         },
         {
-          title: "R25 B.Tech. ECE Syllabus.pdf",
+          title: "R25 B.Tech. ECE  Syllabus.pdf",
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.ECEIIIYearSyllabusV2(1).pdf",
         },
         {
-          title: "R25 B.Tech. Civil Syllabus.pdf",
+          title: "R25 B.Tech. Civil  Syllabus.pdf",
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.CivilEngg.IIIYearSyllabusV2.pdf",
         },
         {
-          title: "R25 B.Tech. Mech Syllabus.pdf",
+          title: "R25 B.Tech. Mech  Syllabus.pdf",
           link: "https://jntuh.ac.in/uploads/academics/R25B.Tech.Mech.Engg.IIIYearSyllabusV2.pdf",
         },
       ],
