@@ -55,6 +55,7 @@ const Notification = () => {
       [param]: event.target.value,
       page: 1, // Reset page when filters change
     }));
+    console.log(params);
   };
 
   return (
