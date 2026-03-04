@@ -18,9 +18,11 @@ const ExamResults = ({ title, query }: { title: string; query: string }) => {
     }
     try {
       const redirectUrl =
+        "http://results.jntuh.ac.in/results/resultAction?" +
         query +
-        "&result=null&grad=null&htno=" +
-        singleHtno;
+        "&htno=" +
+        singleHtno +
+        "&result=null&grad=null";
 
       window.open(redirectUrl, "_blank");
     } catch (e: any) {
