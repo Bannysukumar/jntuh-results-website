@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getGeminiApiKey } from "@/lib/get-ai-api-key";
 
 export async function POST(request: NextRequest) {
   try {
+    const apiKey = await getGeminiApiKey();
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "AI Assistant is not configured. Please set the API key in Admin panel." },
+        { status: 503 }
+      );
+    }
+
     const { message, conversationHistory = [] } = await request.json();
 
     if (!message || typeof message !== "string") {
@@ -11,72 +20,66 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Prepare conversation for Gemini API
-    // Format matches the curl example: contents array with parts containing text
-    // For conversation context, include previous messages in order
-    const contents: any[] = [];
+    const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [];
 
-    // If we have conversation history, include it as context
-    if (conversationHistory.length > 0) {
-      // Build a contextual prompt that includes conversation history
-      let conversationContext = "Previous conversation:\n\n";
-      conversationHistory.forEach((msg: { role: string; content: string }, index: number) => {
-        conversationContext += `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}\n`;
-      });
-      conversationContext += `\nUser: ${message}`;
-      
-      contents.push({
-        parts: [{ text: conversationContext }],
-      });
-    } else {
-      // Just send the current message (matches curl example format)
-      contents.push({
-        parts: [{ text: message }],
+    messages.push({
+      role: "system",
+      content:
+        "You are the official AI assistant for the Mana JNTUH Results website. " +
+        "You must ONLY answer questions related to studies, academics, exams, results, colleges, branches, subject doubts, career guidance, and university-related information. " +
+        "If the user asks anything that is not study/education related, politely refuse and say that you can only answer study-related questions.",
+    });
+
+    if (Array.isArray(conversationHistory) && conversationHistory.length > 0) {
+      conversationHistory.forEach((msg: { role: string; content: string }) => {
+        if (msg?.content && (msg.role === "user" || msg.role === "assistant")) {
+          messages.push({
+            role: msg.role,
+            content: msg.content,
+          });
+        }
       });
     }
 
-    // Call Gemini API
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-goog-api-key": process.env.GEMINI_API_KEY || "AIzaSyDzCUI8PSCDBgL1Zf0injojvPKC364N6eY",
-        },
-        body: JSON.stringify({
-          contents: contents,
-        }),
-      }
-    );
+    messages.push({
+      role: "user",
+      content: message,
+    });
+
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
+        messages,
+        temperature: 0.7,
+      }),
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.error("Gemini API error:", errorData);
-      
-      // Handle quota exceeded error
-      if (response.status === 429 || errorData.error?.message?.includes("quota") || errorData.error?.message?.includes("Quota exceeded")) {
-        return NextResponse.json(
-          {
-            error: "AI service quota exceeded. Please try again later or contact support.",
-          },
-          { status: 429 }
-        );
-      }
-      
+      console.error("Groq API error:", errorData);
+
+      const messageText =
+        errorData?.error?.message ||
+        errorData?.error ||
+        (typeof errorData === "string" ? errorData : "") ||
+        "Failed to get response from AI";
+
       return NextResponse.json(
         {
-          error: errorData.error?.message || errorData.error || "Failed to get response from AI",
+          error: messageText,
         },
         { status: response.status || 500 }
       );
     }
 
     const data = await response.json();
-
-    // Extract the AI response text
-    const aiResponse =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+    const aiResponse: string =
+      data?.choices?.[0]?.message?.content ||
       "Sorry, I couldn't generate a response. Please try again.";
 
     return NextResponse.json({
@@ -87,7 +90,7 @@ export async function POST(request: NextRequest) {
     console.error("Error in AI chat API:", error);
     return NextResponse.json(
       {
-        error: error.message || "Internal server error",
+        error: error?.message || "Internal server error",
       },
       { status: 500 }
     );

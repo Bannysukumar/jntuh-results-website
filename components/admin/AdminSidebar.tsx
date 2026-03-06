@@ -15,7 +15,8 @@ import {
   Menu,
   MessageCircle,
   Bell,
-  Key
+  Key,
+  Bot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,11 @@ const menuItems = [
     title: "VAPID Keys",
     href: "/admin/vapid-keys",
     icon: Key,
+  },
+  {
+    title: "AI Assistant Key",
+    href: "/admin/ai-api-key",
+    icon: Bot,
   },
   {
     title: "Health",
