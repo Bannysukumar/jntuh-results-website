@@ -26,6 +26,16 @@ export interface JobDetail {
   seniority: string;
 }
 
+const JOBS_CACHE_TTL_MS = 3 * 60 * 1000; // 3 minutes
+const jobsCache = new Map<
+  string,
+  { jobs: JobDetail[]; totalCount: number; expiry: number }
+>();
+
+function getJobsCacheKey(page: number, pageSize: number): string {
+  return `jobs_${page}_${pageSize}`;
+}
+
 const Carrers = () => {
   const [jobs, setJobs] = useState<JobDetail[]>([]);
   const [page, setPage] = useState(1);
@@ -45,27 +55,55 @@ const Carrers = () => {
   });
 
   useEffect(() => {
+    const abortController = new AbortController();
+    let cancelled = false;
+    const cacheKey = getJobsCacheKey(page, pageSize);
+    const cached = jobsCache.get(cacheKey);
+
+    if (cached && cached.expiry > Date.now()) {
+      setJobs(cached.jobs);
+      setTotalJobsCount(cached.totalCount);
+      setIsLoading(false);
+      setErrorMsg("");
+    } else if (page <= 1) {
+      setIsLoading(true);
+    }
+    setErrorMsg("");
+
     const getJobDetails = async () => {
       try {
-        if (page <= 1) setIsLoading(true);
-        setErrorMsg("");
         const offset = (page - 1) * pageSize;
         const url = `/api/himalayas?limit=${pageSize}&offset=${offset}`;
 
-        const response = await axios.get(url);
+        const response = await axios.get(url, {
+          signal: abortController.signal,
+          timeout: 12000,
+        });
+        if (cancelled || abortController.signal.aborted) return;
         if (response.status === 200) {
-          setTotalJobsCount(response.data.totalCount || 0);
+          const totalCount = response.data.totalCount || 0;
+          const newJobs = response.data.jobs || [];
+          if (page === 1) {
+            jobsCache.set(cacheKey, {
+              jobs: newJobs,
+              totalCount,
+              expiry: Date.now() + JOBS_CACHE_TTL_MS,
+            });
+          }
+          setTotalJobsCount(totalCount);
           if (page > 1) {
             setJobs((prevJobs) => {
-              const prevGuids = new Set(prevJobs.map(j => j.guid));
-              const newJobs = response.data.jobs.filter((j: JobDetail) => !prevGuids.has(j.guid));
-              return [...prevJobs, ...newJobs];
+              const prevGuids = new Set(prevJobs.map((j) => j.guid));
+              const appended = (newJobs as JobDetail[]).filter((j) => !prevGuids.has(j.guid));
+              return [...prevJobs, ...appended];
             });
           } else {
-            setJobs(response.data.jobs || []);
+            setJobs(newJobs);
           }
         }
       } catch (err: any) {
+        if (axios.isCancel(err) || err?.name === "AbortError" || err?.code === "ERR_CANCELED") return;
+        if (cancelled) return;
         console.error("Error occurred while fetching jobs from Himalayas API:", err);
         if (err.response && err.response.status === 429) {
           setErrorMsg("Rate limit exceeded. Please try again later.");
@@ -73,11 +111,15 @@ const Carrers = () => {
           setErrorMsg("Failed to load remote jobs. Please try again later.");
         }
       } finally {
-        setIsLoading(false);
+        if (!cancelled && !abortController.signal.aborted) setIsLoading(false);
       }
     };
 
     getJobDetails();
+    return () => {
+      cancelled = true;
+      abortController.abort();
+    };
   }, [page, pageSize]);
 
   const incrementPage = () => {

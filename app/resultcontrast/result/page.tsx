@@ -1,7 +1,7 @@
 "use client";
 import { getFromLocalStorage } from "@/components/customfunctions/localStorage";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { fetchCreditContrastReport } from "@/components/api/fetchResults";
+import { useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -27,27 +27,73 @@ const AttributeRow: React.FC<AttributeRowProps> = ({
 function ResultContrastPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const htno = (searchParams.get("htno") || "").trim().toUpperCase();
+  const htno2 = (searchParams.get("htno2") || "").trim().toUpperCase();
   const [results, setResults] = useState<CreditContrastReport | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     toast.dismiss();
-    const htno = searchParams.get("htno")?.toUpperCase();
-    const htno2 = searchParams.get("htno2")?.toUpperCase();
-    const localkey = htno + "-" + htno2 + "-CreditContrastreport";
-    const results = getFromLocalStorage(localkey);
-    setResults(results);
-    if (results == null) {
+    if (!htno || !htno2 || htno.length < 10 || htno2.length < 10) {
+      setLoading(false);
       router.push("/resultcontrast");
       return;
     }
-  }, [searchParams, router]);
+    const localkey = htno + "-" + htno2 + "-CreditContrastreport";
+    const cached = getFromLocalStorage(localkey);
+    if (cached) {
+      setResults(cached);
+      setLoading(false);
+      return;
+    }
+    const abortController = new AbortController();
+    let cancelled = false;
+    let retried = false;
+    const doFetch = async () => {
+      setLoading(true);
+      try {
+        const ok = await fetchCreditContrastReport(htno, htno2, {
+          signal: abortController.signal,
+        });
+        if (cancelled || abortController.signal.aborted) return;
+        if (ok) {
+          const data = getFromLocalStorage(localkey);
+          if (data) setResults(data);
+        } else {
+          router.push("/resultcontrast");
+        }
+      } catch (err: any) {
+        const isAbort = err?.name === "AbortError" || err?.code === "ERR_CANCELED";
+        if (isAbort && !retried && !cancelled && !abortController.signal.aborted) {
+          retried = true;
+          await doFetch();
+        } else if (!isAbort && !cancelled) router.push("/resultcontrast");
+      } finally {
+        if (!cancelled && !abortController.signal.aborted) setLoading(false);
+      }
+    };
+    doFetch();
+    return () => {
+      cancelled = true;
+      abortController.abort();
+    };
+  }, [htno, htno2, router]);
 
-  return results == null ? (
-    <>
+  if (loading) {
+    return (
+      <div className="m-1 text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]">
+        <div className="text-center font-bold my-4">Loading...</div>
+      </div>
+    );
+  }
+  if (results == null) {
+    return (
       <div className="m-1 text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]">
         Details not found
       </div>
-    </>
-  ) : (
+    );
+  }
+  return (
     <div className="m-1 text-[30%] sm:text-[45%]  md:text-[60%] lg:text-[100%]">
       <div className="text-center font-bold my-4 text-xs lg:text-2xl">
         Result Contrast

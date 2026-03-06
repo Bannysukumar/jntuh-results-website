@@ -1,16 +1,34 @@
 "use client";
 import { useSidebarContext } from "@/customhooks/sidebarhook";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { navitems } from "@/constants/navitems";
 import { socialMediaItems } from "@/constants/socialmediaitems";
 import { ModeToggleMobile } from "../ui/toggle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+// Collect all nav hrefs for prefetch (flat list of unique routes)
+const NAV_HREFS = Array.from(
+  new Set(
+    navitems.flatMap((item) =>
+      Array.isArray(item) ? item.map((i) => i.href) : [item.href]
+    )
+  )
+).filter(Boolean) as string[];
 
 const SideMenubar = () => {
   const { sidebar, toggleSidebar } = useSidebarContext();
   const pathname = usePathname();
+  const router = useRouter();
   const [toggleResult, setToggleResult] = useState(false);
+
+  // Prefetch main routes when sidebar mounts so navigation feels instant
+  useEffect(() => {
+    const t = setTimeout(() => {
+      NAV_HREFS.forEach((href) => router.prefetch(href));
+    }, 300);
+    return () => clearTimeout(t);
+  }, [router]);
 
   const getButtonClass = (href: string) => {
     const path = "/" + pathname.split("/")[1];

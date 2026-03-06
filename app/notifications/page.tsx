@@ -5,7 +5,7 @@ import NotificationResults from "@/components/notifications/notificationResults"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Bell, FileText } from "lucide-react";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 
 const Notification = () => {
   const [results, setResults] = useState<Result[]>([]);
@@ -20,55 +20,55 @@ const Notification = () => {
     page: 1,
   });
 
-  const fetchData = useCallback(async () => {
+  useEffect(() => {
+    let cancelled = false;
     setLoading(true);
-    try {
-      const notifications: Result[] | null = await fetchNotifications(params);
-      if (!notifications || !Array.isArray(notifications)) {
-        if (params.page == 1) {
-          setResults([]);
+    (async () => {
+      try {
+        const notifications: Result[] | null = await fetchNotifications(params);
+        if (cancelled) return;
+        if (!notifications || !Array.isArray(notifications)) {
+          if (params.page === 1) setResults([]);
+          return;
         }
-        setLoading(false);
-        return;
+        if (params.page === 1) {
+          setResults(notifications);
+        } else {
+          setResults((prev) => [...prev, ...notifications]);
+        }
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Error fetching notifications:", error);
+        if (params.page === 1) setResults([]);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      if (params.page == 1) {
-        setResults(notifications);
-      } else {
-        setResults((prev) => [...prev, ...notifications]);
-      }
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-      if (params.page == 1) {
-        setResults([]);
-      }
-    }
-    setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [params]);
 
-  const fetchLatestData = useCallback(async () => {
+  useEffect(() => {
+    let cancelled = false;
     setLatestLoading(true);
-    try {
-      const notifications: Result[] | null = await fetchLatestNotifications();
-      if (!notifications || !Array.isArray(notifications)) {
+    (async () => {
+      try {
+        const notifications: Result[] | null = await fetchLatestNotifications();
+        if (cancelled) return;
+        setLatestResults(Array.isArray(notifications) ? notifications : []);
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Error fetching latest notifications:", error);
         setLatestResults([]);
-        setLatestLoading(false);
-        return;
+      } finally {
+        if (!cancelled) setLatestLoading(false);
       }
-      setLatestResults(notifications);
-    } catch (error) {
-      console.error("Error fetching latest notifications:", error);
-      setLatestResults([]);
-    }
-    setLatestLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  useEffect(() => {
-    fetchLatestData();
-  }, [fetchLatestData]);
 
   const incrementPage = () => {
     if (!loading) {

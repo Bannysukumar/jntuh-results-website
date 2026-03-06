@@ -1,11 +1,16 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 import Navbar from "@/components/navbar/navbar";
 import SideMenubar from "@/components/sidemenubar/sidemenubar";
 import { SidebarProvider } from "@/customhooks/sidebarhook";
 import { NavBarProvider } from "@/customhooks/navbarhook";
-import NotificationPopUp from "@/components/notifications/popup";
+
+const NotificationPopUp = dynamic(
+  () => import("@/components/notifications/popup").then((m) => m.default),
+  { ssr: false }
+);
 
 export default function AdminWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,7 +21,7 @@ export default function AdminWrapper({ children }: { children: React.ReactNode }
     return <>{children}</>;
   }
 
-  // Regular routes - with navbar/sidebar
+  // Regular routes - with navbar/sidebar (layout stays mounted; only children change on navigation)
   return (
     <SidebarProvider>
       <NavBarProvider>

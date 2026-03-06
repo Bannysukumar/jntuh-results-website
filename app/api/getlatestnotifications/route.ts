@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       headers: {
         "User-Agent": "Mozilla/5.0",
       },
-      next: { revalidate: 0 }, // Don't cache
+      next: { revalidate: 60 }, // Cache 1 min for faster repeat loads
     });
 
     if (!response.ok) {

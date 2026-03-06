@@ -1,20 +1,15 @@
 "use client";
 
-import { fetchCreditsCheckerReport } from "@/components/api/fetchResults";
 import Footer from "@/components/footer/footer";
 import Form from "@/components/forms/resulthtnoform";
-import Loading from "@/components/loading/loading";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 const CreditChecker = () => {
-  const [loading, setLoading] = useState<boolean>(false);
   const [hallticketno, sethallticketno] = useState<string>("");
   const [isCooldown, setIsCooldown] = useState<boolean>(false);
-
   const router = useRouter();
-  useEffect(() => {}, []);
 
   const onSubmit = async () => {
     if (isCooldown) return;
@@ -22,27 +17,15 @@ const CreditChecker = () => {
       toast.error("The Hallticket should be of 10 digits");
       return;
     }
-
     setIsCooldown(true);
-    try {
-      const result = await fetchCreditsCheckerReport(hallticketno);
-      if (result) {
-        router.push("/creditchecker/result?htno=" + hallticketno);
-      }
-    } catch (error) {
-      console.log("Error while fetching the academic result :", error);
-    }
-    setLoading(false);
-    setIsCooldown(true);
+    router.push("/creditchecker/result?htno=" + hallticketno);
     setTimeout(() => {
       setIsCooldown(false);
       toast.dismiss();
-    }, 10000);
+    }, 5000);
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <>
       <Form
         title="Credits Checker"

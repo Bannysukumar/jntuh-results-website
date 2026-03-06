@@ -1,7 +1,11 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { Card } from "@/components/ui/card";
 import { HelpCircle, MessageSquare, ArrowRight, BookOpen, Mail } from "lucide-react";
-import Footer from "@/components/footer/footer";
+
+const Footer = dynamic(() => import("@/components/footer/footer").then((m) => m.default), {
+  ssr: true,
+});
 
 const HelpCenter = () => {
   const helpOptions = [

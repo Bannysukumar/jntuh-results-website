@@ -2,11 +2,9 @@
 
 import Footer from "@/components/footer/footer";
 import Form from "@/components/forms/resulthtnoform";
-import Loading from "@/components/loading/loading";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { fetchClassResult } from "@/components/api/fetchResults";
 import { setupPush } from "@/customhooks/setupPush";
 
 const AcademicResult = () => {
@@ -50,29 +48,16 @@ const AcademicResult = () => {
       toast.error("The Hallticket should be of 10 digits");
       return;
     }
-
     setIsCooldown(true);
-    try {
-      await setupPush(hallticketno);
-      const result = await fetchClassResult(hallticketno);
-      if (result) {
-        router.push(
-          "/classresult/result?htno=" + hallticketno + "&type=" + type,
-        );
-      }
-    } catch (error) {
-      console.log("Error while fetching the academic result :", error);
-    }
-    setLoading(false);
+    router.push("/classresult/result?htno=" + hallticketno + "&type=" + type);
+    setupPush(hallticketno).catch(() => {});
     setTimeout(() => {
       setIsCooldown(false);
       toast.dismiss();
-    }, 10000);
+    }, 5000);
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <>
       <Form
         title="Class Result"

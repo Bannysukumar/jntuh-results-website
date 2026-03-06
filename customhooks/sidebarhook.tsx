@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useState, ReactNode, useContext } from "react";
+import { createContext, useState, ReactNode, useContext, useCallback, useMemo } from "react";
 
 interface SidebarContextprops {
   sidebar: boolean;
@@ -13,13 +13,15 @@ const SidebarContext = createContext<SidebarContextprops | undefined>(
 export const SidebarProvider = ({ children }: { children: ReactNode }) => {
   const [sidebar, setSidebar] = useState<boolean>(false);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     setSidebar((prevsidebar) => !prevsidebar);
-  };
-  const value: SidebarContextprops = {
-    sidebar,
-    toggleSidebar,
-  };
+  }, []);
+
+  const value = useMemo<SidebarContextprops>(
+    () => ({ sidebar, toggleSidebar }),
+    [sidebar, toggleSidebar]
+  );
+
   return (
     <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
   );

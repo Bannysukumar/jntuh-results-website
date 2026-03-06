@@ -6,7 +6,6 @@ import Loading from "@/components/loading/loading";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { fetchAcademicResult } from "@/components/api/fetchResults";
 import { setupPush } from "@/customhooks/setupPush";
 
 const AcademicResult = () => {
@@ -51,20 +50,16 @@ const AcademicResult = () => {
     }
 
     setIsCooldown(true);
-    try {
-      await setupPush(hallticketno);
-      router.push("/academicresult/result?htno=" + hallticketno);
-      // const result = await fetchAcademicResult(hallticketno);
-      // if (result) {
-      // }
-    } catch (error) {
-      console.log("Error while fetching the academic result :", error);
-    }
+    // Navigate immediately so result page can start fetching — don't block on push setup
+    router.push("/academicresult/result?htno=" + hallticketno);
+    setupPush(hallticketno).catch((err) =>
+      console.warn("Push setup failed (non-blocking):", err)
+    );
     setLoading(false);
     setTimeout(() => {
       setIsCooldown(false);
       toast.dismiss();
-    }, 10000);
+    }, 5000);
   };
 
   return loading ? (

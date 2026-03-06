@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useState, ReactNode, useContext } from "react";
+import { createContext, useState, ReactNode, useContext, useCallback, useMemo } from "react";
 
 interface NavbarContextprops {
   navbar: boolean;
@@ -11,13 +11,15 @@ const NavbarContext = createContext<NavbarContextprops | undefined>(undefined);
 export const NavBarProvider = ({ children }: { children: ReactNode }) => {
   const [navbar, setNavBar] = useState<boolean>(true);
 
-  const togglenavbar = () => {
-    setNavBar((navbar) => !navbar);
-  };
-  const value: NavbarContextprops = {
-    navbar,
-    togglenavbar,
-  };
+  const togglenavbar = useCallback(() => {
+    setNavBar((prev) => !prev);
+  }, []);
+
+  const value = useMemo<NavbarContextprops>(
+    () => ({ navbar, togglenavbar }),
+    [navbar, togglenavbar]
+  );
+
   return (
     <NavbarContext.Provider value={value}>{children}</NavbarContext.Provider>
   );

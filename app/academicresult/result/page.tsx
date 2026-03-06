@@ -19,23 +19,56 @@ const AcademicResultResult = () => {
   const htno = useSearchParams().get("htno");
   const [academicResult, setAcademicResult] =
     useState<AcademicResulProps | null>(null);
+  const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const componentRef = useRef(null);
   const isNativeApp = isNative();
 
   useEffect(() => {
-    const fetchResult = async () => {
-      const academicResult = await fetchAcademicResult(htno || "");
-      if (academicResult) {
-        setAcademicResult(academicResult);
-        return;
-      }
+    const currentHtno = (htno || "").trim().toUpperCase();
+    if (!currentHtno || currentHtno.length < 10) {
+      setLoading(false);
+      router.push("/academicresult");
+      return;
+    }
 
-      if (academicResult === null) {
-        router.push("/academicresult");
+    const abortController = new AbortController();
+    let cancelled = false;
+    let retried = false;
+
+    const fetchResult = async () => {
+      setLoading(true);
+      try {
+        const result = await fetchAcademicResult(currentHtno, {
+          signal: abortController.signal,
+        });
+        if (cancelled || abortController.signal.aborted) return;
+        if (result) {
+          setAcademicResult(result);
+        } else if (!cancelled) {
+          router.push("/academicresult");
+        }
+      } catch (err: any) {
+        const isAbort =
+          err?.name === "AbortError" || err?.code === "ERR_CANCELED";
+        if (isAbort && !retried && !cancelled && !abortController.signal.aborted) {
+          retried = true;
+          await fetchResult();
+        } else if (!isAbort && !cancelled && !abortController.signal.aborted) {
+          router.push("/academicresult");
+        }
+      } finally {
+        if (!cancelled && !abortController.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
+
     fetchResult();
+    return () => {
+      cancelled = true;
+      abortController.abort();
+    };
   }, [htno, router]);
 
   const handleSaveResult = async () => {

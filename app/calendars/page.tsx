@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   AcademicYearDetails,
   CalendarEntry,
@@ -9,8 +10,12 @@ import {
 import Link from "next/link";
 import toast from "react-hot-toast";
 import Footer from "@/components/footer/footer";
-import GoogleDocViewer from "@/components/googledocviewer/GoogleDocViewer";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
+const GoogleDocViewer = dynamic(
+  () => import("@/components/googledocviewer/GoogleDocViewer").then((m) => m.default),
+  { ssr: false }
+);
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

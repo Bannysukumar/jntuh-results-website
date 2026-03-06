@@ -10,21 +10,73 @@ import TotalResult from "@/components/result/totalResult";
 import ResultDetailsSkeleton from "@/components/skeleton/ResultDetailsSkeleton";
 import AcademicResultSkeleton from "@/components/skeleton/AcademicResultsSkeleton";
 import Print from "@/components/download/print";
+import { fetchClassResult } from "@/components/api/fetchResults";
 
 const ClassResultResult = () => {
   const router = useRouter();
-  const htno = useSearchParams().get("htno");
-  const type = useSearchParams().get("type");
-  const [classResults, setClassResults] = useState<AcademicResulProps[]>([]);
+  const htno = (useSearchParams().get("htno") || "").trim().toUpperCase();
+  const type = useSearchParams().get("type") || "academicresult";
+  const [classResults, setClassResults] = useState<AcademicResulProps[] | null>(null);
+  const [loading, setLoading] = useState(true);
   const componentRef = useRef(null);
-  useEffect(() => {
-    const academicResult = getFromLocalStorage(htno + "-ClassResult-" + type);
-    setClassResults(academicResult);
 
-    if (academicResult === null) {
+  useEffect(() => {
+    if (!htno || htno.length < 10) {
+      setLoading(false);
       router.push("/classresult");
+      return;
     }
+    const cached = getFromLocalStorage(htno + "-ClassResult-" + type);
+    if (cached && Array.isArray(cached) && cached.length > 0) {
+      setClassResults(cached);
+      setLoading(false);
+      return;
+    }
+    const abortController = new AbortController();
+    let cancelled = false;
+    let retried = false;
+    const doFetch = async () => {
+      setLoading(true);
+      try {
+        const ok = await fetchClassResult(htno, type, { signal: abortController.signal });
+        if (cancelled || abortController.signal.aborted) return;
+        if (ok) {
+          const data = getFromLocalStorage(htno + "-ClassResult-" + type);
+          if (data) setClassResults(Array.isArray(data) ? data : []);
+        } else {
+          router.push("/classresult");
+        }
+      } catch (err: any) {
+        const isAbort = err?.name === "AbortError" || err?.code === "ERR_CANCELED";
+        if (isAbort && !retried && !cancelled && !abortController.signal.aborted) {
+          retried = true;
+          await doFetch();
+        } else if (!isAbort && !cancelled) router.push("/classresult");
+      } finally {
+        if (!cancelled && !abortController.signal.aborted) setLoading(false);
+      }
+    };
+    doFetch();
+    return () => {
+      cancelled = true;
+      abortController.abort();
+    };
   }, [htno, type, router]);
+
+  if (loading) {
+    return (
+      <div className="m-2 text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]">
+        <div className="text-center font-bold my-5">Loading...</div>
+      </div>
+    );
+  }
+  if (!classResults || classResults.length === 0) {
+    return (
+      <div className="m-2 text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]">
+        <div className="text-center font-bold my-5">Details not found</div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -44,7 +96,7 @@ const ClassResultResult = () => {
             </div>
           </div>
         </div>
-        {classResults.length != 0 ? (
+        {classResults.length > 0 ? (
           classResults.map((classresult: AcademicResulProps, index: number) => {
             return (
               <div key={index} className=" pb-8">

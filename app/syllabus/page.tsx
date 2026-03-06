@@ -1,9 +1,13 @@
 "use client";
 import { SyllabusNode, PdfItem, syllabusDetails } from "@/constants/syllabusdetails";
 import { FaFilePdf } from "react-icons/fa";
-
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
-import GoogleDocViewer from "@/components/googledocviewer/GoogleDocViewer";
+
+const GoogleDocViewer = dynamic(
+  () => import("@/components/googledocviewer/GoogleDocViewer").then((m) => m.default),
+  { ssr: false }
+);
 
 export default function SyllabusPage() {
   const [path, setPath] = useState<string[]>([]);

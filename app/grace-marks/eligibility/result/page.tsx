@@ -1,29 +1,77 @@
 "use client";
+
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ResultDetails from "@/components/result/details";
 import { getFromLocalStorage } from "@/components/customfunctions/localStorage";
 import Print from "@/components/download/print";
-import { useRef } from "react";
+import { fetchGraceMarksEligibility } from "@/components/api/fetchResults";
 
 const GraceMarksEligibilityResult = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const htno = searchParams.get("htno");
-  const eligibilityData = getFromLocalStorage(htno + "-GraceMarksEligibility");
-
+  const htno = (useSearchParams().get("htno") || "").trim().toUpperCase();
+  const [eligibilityData, setEligibilityData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const componentRef = useRef(null);
-  
-  if (eligibilityData === null) {
-    router.push("/grace-marks/eligibility");
-  }
 
-  return eligibilityData === null ? (
-    <>
+  useEffect(() => {
+    if (!htno || htno.length < 10) {
+      setLoading(false);
+      router.push("/grace-marks/eligibility");
+      return;
+    }
+    const cached = getFromLocalStorage(htno + "-GraceMarksEligibility");
+    if (cached) {
+      setEligibilityData(cached);
+      setLoading(false);
+      return;
+    }
+    const abortController = new AbortController();
+    let cancelled = false;
+    let retried = false;
+    const doFetch = async () => {
+      setLoading(true);
+      try {
+        const ok = await fetchGraceMarksEligibility(htno, { signal: abortController.signal });
+        if (cancelled || abortController.signal.aborted) return;
+        if (ok) {
+          const data = getFromLocalStorage(htno + "-GraceMarksEligibility");
+          if (data) setEligibilityData(data);
+        } else {
+          router.push("/grace-marks/eligibility");
+        }
+      } catch (err: any) {
+        const isAbort = err?.name === "AbortError" || err?.code === "ERR_CANCELED";
+        if (isAbort && !retried && !cancelled && !abortController.signal.aborted) {
+          retried = true;
+          await doFetch();
+        } else if (!isAbort && !cancelled) router.push("/grace-marks/eligibility");
+      } finally {
+        if (!cancelled && !abortController.signal.aborted) setLoading(false);
+      }
+    };
+    doFetch();
+    return () => {
+      cancelled = true;
+      abortController.abort();
+    };
+  }, [htno, router]);
+
+  if (loading) {
+    return (
+      <div className="m-2 text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]">
+        <div className="text-center font-bold my-5">Loading...</div>
+      </div>
+    );
+  }
+  if (eligibilityData === null) {
+    return (
       <div className="m-2 text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]">
         Details not found
       </div>
-    </>
-  ) : (
+    );
+  }
+  return (
     <>
       <div
         className="m-2 text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]"

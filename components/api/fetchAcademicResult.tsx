@@ -39,15 +39,15 @@ const grades_to_gpa: { [key: string]: number } = {
   Ab: 0,
   "-": 0,
 };
-const fetchData = async (htno: string, url: string) => {
+const FETCH_TIMEOUT_MS = 8000;
+
+const fetchData = async (htno: string, url: string): Promise<unknown> => {
   try {
-    // Use native HTTP for native apps (bypasses CORS), axios for web
     const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 7000 })
-      : await axios.get(url, { timeout: 7000 });
-    
-    console.log(response);
-    if (response.status == 200 && typeof response.data === "object") {
+      ? await nativeHttpGet(url, { timeout: FETCH_TIMEOUT_MS })
+      : await axios.get(url, { timeout: FETCH_TIMEOUT_MS });
+
+    if (response.status === 200 && typeof response.data === "object") {
       const expiryDate = new Date();
       expiryDate.setMinutes(expiryDate.getMinutes() + 1);
       const dataToStore = {
@@ -57,16 +57,12 @@ const fetchData = async (htno: string, url: string) => {
       localStorage.setItem(htno, JSON.stringify(dataToStore));
       return response.data;
     }
-  } catch (error: any) {
-    // Handle both axios errors and native HTTP errors
+  } catch (error: unknown) {
     const isAxiosError = axios.isAxiosError ? axios.isAxiosError(error) : false;
-    const status = isAxiosError ? error.response?.status : error.status;
-    
-    if (status === 422) {
-      return 422;
-    }
-    return null;
+    const status = isAxiosError ? (error as any).response?.status : (error as any).status;
+    if (status === 422) return 422;
   }
+  return null;
 };
 
 export const getLocalStoragedata = (htno: string, backlog: boolean = false) => {
@@ -139,34 +135,32 @@ export async function fetchAcademicResult(htno: string) {
     return response;
   }
 
-  // API URLs - prioritize external URLs for native apps
-  const urls = isNative() 
+  const urlList = isNative()
     ? [
         "https://jntuhresults.up.railway.app/api/academicresult?htno=",
         "https://jntuhresultss.vercel.app/api/academicresult?htno=",
         "https://jntuhresultsss.vercel.app/api/academicresult?htno=",
       ]
     : [
-        "https://jntuhresults.up.railway.app/api/academicresult?htno=",
         "/api/academicresult?htno=",
+        "https://jntuhresults.up.railway.app/api/academicresult?htno=",
         "https://jntuhresultss.vercel.app/api/academicresult?htno=",
         "https://jntuhresultsss.vercel.app/api/academicresult?htno=",
       ];
 
-  // Try each URL until one works
-  for (const url of urls) {
-    response = await fetchData(htno, url + htno);
-    if (response !== null && response !== 422) {
-      return response;
+  // Race all URLs in parallel — first successful response wins (faster than sequential)
+  const results = await Promise.allSettled(
+    urlList.map((base) => fetchData(htno, base + htno))
+  );
+  for (const settled of results) {
+    if (settled.status === "fulfilled" && settled.value !== null && settled.value !== 422) {
+      return settled.value as any;
     }
   }
 
-  // Recheck Redis Data (web only)
   response = await getRedisData(htno);
-  if (response != null) {
-    return response;
-  }
-  
+  if (response != null) return response;
+
   return null;
 }
 

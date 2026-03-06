@@ -133,5 +133,5 @@ td {
 
 .animate-blur-fade {
   @apply transition-all;
-  animation: blurFadeOut 0.5s ease-out forwards;
+  animation: blurFadeOut 0.2s ease-out forwards;
 }
