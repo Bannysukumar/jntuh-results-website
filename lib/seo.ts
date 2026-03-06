@@ -21,4 +21,18 @@ export const SITELINK_URLS = [
   { path: "/notifications", name: "Notifications" },
   { path: "/helpcenter", name: "Help Center" },
   { path: "/group-chat", name: "Group Chat" },
+  // SEO landing pages
+  { path: "/jntuh-results", name: "JNTUH Results" },
+  { path: "/jntuh-btech-results", name: "JNTUH B.Tech Results" },
+  { path: "/jntuh-r18-results", name: "JNTUH R18 Results" },
+  { path: "/jntuh-r22-results", name: "JNTUH R22 Results" },
+  { path: "/jntuh-1-1-results", name: "JNTUH 1-1 Results" },
+  { path: "/jntuh-1-2-results", name: "JNTUH 1-2 Results" },
+  { path: "/jntuh-2-1-results", name: "JNTUH 2-1 Results" },
+  { path: "/jntuh-3-1-results", name: "JNTUH 3-1 Results" },
+  { path: "/jntuh-supply-results", name: "JNTUH Supply Results" },
+  { path: "/jntuh-revaluation-results", name: "JNTUH Revaluation Results" },
+  { path: "/jntuh-4-1-results", name: "JNTUH 4-1 Results" },
+  { path: "/jntuh-bpharmacy-results", name: "JNTUH B.Pharmacy Results" },
+  { path: "/jntuh-mtech-results", name: "JNTUH M.Tech Results" },
 ] as const;

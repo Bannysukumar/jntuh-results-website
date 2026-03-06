@@ -17,6 +17,17 @@ const PRIORITY: Record<string, number> = {
   "/carrers": 0.8,
   "/helpcenter": 0.7,
   "/group-chat": 0.7,
+  // SEO landing pages – high priority informational entries
+  "/jntuh-results": 0.95,
+  "/jntuh-btech-results": 0.93,
+  "/jntuh-r18-results": 0.9,
+  "/jntuh-r22-results": 0.9,
+  "/jntuh-1-1-results": 0.9,
+  "/jntuh-1-2-results": 0.9,
+  "/jntuh-2-1-results": 0.9,
+  "/jntuh-3-1-results": 0.9,
+  "/jntuh-supply-results": 0.9,
+  "/jntuh-revaluation-results": 0.9,
 };
 
 export default function sitemap(): MetadataRoute.Sitemap {

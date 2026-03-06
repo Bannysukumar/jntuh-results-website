@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Title from "@/components/homepage/title";
 import { homeLinks } from "@/constants/homeLinks";
 import { SITELINK_URLS } from "@/lib/seo";
+import { SEO_LANDING_PAGE_LIST } from "@/constants/seoLandingPages";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import {
@@ -257,6 +258,28 @@ export default function Home() {
               <p>
                 From B.Tech and B.Pharmacy to MBA and MCA, we support consolidated results for R18 and newer regulations. Our mission is to provide not just marks, but meaningful insights into your academic progress.
               </p>
+            </div>
+          </div>
+
+          {/* Popular result SEO pages */}
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              Popular JNTUH Result Pages
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Quickly open keyword-focused result pages for JNTUH regulations, semesters and special result types.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {SEO_LANDING_PAGE_LIST.map((page) => (
+                <Link
+                  key={page.path}
+                  href={page.path}
+                  className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition"
+                >
+                  <span>{page.h1}</span>
+                  <ArrowRight className="h-4 w-4 text-gray-400" />
+                </Link>
+              ))}
             </div>
           </div>
 
