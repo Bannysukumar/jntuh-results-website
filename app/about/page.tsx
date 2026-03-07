@@ -25,12 +25,28 @@ const AboutUs = () => {
         {/* Story Section */}
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Mission</h2>
-          <div className="prose prose-blue dark:prose-invert max-w-none">
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
+          <div className="prose prose-blue dark:prose-invert max-w-none space-y-4">
+            <p className="text-gray-700 dark:text-gray-300">
               Mana JNTUH Results was born out of a simple necessity: to provide students of Jawaharlal Nehru Technological University, Hyderabad (JNTUH) with a more efficient way to access and analyze their academic performance. We understand the stress and anticipation that comes with exam results, and our goal is to make that experience as smooth as possible.
             </p>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Our platform goes beyond just displaying marks. We provide advanced tools like CGPA calculators, backlog trackers, and credit checkers to help students plan their academic journey with clarity and confidence.
+            <p className="text-gray-700 dark:text-gray-300">
+              Our platform goes beyond just displaying marks. We provide advanced tools like CGPA calculators, backlog trackers, and credit checkers to help students plan their academic journey with clarity and confidence. All result data is fetched directly from official JNTUH systems; we do not store your marks on our servers, so you get accurate, up-to-date information with a focus on speed and usability.
+            </p>
+            <p className="text-gray-700 dark:text-gray-300">
+              We are an independent project run for the benefit of the JNTUH student community. We are not affiliated with or endorsed by JNTUH. For official certificates and mark sheets, students should always refer to the documents issued by the university.
+            </p>
+          </div>
+        </section>
+
+        {/* Who We Serve - AdSense content value */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Who We Serve</h2>
+          <div className="prose prose-blue dark:prose-invert max-w-none space-y-4">
+            <p className="text-gray-700 dark:text-gray-300">
+              Mana JNTUH Results is built for every student enrolled in JNTUH-affiliated colleges: B.Tech, B.Pharmacy, M.Tech, MBA, MCA, and other programmes under R18, R22, and newer regulations. Whether you need to check a single semester result, view all results in one place, track backlogs, verify credits for promotion, or compare results with a classmate, our tools are designed to work on both mobile and desktop without compromising on accuracy or privacy.
+            </p>
+            <p className="text-gray-700 dark:text-gray-300">
+              We also maintain pages dedicated to supply results, revaluation (RCRV), grace marks eligibility, academic calendars, syllabus, and job opportunities so that students can find relevant information and result-checking tools in one portal. If you have feedback or run into any issue, our Help Center and contact options are available for support.
             </p>
           </div>
         </section>

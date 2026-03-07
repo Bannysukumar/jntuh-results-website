@@ -68,6 +68,16 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Visible H1 and intro for AdSense / quality guidelines */}
+          <div className="max-w-3xl mx-auto text-center mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
+              Mana JNTUH Results – Official JNTUH Results Portal
+            </h1>
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+              Mana JNTUH Results is the premier online platform for checking JNTUH exam results. Access results for all semesters including B.Tech, B.Pharmacy, M.Tech, MBA, and MCA. Check your grades, backlogs, and CGPA with a fast, mobile-friendly interface backed by official JNTUH data.
+            </p>
+          </div>
+
           {/* University Info Card */}
           <div className="flex justify-center mb-8">
             <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-xl p-4 md:p-6 max-w-3xl">
@@ -81,11 +91,6 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="sr-only">
-          <h1>Mana JNTUH Results - Official JNTUH Results Portal</h1>
-          <p>Mana JNTUH Results is the premier online platform for checking JNTUH exam results. Access your Mana JNTUH Results for all semesters including B.Tech, M.Tech, MBA, MCA, and B.Pharmacy courses. Check Mana JNTUH Results online instantly with our user-friendly portal.</p>
-        </div>
-
         {/* Main Links Grid */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" aria-label="Main Navigation Links">
           {homeLinks.map((homelink: any, index: number) => {
@@ -246,17 +251,35 @@ export default function Home() {
 
         {/* Informational Content Section - AdSense Compliance Enhancement */}
         <section className="mt-16 mb-16 max-w-4xl mx-auto space-y-12">
+          {/* What is JNTUH - editorial content for AdSense value */}
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              What is JNTUH?
+            </h2>
+            <div className="prose prose-blue dark:prose-invert max-w-none text-gray-600 dark:text-gray-400 space-y-4">
+              <p>
+                Jawaharlal Nehru Technological University, Hyderabad (JNTUH) is one of India&apos;s leading technical universities, offering undergraduate and postgraduate programmes in engineering, pharmacy, management, and computer applications. Students receive a unique 10-digit hall ticket number that is used to access exam results, grade cards, and academic records throughout their course.
+              </p>
+              <p>
+                Results are published semester-wise and regulation-wise (e.g. R18, R22). Mana JNTUH Results helps you access these official results quickly, with tools for academic results, backlogs, credits, and revaluation (RCRV) in one place.
+              </p>
+            </div>
+          </div>
+
           {/* About Section */}
           <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
               Your Essential JNTUH Academic Companion
             </h2>
-            <div className="prose prose-blue dark:prose-invert max-w-none text-gray-600 dark:text-gray-400">
-              <p className="mb-4">
+            <div className="prose prose-blue dark:prose-invert max-w-none text-gray-600 dark:text-gray-400 space-y-4">
+              <p>
                 Mana JNTUH Results is an initiative dedicated to simplifying the academic life of students at Jawaharlal Nehru Technological University, Hyderabad. We know that checking results can be stressful, especially during major releases when official servers face heavy traffic. Our platform is designed to provide a fast, reliable, and user-friendly interface to access your grades without the wait.
               </p>
               <p>
-                From B.Tech and B.Pharmacy to MBA and MCA, we support consolidated results for R18 and newer regulations. Our mission is to provide not just marks, but meaningful insights into your academic progress.
+                From B.Tech and B.Pharmacy to MBA and MCA, we support consolidated results for R18 and newer regulations. Our mission is to provide not just marks, but meaningful insights into your academic progress. We do not modify or store your result data on our servers; we fetch it on demand from official JNTUH sources and present it in a clear, mobile-friendly layout.
+              </p>
+              <p>
+                For more about our mission and how we protect your privacy, see our <Link href="/about" className="text-blue-600 dark:text-blue-400 hover:underline">About Us</Link> and <Link href="/privacy" className="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</Link> pages.
               </p>
             </div>
           </div>
@@ -332,10 +355,12 @@ export default function Home() {
                 {s.name}
               </Link>
             ))}
-            {/* Added Policy Links for AdSense SEO compliance */}
+            {/* Policy and info links for AdSense / quality guidelines */}
             <Link href="/about" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2">About Us</Link>
+            <Link href="/privacy" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2">Privacy Policy</Link>
             <Link href="/contact" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2">Contact</Link>
             <Link href="/disclaimer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2">Disclaimer</Link>
+            <Link href="/faq" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2">FAQ</Link>
           </nav>
         </section>
       </main>

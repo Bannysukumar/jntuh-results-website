@@ -1,6 +1,10 @@
+import Link from "next/link";
+import Footer from "@/components/footer/footer";
+
 export default function PrivacyPolicy() {
   return (
-    <div className="container mx-auto p-6 max-w-3xl">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
+      <div className="container mx-auto p-6 max-w-3xl pb-8">
       <h1 className="text-3xl font-bold mb-4">
         Privacy Policy for Mana JNTUH Results
       </h1>
@@ -126,7 +130,7 @@ export default function PrivacyPolicy() {
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">10. Contact Us</h2>
-      <p>
+      <p className="mb-8">
         If you have any questions about this Privacy Policy, please contact us
         at: <br />
         <a
@@ -136,6 +140,13 @@ export default function PrivacyPolicy() {
           bannysukumar@gmail.com
         </a>
       </p>
+      <div className="text-center border-t pt-6">
+        <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
+          Return to Homepage
+        </Link>
+      </div>
+      </div>
+      <Footer />
     </div>
   );
 }
