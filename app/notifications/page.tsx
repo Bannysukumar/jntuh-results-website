@@ -1,4 +1,5 @@
 "use client";
+import ToolPageEditorial from "@/components/content/ToolPageEditorial";
 import { fetchNotifications, fetchLatestNotifications } from "@/components/api/fetchResults";
 import NotificationForm from "@/components/notifications/notificationForm";
 import NotificationResults from "@/components/notifications/notificationResults";
@@ -107,6 +108,16 @@ const Notification = () => {
             Stay updated with the latest result notifications and announcements from JNTUH
           </p>
         </div>
+
+        <ToolPageEditorial
+          heading="How to Use JNTUH Notifications on Mana JNTUH Results"
+          paragraphs={[
+            "JNTUH publishes hundreds of examination and result-related circulars each academic year. This page brings together filtered lists so you can find degree-specific, regulation-specific, and year-specific notifications without browsing multiple PDFs manually.",
+            "Use Result Updates when you are looking for exam schedules, result release notices, or revaluation timelines. General Updates highlights broader announcements. You can refine results using the filters and load more pages when available.",
+            "Notification text and links often point to official PDFs or portals maintained by JNTUH. Always download circulars from trusted sources and verify deadlines for fees, registrations, and revaluation with your college examination office.",
+          ]}
+          note="We aggregate information for convenience; official wording on jntuh.ac.in and university notices remains authoritative."
+        />
 
         {/* Tabs */}
         <Card className="p-6 shadow-xl border-2">

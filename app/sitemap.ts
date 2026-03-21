@@ -16,6 +16,7 @@ const PRIORITY: Record<string, number> = {
   "/calendars": 0.8,
   "/carrers": 0.8,
   "/helpcenter": 0.7,
+  "/student-resources": 0.92,
   "/group-chat": 0.7,
   // SEO landing pages – high priority informational entries
   "/jntuh-results": 0.95,

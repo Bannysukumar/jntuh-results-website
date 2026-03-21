@@ -338,6 +338,26 @@ export default function Home() {
               Read the Full Guide <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
+
+          {/* Long-form editorial hub — strong publisher value */}
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 text-center">
+              Student Resources &amp; in-depth guides
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-center max-w-2xl mx-auto mb-6 leading-relaxed">
+              Beyond result tools, read detailed articles on JNTUH regulations, hall tickets, SGPA/CGPA,
+              credits, supply exams, revaluation, and how to use this portal responsibly—with clear
+              disclaimers about official documents.
+            </p>
+            <div className="flex justify-center">
+              <Link
+                href="/student-resources"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-blue-500 text-blue-700 dark:text-blue-300 font-semibold hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-colors"
+              >
+                Open Student Resources <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
         </section>
 
         {/* Quick Links - Sitelink candidates for SERP */}
@@ -361,6 +381,7 @@ export default function Home() {
             <Link href="/contact" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2">Contact</Link>
             <Link href="/disclaimer" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2">Disclaimer</Link>
             <Link href="/faq" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2">FAQ</Link>
+            <Link href="/student-resources" className="text-blue-600 dark:text-blue-400 hover:underline underline-offset-2">Student Resources</Link>
           </nav>
         </section>
       </main>

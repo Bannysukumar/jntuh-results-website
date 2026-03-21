@@ -1,7 +1,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Card } from "@/components/ui/card";
-import { HelpCircle, MessageSquare, ArrowRight, BookOpen, Mail } from "lucide-react";
+import { HelpCircle, MessageSquare, ArrowRight, BookOpen, Mail, GraduationCap } from "lucide-react";
 
 const Footer = dynamic(() => import("@/components/footer/footer").then((m) => m.default), {
   ssr: true,
@@ -33,6 +33,12 @@ const HelpCenter = () => {
       description: "Step-by-step guide to checking your exam results",
       icon: BookOpen,
       href: "/guide",
+    },
+    {
+      title: "Student Resources",
+      description: "In-depth articles on regulations, credits, exams, and using this portal",
+      icon: GraduationCap,
+      href: "/student-resources",
     },
     {
       title: "Contact Support",

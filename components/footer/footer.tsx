@@ -170,10 +170,27 @@ const Footer = () => {
           >
             Guide
           </Link>
+          <Link
+            href="/student-resources"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs md:text-sm transition-colors"
+          >
+            Student Resources
+          </Link>
+          <Link
+            href="/faq"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs md:text-sm transition-colors"
+          >
+            FAQ
+          </Link>
         </div>
 
         {/* Attribution */}
-        <div className="text-center mb-4">
+        <div className="text-center mb-4 space-y-2">
+          <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-500 max-w-xl mx-auto px-2">
+            Mana JNTUH Results is an independent student portal with guides and tools for checking JNTUH exam results,
+            credits, backlogs, and notifications. We are not affiliated with JNTUH; official documents from the university
+            remain the authority for marks and eligibility.
+          </p>
           <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-500">
             &copy; 2026 manajntuhresults.vercel.app - Your Premier JNTUH Results Portal
           </p>

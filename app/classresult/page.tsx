@@ -1,5 +1,6 @@
 "use client";
 
+import ToolPageEditorial from "@/components/content/ToolPageEditorial";
 import Footer from "@/components/footer/footer";
 import Form from "@/components/forms/resulthtnoform";
 import { useRouter } from "next/navigation";
@@ -73,6 +74,15 @@ const AcademicResult = () => {
           </p>
         </div>
       </div>
+      <ToolPageEditorial
+        heading="About JNTUH Class Results on This Portal"
+        paragraphs={[
+          "Class Result helps you view semester-wise performance in a format similar to a class roll. After you enter your hall ticket number, the portal fetches data aligned with JNTUH’s published results so you can review subjects, grades, and totals in one place.",
+          "Use this tool alongside Academic Result or Academic All Result if you need a different layout or a full consolidated history. Results are retrieved from official sources when you request them; always verify important decisions (promotion, eligibility, placements) using your original grade card from the university.",
+          "Mana JNTUH Results is an independent student portal and is not affiliated with JNTUH. If something looks incomplete, wait for the official release or try again later when servers are stable.",
+        ]}
+        note="For official certification, rely only on mark sheets and documents issued by Jawaharlal Nehru Technological University, Hyderabad."
+      />
       <Footer />
     </>
   );

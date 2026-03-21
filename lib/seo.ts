@@ -20,6 +20,7 @@ export const SITELINK_URLS = [
   { path: "/carrers", name: "Jobs & Careers" },
   { path: "/notifications", name: "Notifications" },
   { path: "/helpcenter", name: "Help Center" },
+  { path: "/student-resources", name: "Student Resources" },
   { path: "/group-chat", name: "Group Chat" },
   // SEO landing pages
   { path: "/jntuh-results", name: "JNTUH Results" },
