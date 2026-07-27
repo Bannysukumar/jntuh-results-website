@@ -1,8 +1,12 @@
 import axios from "axios";
 import { saveToLocalStorage } from "../customfunctions/localStorage";
 import { isNative, nativeHttpGet } from "@/lib/native-features";
+import { JNTUH_API_BASE_URL, getJntuhApiHeaders } from "@/lib/jntuh-api";
 
 import toast from "react-hot-toast";
+
+const UPSTREAM_API_BASE = JNTUH_API_BASE_URL.replace(/\/$/, "");
+const NATIVE_API_OPTS = { headers: getJntuhApiHeaders() };
 
 const RESULT_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 const RESULT_CACHE_KEY_PREFIX = "jntuh_result_";
@@ -53,14 +57,17 @@ async function fetchAcademicResultFromApi(
   signal?: AbortSignal | null
 ): Promise<{ status: number; data: any }> {
   const baseUrl = isNative()
-    ? "https://jntuhresults.dhethi.com/api"
+    ? UPSTREAM_API_BASE
     : "";
   const url: string = isNative()
     ? `${baseUrl}/getAcademicResult?rollNumber=${htno}`
     : `/api/proxy?endpoint=getAcademicResult&rollNumber=${htno}`;
 
   if (isNative()) {
-    const response = await nativeHttpGet(url, { timeout: REQUEST_TIMEOUT_MS });
+    const response = await nativeHttpGet(url, {
+      timeout: REQUEST_TIMEOUT_MS,
+      ...NATIVE_API_OPTS,
+    });
     return {
       status: response.status ?? 200,
       data: response.data ?? response,
@@ -205,7 +212,7 @@ export const fetchAllResult = async (
 ) => {
   try {
     const baseUrl = isNative()
-      ? "https://jntuhresults.dhethi.com/api"
+      ? UPSTREAM_API_BASE
       : "";
     const url: string = isNative()
       ? `${baseUrl}/getAllResult?rollNumber=${htno}`
@@ -214,7 +221,7 @@ export const fetchAllResult = async (
     toast.loading("Fetching result...");
 
     const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000 })
+      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
       : await axios.get(url, {
           timeout: 15 * 1000,
           validateStatus: () => true,
@@ -298,14 +305,14 @@ export const fetchBacklogReport = async (
 ) => {
   try {
     const baseUrl = isNative()
-      ? "https://jntuhresults.dhethi.com/api"
+      ? UPSTREAM_API_BASE
       : "";
     const url: string = isNative()
       ? `${baseUrl}/getBacklogs?rollNumber=${htno}`
       : `/api/proxy?endpoint=getBacklogs&rollNumber=${htno}`;
 
     const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000 })
+      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
       : await axios.get(url, {
           timeout: 15 * 1000,
           signal: options?.signal ?? undefined,
@@ -338,7 +345,7 @@ export const fetchCreditsCheckerReport = async (
 ) => {
   try {
     const baseUrl = isNative()
-      ? "https://jntuhresults.dhethi.com/api"
+      ? UPSTREAM_API_BASE
       : "";
     const url: string = isNative()
       ? `${baseUrl}/getCreditsChecker?rollNumber=${htno}`
@@ -346,7 +353,7 @@ export const fetchCreditsCheckerReport = async (
 
     toast.loading("Result are been fetched");
     const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000 })
+      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
       : await axios.get(url, {
           timeout: 15 * 1000,
           signal: options?.signal ?? undefined,
@@ -384,7 +391,7 @@ export const fetchCreditContrastReport = async (
   let response: any;
   try {
     const baseUrl = isNative()
-      ? "https://jntuhresults.dhethi.com/api"
+      ? UPSTREAM_API_BASE
       : "";
     const url: string = isNative()
       ? `${baseUrl}/getResultContrast?rollNumber1=${htno1}&rollNumber2=${htno2}`
@@ -392,7 +399,7 @@ export const fetchCreditContrastReport = async (
 
     toast.loading("Result are been fetched");
     response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000 })
+      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
       : await axios.get(url, {
           timeout: 15 * 1000,
           signal: options?.signal ?? undefined,
@@ -440,13 +447,13 @@ export const fetchNotifications = async (params: Params): Promise<Result[] | nul
 
   try {
     const baseUrl = isNative()
-      ? "https://jntuhresults.dhethi.com/api"
+      ? UPSTREAM_API_BASE
       : "";
     const url: string = isNative()
       ? `${baseUrl}/notifications?page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`
       : `/api/proxy?endpoint=notifications&page=${params.page}&degree=${params.degree}&regulation=${params.regulation}&title=${params.title}&year=${params.year}`;
     const response = isNative()
-      ? await nativeHttpGet(url)
+      ? await nativeHttpGet(url, NATIVE_API_OPTS)
       : await axios.get(url, { timeout: 12000 });
 
     if (response.status === 200) {
@@ -472,7 +479,7 @@ export const fetchClassResult = async (
 ) => {
   try {
     const baseUrl = isNative()
-      ? "https://jntuhresults.dhethi.com/api"
+      ? UPSTREAM_API_BASE
       : "";
     const url: string = isNative()
       ? `${baseUrl}/getClassResults?rollNumber=${htno}`
@@ -481,7 +488,7 @@ export const fetchClassResult = async (
     toast.loading("Result are been fetched");
 
     const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000 })
+      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
       : await axios.get(url, {
           timeout: 15 * 1000,
           signal: options?.signal ?? undefined,
@@ -522,7 +529,7 @@ export const fetchGraceMarksEligibility = async (
 ) => {
   try {
     const baseUrl = isNative()
-      ? "https://jntuhresults.dhethi.com/api"
+      ? UPSTREAM_API_BASE
       : "";
     const url: string = isNative()
       ? `${baseUrl}/grace-marks/eligibility?rollNumber=${htno}`
@@ -530,7 +537,7 @@ export const fetchGraceMarksEligibility = async (
 
     toast.loading("Checking grace marks eligibility...");
     const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000 })
+      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
       : await axios.get(url, {
           timeout: 15 * 1000,
           signal: options?.signal ?? undefined,
@@ -573,7 +580,7 @@ export const fetchGraceMarksProof = async (
 ) => {
   try {
     const baseUrl = isNative()
-      ? "https://jntuhresults.dhethi.com/api"
+      ? UPSTREAM_API_BASE
       : "";
     const url: string = isNative()
       ? `${baseUrl}/grace-marks/proof?rollNumber=${htno}`
@@ -581,7 +588,7 @@ export const fetchGraceMarksProof = async (
 
     toast.loading("Fetching grace marks proof...");
     const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000 })
+      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
       : await axios.get(url, {
           timeout: 15 * 1000,
           signal: options?.signal ?? undefined,

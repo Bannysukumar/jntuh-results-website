@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { JNTUH_API_BASE_URL, getJntuhApiHeaders } from "@/lib/jntuh-api";
 
-const EXTERNAL_API_BASE = "https://jntuhresults.dhethi.com/api";
+const EXTERNAL_API_BASE = JNTUH_API_BASE_URL;
 const PROXY_CACHE_TTL_SEC = 120; // 2 minutes for result cache
 const NOTIFICATIONS_CACHE_TTL_SEC = 90; // 90 sec for notifications
 const CACHEABLE_ENDPOINTS = ["getAcademicResult", "getAllResult", "getBacklogs", "getCreditsChecker", "getClassResults", "notifications"];
@@ -77,9 +78,7 @@ export async function GET(request: NextRequest) {
   try {
     const response = await fetch(externalUrl.toString(), {
       method: "GET",
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-      },
+      headers: getJntuhApiHeaders(),
       next: { revalidate: 0 },
     });
 

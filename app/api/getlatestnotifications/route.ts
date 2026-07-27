@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { JNTUH_API_BASE_URL, getJntuhApiHeaders } from "@/lib/jntuh-api";
 
-const EXTERNAL_API_BASE = "https://jntuhresults.dhethi.com/api";
+const EXTERNAL_API_BASE = JNTUH_API_BASE_URL;
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,9 +10,7 @@ export async function GET(request: NextRequest) {
 
     const response = await fetch(externalUrl.toString(), {
       method: "GET",
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-      },
+      headers: getJntuhApiHeaders(),
       next: { revalidate: 60 }, // Cache 1 min for faster repeat loads
     });
 
