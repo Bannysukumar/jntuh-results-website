@@ -175,3 +175,12 @@ For support, email bannysukumar@gmail.com or visit the [Help Center](https://man
 
 Made with ❤️ for JNTUH Students
 
+<!-- readme-seo: bannysukumar -->
+
+## Open source
+
+This repository is open source and maintained by [Banny Sukumar](https://github.com/Bannysukumar). JNTUH Results Website is published so other developers can study the code and contribute.
+
+## License
+
+Released under the [MIT License](LICENSE). Copyright (c) 2026 Banny Sukumar. See [CONTRIBUTING.md](CONTRIBUTING.md) if you want to help.
