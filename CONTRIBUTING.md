@@ -19,4 +19,4 @@ Thanks for your interest in contributing to this open-source project.
 
 Open a GitHub issue with what you expected, what happened, and the steps to reproduce it.
 
-By contributing, you agree that your contributions are licensed under the [MIT License](LICENSE).
+By contributing, you agree that your contributions are licensed under the [GPL-3.0 License](LICENSE).
