@@ -2,185 +2,107 @@
 
 A modern, user-friendly web portal for Jawaharlal Nehru Technological University Hyderabad (JNTUH) students to check their exam results, access academic resources, and explore career opportunities.
 
-## 🌟 Features
+[![License](https://img.shields.io/github/license/Bannysukumar/jntuh-results-website)](https://github.com/Bannysukumar/jntuh-results-website/blob/main/LICENSE) [![Stars](https://img.shields.io/github/stars/Bannysukumar/jntuh-results-website)](https://github.com/Bannysukumar/jntuh-results-website/stargazers) [![Last commit](https://img.shields.io/github/last-commit/Bannysukumar/jntuh-results-website)](https://github.com/Bannysukumar/jntuh-results-website/commits/main)
 
-### Result Services
-- **Academic Result** - Check your overall academic performance with hall ticket number
-- **Academic All Results** - View all exam results in one place
-- **Backlog Report** - Access comprehensive backlog information
-- **Class Result** - Compare your performance with classmates
-- **Credits Checker** - Check credits needed for graduation
-- **Result Contrast** - Compare academic performance across semesters
+## Overview
 
-### Academic Resources
-- **Academic Calendars** - Access all academic calendars with proper segregation
-- **Syllabus** - View detailed syllabus subject-wise for your academic year
-- **Notifications** - Stay updated with latest JNTUH notifications and announcements
+A modern, user-friendly web portal for Jawaharlal Nehru Technological University Hyderabad (JNTUH) students to check their exam results, access academic resources, and explore career opportunities.
 
-### Career & Support
-- **Jobs & Careers** - Explore internships and job opportunities
-- **Help Center** - Get help, find answers, and submit feedback
-- **Feedback System** - Share suggestions and report issues
 
-### Additional Features
-- 🔐 **Admin Dashboard** - Complete admin panel with analytics, user management, and settings
-- 📱 **Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
-- 🌙 **Dark Mode** - Toggle between light and dark themes
-- ⚡ **Fast Performance** - Optimized for speed and reliability
-- 🔍 **SEO Optimized** - Built for search engine visibility
+What is actually in the repository: `app/`, `components/`, `constants/`, `contexts/`, `customhooks/`, `docs/`. GitHub reports the primary language as TypeScript.
 
-## 🛠️ Tech Stack
+Published site recorded on the repository: https://manajntuhresults.vercel.app
 
-- **Framework:** Next.js 14.2.18
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **UI Components:** Radix UI, Lucide React Icons
-- **Authentication:** Firebase Authentication
-- **Database:** Firebase Firestore
-- **Analytics:** Google Analytics
-- **Deployment:** Vercel
-- **State Management:** React Hooks
+## Features
 
-## 📦 Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Bannysukumar/jntuh-results-website.git
-   cd jntuh-results-website
-   ```
+- (Root) page
+- Seo Slug page
+- About page
+- Academicallresult page
+- Academicallresult/Result page
+- Academicresult page
+- Academicresult/Result page
+- Admin/Ai Api Key page
+- Admin/Analytics page
+- Admin/Dashboard page
+- Admin/Feedback page
+- Admin/Group Chat page
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-3. **Set up environment variables**
-   Create a `.env` file in the root directory:
-   ```env
-   NEXT_PUBLIC_GOOGLE_ANALYTICS=G-KHQHHFYXCL
-   ```
+| Technology | Where it shows up |
+|---|---|
+| Next.js | React framework |
+| React | User interface |
+| Firebase | Backend services used by this repository |
+| Tailwind CSS | Styling |
 
-4. **Configure Firebase**
-   Update `lib/firebase.ts` with your Firebase configuration:
-   ```typescript
-   const firebaseConfig = {
-     apiKey: "YOUR_API_KEY",
-     authDomain: "YOUR_AUTH_DOMAIN",
-     projectId: "YOUR_PROJECT_ID",
-     // ... other config
-   };
-   ```
+## Project Architecture
 
-5. **Run the development server**
-   ```bash
-   npm run dev
-   ```
+Next.js App Router project. Pages live under app/.
 
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+## Project Structure
 
-## 🚀 Deployment
-
-The project is configured for deployment on Vercel:
-
-1. Push your code to GitHub
-2. Import the repository in Vercel
-3. Configure environment variables
-4. Deploy!
-
-The site will be automatically deployed on every push to the main branch.
-
-**Live Site:** [https://manajntuhresults.vercel.app](https://manajntuhresults.vercel.app)
-
-## 📁 Project Structure
-
-```
-├── app/                    # Next.js app directory
-│   ├── (root)/            # Root pages
-│   ├── admin/             # Admin dashboard pages
-│   ├── academicresult/    # Academic result pages
-│   ├── calendars/         # Academic calendars
-│   ├── careers/           # Jobs and careers
-│   ├── notifications/     # Notifications
-│   └── ...                # Other feature pages
-├── components/            # React components
-│   ├── admin/            # Admin components
-│   ├── forms/            # Form components
-│   ├── homepage/         # Homepage components
-│   └── ui/               # UI components
-├── constants/            # Constants and data
-├── contexts/            # React contexts
-├── lib/                 # Utility functions
-└── public/              # Static assets
+```text
+jntuh-results-website/
+├── app/
+├── components/
+├── constants/
+├── contexts/
+├── customhooks/
+├── docs/
+├── lib/
+├── public/
+├── scripts/
+├── types/
+├──   Select-Object -First 50
+├── .env.example
+├── .eslintrc.json
+├── .vercelignore
+├── PERFORMANCE_OPTIMIZATION_SUMMARY.md
+├── capacitor.config.ts
+├── components.json
+├── firestore.rules
+├── global.d.ts
+├── next.config.js
+├── package-lock.json
+├── package.json
 ```
 
-## 🔑 Key Features Implementation
+## Getting Started
 
-### Admin Dashboard
-- Secure authentication with Firebase
-- User management system
-- Analytics dashboard
-- Feedback management
-- System settings
+```bash
+git clone https://github.com/Bannysukumar/jntuh-results-website.git
+cd jntuh-results-website
+npm install
+npm run dev
+# Copy .env.example to .env and fill in the values that file lists.
+```
 
-### Result Fetching
-- Integration with JNTUH result APIs
-- Caching for improved performance
-- Error handling and retry logic
+Scripts defined in package.json:
 
-### SEO Optimization
-- Comprehensive metadata
-- Structured data (JSON-LD)
-- Sitemap generation
-- Robots.txt configuration
-- Open Graph and Twitter Card tags
+- `npm run dev` — `next dev`
+- `npm run build` — `next build`
+- `npm run start` — `next start`
+- `npm run lint` — `next lint`
 
-## 🤝 Contributing
+## Deployment
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+- The repository homepage is https://manajntuhresults.vercel.app.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## Contributing
 
-## 📝 License
-
-This project is open source and available under the [GPL-3.0 License](LICENSE).
-
-## 👨‍💻 Author
-
-**Adepu Sukumar**
-- Email: bannysukumar@gmail.com
-- GitHub: [@Bannysukumar](https://github.com/Bannysukumar)
-- LinkedIn: [adepusukumar](https://www.linkedin.com/in/adepusukumar)
-- Instagram: [@Hacking_with_banny](https://www.instagram.com/hacking_with_banny/)
-
-## 🙏 Acknowledgments
-
-- Jawaharlal Nehru Technological University Hyderabad
-- All contributors and users of the platform
-- The open-source community
-
-## 📱 Mobile App
-
-Check out the **JNTUHConnect** mobile app on Google Play Store for a native mobile experience!
-
-## 📞 Support
-
-For support, email bannysukumar@gmail.com or visit the [Help Center](https://manajntuhresults.vercel.app/helpcenter).
-
----
-
-Made with ❤️ for JNTUH Students
-
-<!-- readme-seo: bannysukumar -->
-
-## Open source
-
-This repository is open source and maintained by [Banny Sukumar](https://github.com/Bannysukumar). JNTUH Results Website is published so other developers can study the code and contribute.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 
 ## License
 
-Released under the [GPL-3.0 License](LICENSE). Copyright (c) 2026 Banny Sukumar. See [CONTRIBUTING.md](CONTRIBUTING.md) if you want to help.
+Licensed under GPL-3.0. See [LICENSE](LICENSE).
+
+## Author
+
+[Banny Sukumar](https://github.com/Bannysukumar)
+
+- GitHub: [@Bannysukumar](https://github.com/Bannysukumar)
+- Portfolio: [adepu-sukumar.vercel.app](https://adepu-sukumar.vercel.app/)
+- LinkedIn: [Adepu Sukumar](https://www.linkedin.com/in/adepu-sukumar-59b423351)
