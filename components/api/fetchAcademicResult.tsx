@@ -135,18 +135,9 @@ export async function fetchAcademicResult(htno: string) {
     return response;
   }
 
-  const urlList = isNative()
-    ? [
-        "https://jntuhresults.up.railway.app/api/academicresult?htno=",
-        "https://jntuhresultss.vercel.app/api/academicresult?htno=",
-        "https://jntuhresultsss.vercel.app/api/academicresult?htno=",
-      ]
-    : [
-        "/api/academicresult?htno=",
-        "https://jntuhresults.up.railway.app/api/academicresult?htno=",
-        "https://jntuhresultss.vercel.app/api/academicresult?htno=",
-        "https://jntuhresultsss.vercel.app/api/academicresult?htno=",
-      ];
+  const urlList = [
+    `/api/proxy?endpoint=getAcademicResult&rollNumber=`,
+  ];
 
   // Race all URLs in parallel — first successful response wins (faster than sequential)
   const results = await Promise.allSettled(
@@ -248,8 +239,7 @@ export async function fetchAcademicallResult(htno: string) {
     return result;
   }
 
-  const url =
-    "https://jntuhresults.up.railway.app/api/academicallresult?htno=" + htno;
+  const url = `/api/proxy?endpoint=getAllResult&rollNumber=${htno}`;
   try {
     // Use native HTTP for native apps (bypasses CORS), axios for web
     const response = isNative()

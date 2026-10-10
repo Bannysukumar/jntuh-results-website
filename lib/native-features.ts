@@ -16,7 +16,7 @@ export const isNative = () => Capacitor.isNativePlatform();
 export const getApiBaseUrl = () => {
   if (isNative()) {
     // Use external API endpoints for native apps
-    return 'https://jntuhresults.up.railway.app';
+    return 'https://jntuhresults.dhethi.com';
   }
   // Use relative paths for web (works with Next.js API routes)
   return '';

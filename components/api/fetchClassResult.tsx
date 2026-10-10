@@ -65,7 +65,8 @@ export const updateLocalStoragedata = (key: string, value: string) => {
 
 export async function fetchClassResult(htnos: string, semester_code: string) {
   //primary urls
-  const primaryUrl = `https://jntuhresults.up.railway.app/api/classresult?semester=${semester_code}&htnos=${htnos}`;
+  const rollNumber = htnos.split(",")[0]?.trim() || htnos;
+  const primaryUrl = `/api/proxy?endpoint=getClassResults&rollNumber=${encodeURIComponent(rollNumber)}`;
   // const primaryUrl = `http://localhost:8000/api/classresult?semester=${semester_code}&htnos=${htnos}`;
   let response = await fetchData(htnos + semester_code, primaryUrl);
   if (response !== null) {
