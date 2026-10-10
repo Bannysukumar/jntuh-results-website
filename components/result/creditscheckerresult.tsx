@@ -76,7 +76,11 @@ const CreditsCheckerResult = ({
       </table>
       <div className="text-center text-sm border-black border my-2  p-[0.5px] dark:border-white">
         <div className="border-black border text-[70%] md:text-[100%] py-1 bg-gray-200 dark:bg-[#0b3954] border-separate border-spacing-4 m-[0.5px] dark:border-white">
-          {results.totalRequiredCredits > results.totalObtainedCredits ? (
+          {Number(results.backlogs) > 0 ? (
+            <b>
+              These are the credits earned so far. {results.backlogs} subject(s) are still failed.
+            </b>
+          ) : results.totalRequiredCredits > results.totalObtainedCredits ? (
             <b>
               You require{" "}
               <b className="text-red-500">

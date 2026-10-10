@@ -2,6 +2,16 @@ import axios from "axios";
 import { saveToLocalStorage } from "../customfunctions/localStorage";
 import { isNative, nativeHttpGet } from "@/lib/native-features";
 import { JNTUH_API_BASE_URL, getJntuhApiHeaders } from "@/lib/jntuh-api";
+import {
+  mapAllResult,
+  mapBacklogReport,
+  mapCreditsReport,
+  mapGraceEligibility,
+  mapGraceProof,
+  mapRenderResult,
+  mapResultContrast,
+  renderResultUrl,
+} from "@/lib/map-render-result";
 
 import toast from "react-hot-toast";
 
@@ -10,7 +20,6 @@ const NATIVE_API_OPTS = { headers: getJntuhApiHeaders() };
 
 const RESULT_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 const RESULT_CACHE_KEY_PREFIX = "jntuh_result_";
-const REQUEST_TIMEOUT_MS = 15 * 1000; // 15s
 
 const resultMemoryCache = new Map<
   string,
@@ -52,36 +61,27 @@ function setCachedResult(htno: string, data: AcademicResulProps): void {
   }
 }
 
+async function loadRenderPayload(htno: string, signal?: AbortSignal | null) {
+  const url = renderResultUrl(htno);
+  const response = isNative()
+    ? await nativeHttpGet(url, { timeout: 60 * 1000 })
+    : await axios.get(url, {
+        timeout: 60 * 1000,
+        validateStatus: () => true,
+        signal: signal ?? undefined,
+      });
+  if ((response.status ?? 200) !== 200) return null;
+  return response.data ?? response;
+}
+
 async function fetchAcademicResultFromApi(
   htno: string,
   signal?: AbortSignal | null
 ): Promise<{ status: number; data: any }> {
-  const baseUrl = isNative()
-    ? UPSTREAM_API_BASE
-    : "";
-  const url: string = isNative()
-    ? `${baseUrl}/getAcademicResult?rollNumber=${htno}`
-    : `/api/proxy?endpoint=getAcademicResult&rollNumber=${htno}`;
-
-  if (isNative()) {
-    const response = await nativeHttpGet(url, {
-      timeout: REQUEST_TIMEOUT_MS,
-      ...NATIVE_API_OPTS,
-    });
-    return {
-      status: response.status ?? 200,
-      data: response.data ?? response,
-    };
-  }
-  const response = await axios.get(url, {
-    timeout: REQUEST_TIMEOUT_MS,
-    validateStatus: () => true,
-    signal: signal ?? undefined,
-  });
-  return {
-    status: response.status ?? 200,
-    data: response.data ?? response,
-  };
+  const payload = await loadRenderPayload(htno, signal);
+  const mapped = payload ? mapRenderResult(payload) : null;
+  if (mapped) return { status: 200, data: mapped };
+  return { status: payload ? 422 : 502, data: payload };
 }
 
 export const fetchAcademicResult = async (
@@ -206,96 +206,34 @@ export const fetchAcademicResult = async (
   inFlightRequests.set(key, promise);
   return promise;
 };
+function reportRenderError(error: any) {
+  const isTimeoutError =
+    error?.code === "ECONNABORTED" || error?.message?.includes("timeout");
+  if (isTimeoutError) toast.error("Request timed out. Try again later.");
+  else toast.error("Network issue. Please check your connection.");
+}
+
 export const fetchAllResult = async (
   htno: string,
   options?: { signal?: AbortSignal | null }
 ) => {
   try {
-    const baseUrl = isNative()
-      ? UPSTREAM_API_BASE
-      : "";
-    const url: string = isNative()
-      ? `${baseUrl}/getAllResult?rollNumber=${htno}`
-      : `/api/proxy?endpoint=getAllResult&rollNumber=${htno}`;
-
     toast.loading("Fetching result...");
-
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
-      : await axios.get(url, {
-          timeout: 15 * 1000,
-          validateStatus: () => true,
-          signal: options?.signal ?? undefined,
-        });
-
-    switch (response.status) {
-      case 200: {
-        if ("details" in response.data) {
-          saveToLocalStorage(
-            htno + "-AllResult",
-            JSON.stringify(response.data),
-          );
-          toast.dismiss();
-          toast.success("Result fetched successfully");
-          return true;
-        }
-        break;
-      }
-
-      case 202: {
-        toast.dismiss();
-        toast(
-          response.data.message ||
-            "Result is being prepared. Please check again shortly.",
-        );
-        return false;
-      }
-
-      case 409: {
-        toast.dismiss();
-        toast.error(
-          response.data.message || "This roll number is already in the queue.",
-        );
-        return false;
-      }
-
-      case 502: {
-        toast.dismiss();
-        toast.error("Upstream JNTUH servers are down. Try again later.");
-        return false;
-      }
-
-      case 503: {
-        toast.dismiss();
-        toast.error("Server overloaded. Please try again later.");
-        return false;
-      }
-
-      case 500: {
-        toast.dismiss();
-        toast.error("Unexpected server error occurred.");
-        return false;
-      }
-
-      default: {
-        toast.dismiss();
-        toast.error("Unhandled response from server.");
-        return false;
-      }
+    const payload = await loadRenderPayload(htno, options?.signal);
+    const mapped = payload ? mapAllResult(payload) : null;
+    if (mapped) {
+      saveToLocalStorage(htno + "-AllResult", JSON.stringify(mapped));
+      toast.dismiss();
+      toast.success("Result fetched successfully");
+      return true;
     }
-
     toast.dismiss();
+    toast.error("Result not found.");
     return false;
   } catch (e: any) {
     toast.dismiss();
     if (e?.name === "AbortError" || e?.code === "ERR_CANCELED") throw e;
-    const isAxiosError = axios.isAxiosError ? axios.isAxiosError(e) : false;
-    const isTimeoutError =
-      e.code === "ECONNABORTED" || e.message?.includes("timeout");
-    if (isTimeoutError) toast.error("Request timed out. Try again later.");
-    else if (isAxiosError && e.response) toast.error(`Server error: ${e.response.status}`);
-    else if (e.status) toast.error(`Server error: ${e.status}`);
-    else toast.error("Network issue. Please check your connection.");
+    reportRenderError(e);
     return false;
   }
 };
@@ -304,32 +242,12 @@ export const fetchBacklogReport = async (
   options?: { signal?: AbortSignal | null }
 ) => {
   try {
-    const baseUrl = isNative()
-      ? UPSTREAM_API_BASE
-      : "";
-    const url: string = isNative()
-      ? `${baseUrl}/getBacklogs?rollNumber=${htno}`
-      : `/api/proxy?endpoint=getBacklogs&rollNumber=${htno}`;
-
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
-      : await axios.get(url, {
-          timeout: 15 * 1000,
-          signal: options?.signal ?? undefined,
-        });
-    if ("details" in response.data) {
-      saveToLocalStorage(
-        htno + "-Backlogreport",
-        JSON.stringify(response.data),
-      );
+    const payload = await loadRenderPayload(htno, options?.signal);
+    const mapped = payload ? mapBacklogReport(payload) : null;
+    if (mapped) {
+      saveToLocalStorage(htno + "-Backlogreport", JSON.stringify(mapped));
       return true;
     }
-    if (response.data.status === "success") {
-      toast(response.data.message);
-    } else if (response.data.status === "failure") {
-      toast.error(response.data.message);
-    }
-
     return false;
   } catch (e: any) {
     toast.dismiss();
@@ -344,36 +262,16 @@ export const fetchCreditsCheckerReport = async (
   options?: { signal?: AbortSignal | null }
 ) => {
   try {
-    const baseUrl = isNative()
-      ? UPSTREAM_API_BASE
-      : "";
-    const url: string = isNative()
-      ? `${baseUrl}/getCreditsChecker?rollNumber=${htno}`
-      : `/api/proxy?endpoint=getCreditsChecker&rollNumber=${htno}`;
-
     toast.loading("Result are been fetched");
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
-      : await axios.get(url, {
-          timeout: 15 * 1000,
-          signal: options?.signal ?? undefined,
-        });
-    if ("details" in response.data) {
-      saveToLocalStorage(
-        htno + "-CreditsCheckerreport",
-        JSON.stringify(response.data),
-      );
+    const payload = await loadRenderPayload(htno, options?.signal);
+    const mapped = payload ? mapCreditsReport(payload) : null;
+    if (mapped && mapped.results.academicYears.length > 0) {
+      saveToLocalStorage(htno + "-CreditsCheckerreport", JSON.stringify(mapped));
       toast.dismiss();
       return true;
     }
-    if (response.data.status === "success") {
-      toast.dismiss();
-      toast(response.data.message);
-    } else if (response.data.status === "failure") {
-      toast.dismiss();
-      toast.error(response.data.message);
-    }
-
+    toast.dismiss();
+    toast.error("Result not found.");
     return false;
   } catch (e: any) {
     toast.dismiss();
@@ -388,46 +286,32 @@ export const fetchCreditContrastReport = async (
   htno2: string,
   options?: { signal?: AbortSignal | null }
 ) => {
-  let response: any;
   try {
-    const baseUrl = isNative()
-      ? UPSTREAM_API_BASE
-      : "";
-    const url: string = isNative()
-      ? `${baseUrl}/getResultContrast?rollNumber1=${htno1}&rollNumber2=${htno2}`
-      : `/api/proxy?endpoint=getResultContrast&rollNumber1=${htno1}&rollNumber2=${htno2}`;
-
+    if (htno1.trim().toUpperCase() === htno2.trim().toUpperCase()) {
+      toast.error("Enter two different hall ticket numbers.");
+      return false;
+    }
     toast.loading("Result are been fetched");
-    response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
-      : await axios.get(url, {
-          timeout: 15 * 1000,
-          signal: options?.signal ?? undefined,
-        });
-    if ("studentProfiles" in response.data) {
+    const [first, second] = await Promise.all([
+      loadRenderPayload(htno1, options?.signal),
+      loadRenderPayload(htno2, options?.signal),
+    ]);
+    const mapped = first && second ? mapResultContrast(first, second) : null;
+    if (mapped) {
       saveToLocalStorage(
         htno1 + "-" + htno2 + "-CreditContrastreport",
-        JSON.stringify(response.data),
+        JSON.stringify(mapped),
       );
+      toast.dismiss();
       return true;
     }
-    if (response.data.status === "success") {
-      toast.dismiss();
-      toast(response.data.message);
-    } else if (response.data.status === "failure") {
-      toast.dismiss();
-      toast.error(response.data.message);
-    }
-
+    toast.dismiss();
+    toast.error("Result not found.");
     return false;
   } catch (error: any) {
     toast.dismiss();
     if (error?.name === "AbortError" || error?.code === "ERR_CANCELED") throw error;
-    if (error?.response?.status === 400) {
-      toast.error(error.response.data.detail);
-    } else {
-      toast.error("SERVER ISSUE!!");
-    }
+    toast.error("SERVER ISSUE!!");
     return false;
   }
 };
@@ -478,48 +362,25 @@ export const fetchClassResult = async (
   options?: { signal?: AbortSignal | null }
 ) => {
   try {
-    const baseUrl = isNative()
-      ? UPSTREAM_API_BASE
-      : "";
-    const url: string = isNative()
-      ? `${baseUrl}/getClassResults?rollNumber=${htno}`
-      : `/api/proxy?endpoint=getClassResults&rollNumber=${htno}`;
-
     toast.loading("Result are been fetched");
-
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
-      : await axios.get(url, {
-          timeout: 15 * 1000,
-          signal: options?.signal ?? undefined,
-        });
-
-    console.log(response);
-    if (response.data && response.data.length > 0) {
+    const payload = await loadRenderPayload(htno, options?.signal);
+    const mapped = payload ? mapRenderResult(payload) : null;
+    if (mapped) {
       saveToLocalStorage(
         htno + "-ClassResult-" + type,
-        JSON.stringify(response.data),
+        JSON.stringify([mapped]),
       );
       toast.dismiss();
       return true;
     }
-
-    if (response.data.status === "success") {
-      toast.dismiss();
-      toast(response.data.message);
-    } else if (response.data.status === "failure") {
-      toast.dismiss();
-      toast.error(response.data.message);
-    }
-
+    toast.dismiss();
+    toast.error("Result not found.");
     return false;
   } catch (e: any) {
     toast.dismiss();
     if (e?.name === "AbortError" || e?.code === "ERR_CANCELED") throw e;
     toast.error("SERVER ISSUE!!");
     return false;
-  } finally {
-    toast.dismiss();
   }
 };
 
@@ -528,48 +389,22 @@ export const fetchGraceMarksEligibility = async (
   options?: { signal?: AbortSignal | null }
 ) => {
   try {
-    const baseUrl = isNative()
-      ? UPSTREAM_API_BASE
-      : "";
-    const url: string = isNative()
-      ? `${baseUrl}/grace-marks/eligibility?rollNumber=${htno}`
-      : `/api/grace-marks/eligibility?rollNumber=${htno}`;
-
     toast.loading("Checking grace marks eligibility...");
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
-      : await axios.get(url, {
-          timeout: 15 * 1000,
-          signal: options?.signal ?? undefined,
-        });
-    
-    if (response.data && ("eligibility" in response.data || "details" in response.data)) {
-      saveToLocalStorage(
-        htno + "-GraceMarksEligibility",
-        JSON.stringify(response.data),
-      );
+    const payload = await loadRenderPayload(htno, options?.signal);
+    const mapped = payload ? mapGraceEligibility(payload) : null;
+    if (mapped) {
+      saveToLocalStorage(htno + "-GraceMarksEligibility", JSON.stringify(mapped));
       toast.dismiss();
       toast.success("Eligibility checked successfully");
       return true;
     }
-    
-    if (response.data.status === "success") {
-      toast.dismiss();
-      toast(response.data.message);
-    } else if (response.data.status === "failure") {
-      toast.dismiss();
-      toast.error(response.data.message);
-    }
-
+    toast.dismiss();
+    toast.error("Result not found.");
     return false;
   } catch (error: any) {
     toast.dismiss();
     if (error?.name === "AbortError" || error?.code === "ERR_CANCELED") throw error;
-    if (error?.response?.status === 400) {
-      toast.error(error.response.data.detail || error.response.data.error);
-    } else {
-      toast.error("SERVER ISSUE!!");
-    }
+    toast.error("SERVER ISSUE!!");
     return false;
   }
 };
@@ -579,48 +414,22 @@ export const fetchGraceMarksProof = async (
   options?: { signal?: AbortSignal | null }
 ) => {
   try {
-    const baseUrl = isNative()
-      ? UPSTREAM_API_BASE
-      : "";
-    const url: string = isNative()
-      ? `${baseUrl}/grace-marks/proof?rollNumber=${htno}`
-      : `/api/grace-marks/proof?rollNumber=${htno}`;
-
     toast.loading("Fetching grace marks proof...");
-    const response = isNative()
-      ? await nativeHttpGet(url, { timeout: 15 * 1000, ...NATIVE_API_OPTS })
-      : await axios.get(url, {
-          timeout: 15 * 1000,
-          signal: options?.signal ?? undefined,
-        });
-    
-    if (response.data && ("proof" in response.data || "details" in response.data)) {
-      saveToLocalStorage(
-        htno + "-GraceMarksProof",
-        JSON.stringify(response.data),
-      );
+    const payload = await loadRenderPayload(htno, options?.signal);
+    const mapped = payload ? mapGraceProof(payload) : null;
+    if (mapped) {
+      saveToLocalStorage(htno + "-GraceMarksProof", JSON.stringify(mapped));
       toast.dismiss();
       toast.success("Proof fetched successfully");
       return true;
     }
-    
-    if (response.data.status === "success") {
-      toast.dismiss();
-      toast(response.data.message);
-    } else if (response.data.status === "failure") {
-      toast.dismiss();
-      toast.error(response.data.message);
-    }
-
+    toast.dismiss();
+    toast.error("Result not found.");
     return false;
   } catch (error: any) {
     toast.dismiss();
     if (error?.name === "AbortError" || error?.code === "ERR_CANCELED") throw error;
-    if (error?.response?.status === 400) {
-      toast.error(error.response.data.detail || error.response.data.error);
-    } else {
-      toast.error("SERVER ISSUE!!");
-    }
+    toast.error("SERVER ISSUE!!");
     return false;
   }
 };

@@ -37,6 +37,7 @@ interface StudentCredits {
   totalCredits: number;
   totalObtainedCredits: number;
   totalRequiredCredits: number;
+  backlogs?: number;
 }
 
 interface ResultDetailsProps {
