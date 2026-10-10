@@ -14,8 +14,11 @@ export const JNTUH_API_KEY_HEADER = "X-Api-Key";
 
 export function getJntuhApiHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
-    "User-Agent": "Mozilla/5.0",
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
     Accept: "application/json",
+    Origin: "https://jntuhconnect.dhethi.com",
+    Referer: "https://jntuhconnect.dhethi.com/",
   };
   if (JNTUH_API_KEY) {
     headers[JNTUH_API_KEY_HEADER] = JNTUH_API_KEY;
